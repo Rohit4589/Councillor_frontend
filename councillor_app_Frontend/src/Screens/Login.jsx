@@ -1,8 +1,17 @@
 import React from "react";
-import "../styles/login.css";
+import "../style/login.css";
 import logo from "../assets/logo.jpg";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+
+  const navigate = useNavigate();
+
+  const handleLogin = () => {
+    // later you will add API + JWT here
+    navigate("/dashboard");
+  };
+
   return (
     <div
       className="d-flex align-items-center justify-content-center"
@@ -78,6 +87,7 @@ const Login = () => {
                 borderColor: "#0b3c5d",
                 fontWeight: 300,
               }}
+              onClick={handleLogin}
             >
               Login to Dashboard
             </button>
