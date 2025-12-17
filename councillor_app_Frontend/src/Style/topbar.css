@@ -1,0 +1,34 @@
+.topbar {
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  
+  /* FIGMA EXACT */
+  padding: 24px;
+  height: 109px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Dashboard */
+.topbar-title {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 36px;
+  letter-spacing: 0.07px;
+  color: #101828;
+  margin: 0;
+}
+
+/* Subtitle */
+.topbar-subtitle {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 24px;
+  letter-spacing: -0.31px;
+  color: #4a5565;
+  margin: 4px 0 0 0;
+}
