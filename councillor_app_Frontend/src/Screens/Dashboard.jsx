@@ -8,7 +8,7 @@ import {
 
 export default function Dashboard() {
   return (
-    <>
+    <div className="page-wrapper">
     
 
       {/* ===== STAT CARDS ===== */}
@@ -62,7 +62,7 @@ export default function Dashboard() {
           </tbody>
         </table>
       </div>
-    </>
+    </div>
   );
 }
 

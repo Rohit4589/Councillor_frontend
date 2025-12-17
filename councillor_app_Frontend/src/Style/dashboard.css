@@ -12,12 +12,10 @@
 
 /* ===== CARDS ===== */
 .dashboard-cards {
-    width:1200px;
-    margin-top: 20px;
-   display: grid;
+  margin-top: 20px;
+  display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 25px; /* MATCH FIGMA */
-
+  gap: 25px;
 }
 
 .stat-card {
@@ -28,9 +26,7 @@
   display: flex;
   align-items: center;
   gap: 10px;
-  width: px;
-   min-height: 150px; 
-   margin-left: 20px;
+  min-height: 150px;
 }
 
 .stat-card h2 {
@@ -67,14 +63,11 @@
 
 /* ===== TABLE ===== */
 .dashboard-table {
-   
-    margin-top: 30px;
-    margin-left: 20px;
+  margin-top: 30px;
   background: #fff;
   border-radius: 16px;
   border: 1px solid #e5e7eb;
   padding: 20px;
-  width: 1180px;
 }
 
 .dashboard-table h3 {

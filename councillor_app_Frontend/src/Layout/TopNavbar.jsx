@@ -7,9 +7,10 @@ export default function TopNavbar() {
 
   // Find matching route config
   const currentRoute =
-    Object.values(routesConfig).find(
-      (route) => route.path === location.pathname
+    Object.values(routesConfig).find((route) =>
+      location.pathname.startsWith(route.path)
     ) || routesConfig.dashboard;
+
 
   return (
     <div className="topbar">

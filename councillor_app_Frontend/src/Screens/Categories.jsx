@@ -1,3 +1,8 @@
 export default function Categories() {
-    return <div>Categories Screen</div>
+  return (
+    <div className="page-wrapper">
+      <h2>Categories Screen</h2>
+      {/* category table / form later */}
+    </div>
+  );
 }
