@@ -120,7 +120,6 @@
 /* ===== STATUS ===== */
 .status {
   display: inline-flex;
-<<<<<<< HEAD
   align-items: center;
   justify-content: center;
 
@@ -133,17 +132,6 @@
   font-weight: 500;
   line-height: 1;            /* 🔥 IMPORTANT */
   text-align: center;
-=======
-  /* ✅ better than inline-block */
-  align-items: center;
-  /* ✅ vertical centering */
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 500;
-  line-height: 1;
-  /* ✅ prevents text clipping */
->>>>>>> 738186ee323e07b0d69d97ed33cc94e0fd749e09
   white-space: nowrap;
 }
 
