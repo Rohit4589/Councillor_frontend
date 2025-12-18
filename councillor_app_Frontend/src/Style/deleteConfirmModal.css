@@ -1,4 +1,6 @@
-/* ===== OVERLAY ===== */
+/* ===============================
+   OVERLAY
+================================ */
 .modal-overlay {
   position: fixed;
   inset: 0;
@@ -9,69 +11,105 @@
   z-index: 1000;
 }
 
-/* ===== MODAL BOX ===== */
+/* ===============================
+   MODAL CONTAINER
+================================ */
 .delete-modal {
-  background: #ffffff;
-  width: 420px;
-  border-radius: 16px;
-  padding: 30px 24px 24px;
-  text-align: center;
   position: relative;
+  width: 340px;
+  background: #ffffff;
+  border-radius: 16px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+  padding: 80px 0px 22px;
+  text-align: center;
 }
 
-/* Close icon */
+/* ===============================
+   CLOSE ICON (TOP RIGHT)
+================================ */
 .delete-close {
   position: absolute;
-  right: 16px;
   top: 16px;
-  cursor: pointer;
+  right: 16px;
   color: #9ca3af;
+  cursor: pointer;
 }
 
-/* Red icon */
+.delete-close:hover {
+  color: #111827;
+}
+
+/* ===============================
+   DELETE ICON
+================================ */
 .delete-icon {
-  font-size: 56px;
+  width: 56px;
+  height: 56px;
+  background: #ef4444;
+  color: #ffffff;
+  border-radius: 50%;
+  font-size: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 22px;
+  
+
+}
+
+/* ===============================
+   TEXT
+================================ */
+.delete-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: #111827;
+  line-height: 1.4;
   margin-bottom: 20px;
 }
 
-/* Text */
-.delete-text {
-  font-size: 18px;
-  font-weight: 500;
-  color: #111827;
-  margin-bottom: 30px;
-}
-
-/* Buttons */
+/* ===============================
+   ACTION BUTTONS
+================================ */
 .delete-actions {
   display: flex;
-  gap: 14px;
+  justify-content: center;
+  gap: 12px;
+  padding-top:20px;
+  border-top: 1px solid #e5e7eb;
 }
 
-/* No button */
-.btn-no {
-  flex: 1;
-  padding: 12px;
-  border-radius: 12px;
-  border: 1px solid #d1d5db;
-  background: #ffffff;
-  font-size: 14px;
-  cursor: pointer;
-}
-
-/* Yes button */
+/* SAME WIDTH BUTTONS */
+.btn-no,
 .btn-yes {
-  flex: 1;
-  padding: 12px;
-  border-radius: 12px;
-  border: none;
-  background: #003a68;
-  color: #ffffff;
+  width: 150px;
+  padding: 10px 0;
+  border-radius: 10px;
   font-size: 14px;
   cursor: pointer;
+}
+
+/* NO BUTTON */
+.btn-no {
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  color: #111827;
+}
+
+/* YES BUTTON */
+.btn-yes {
+  background: #003a68;
+  border: none;
+  color: #ffffff;
 }
 
 .btn-yes:hover {
   background: #002f54;
+}
+
+/* REMOVE BLUE FOCUS */
+.btn-no:focus,
+.btn-yes:focus {
+  outline: none;
+  box-shadow: none;
 }

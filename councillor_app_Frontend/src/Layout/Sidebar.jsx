@@ -17,9 +17,13 @@ export default function Sidebar() {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // later you’ll clear JWT here
-    // localStorage.removeItem("token");
+    // 1️⃣ Remove token
+    localStorage.removeItem("token");
 
+    // (optional but good)
+    localStorage.clear(); // if you store more auth data later
+
+    // 2️⃣ Redirect to login
     navigate("/login", { replace: true });
   };
 
