@@ -9,8 +9,6 @@ import {
 export default function Dashboard() {
   return (
     <div className="page-wrapper">
-    
-
       {/* ===== STAT CARDS ===== */}
       <div className="dashboard-cards">
         <StatCard
@@ -41,7 +39,9 @@ export default function Dashboard() {
 
       {/* ===== RECENT COMPLAINTS ===== */}
       <div className="dashboard-table mt-4">
-        <h3>Recent Complaints</h3>
+        <div className="dashboard-header">
+          <h3>Recent Complaints</h3>
+        </div>
 
         <table>
           <thead>
@@ -54,11 +54,36 @@ export default function Dashboard() {
           </thead>
 
           <tbody>
-            <Row id="CMP234567" cat="Street Lights" status="progress" time="5 min ago" />
-            <Row id="CMP234568" cat="Garbage Collection" status="completed" time="12 min ago" />
-            <Row id="CMP234569" cat="Water Supply" status="submitted" time="23 min ago" />
-            <Row id="CMP234570" cat="Roads & Potholes" status="progress" time="1 hour ago" />
-            <Row id="CMP234571" cat="Drainage" status="submitted" time="2 hours ago" />
+            <Row
+              id="CMP234567"
+              cat="Street Lights"
+              status="progress"
+              time="5 min ago"
+            />
+            <Row
+              id="CMP234568"
+              cat="Garbage Collection"
+              status="completed"
+              time="12 min ago"
+            />
+            <Row
+              id="CMP234569"
+              cat="Water Supply"
+              status="submitted"
+              time="23 min ago"
+            />
+            <Row
+              id="CMP234570"
+              cat="Roads & Potholes"
+              status="progress"
+              time="1 hour ago"
+            />
+            <Row
+              id="CMP234571"
+              cat="Drainage"
+              status="submitted"
+              time="2 hours ago"
+            />
           </tbody>
         </table>
       </div>

@@ -2,14 +2,30 @@ import React from "react";
 import "../style/login.css";
 import logo from "../assets/logo.jpg";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { useState } from "react";
+
 
 const Login = () => {
 
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    // later you will add API + JWT here
-    navigate("/dashboard");
+  const handleLogin = async () => {
+    try {
+      const res = await axios.post("http://localhost:5000/api/auth/login", {
+        email,
+        password,
+      });
+
+      localStorage.setItem("token", res.data.token);
+      navigate("/dashboard");
+    } catch (err) {
+      alert("Invalid credentials");
+    }
   };
 
   return (
@@ -65,7 +81,12 @@ const Login = () => {
 
               <div className="custom-input">
                 <i className="bi bi-envelope-fill"></i>
-                <input type="email" placeholder="admin@complaint.gov.in" />
+                <input
+                  type="email"
+                  placeholder="admin@gmail.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
               </div>
             </div>
 
@@ -75,11 +96,17 @@ const Login = () => {
 
               <div className="custom-input">
                 <i className="bi bi-lock-fill"></i>
-                <input type="password" placeholder="Enter your password" />
+                <input
+                  type="password"
+                  placeholder="admin123"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
               </div>
             </div>
 
             <button
+              type="button"
               className="btn w-100 py-2 text-white"
               style={{
                 borderRadius: 12,

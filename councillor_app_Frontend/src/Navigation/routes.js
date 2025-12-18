@@ -19,19 +19,18 @@ login: {
 
   citizens: {
     path: "/citizens",
-    title: "Citizens",
-    subtitle: "Manage registered citizens",
+    title: "Citizens Details",
+    
   },
 
   complaints: {
     path: "/complaints",
-    title: "Complaints",
-    subtitle: "Track and manage complaints",
+    title: "Complaints Oerview",
   },
 
   officers: {
     path: "/officers",
-    title: "Officers",
+    title: "Officers Details",
     subtitle: "Manage ward officers",
   },
 
