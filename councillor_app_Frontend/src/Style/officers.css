@@ -3,10 +3,10 @@
 ================================ */
 .officers-table {
   background: #ffffff;
-  border-radius: 16px;
   border: 1px solid #e5e7eb;
-  padding: 20px;
+  border-radius: 16px;
   width: 100%;
+  overflow: hidden;
 }
 
 /* ===============================
@@ -15,46 +15,55 @@
 .officers-table table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: fixed; /* 🔥 controls column spacing */
+  /* ❌ avoid fixed height on table */
 }
 
 /* ===============================
    TABLE HEADER
 ================================ */
+.officers-table thead {
+  background: #f3f4f6;
+}
+
 .officers-table th {
-  text-align: left;
-  font-size: 18px;
+  padding: 14px 20px;
+  font-size: 14px;
   font-weight: 500;
   color: #6b7280;
-  padding: 14px 0;
+  text-align: left;
+  vertical-align: top;
+}
+
+.officers-table th:last-child {
+  text-align: right;
+  padding-right: 35px;
 }
 
 /* ===============================
    TABLE BODY
 ================================ */
 .officers-table td {
-  padding: 18px 0;
-  border-top: 1px solid #f1f5f9;
-  font-size: 16px;
+  padding: 18px 20px;
+  font-size: 15px;
   color: #101828;
+  vertical-align: top;
 }
 
-/* ===============================
-   COLUMN WIDTH CONTROL
-================================ */
 /* Name column */
-.officers-table th:first-child,
 .officers-table td:first-child {
-  width: 80%;
+  font-weight: 600;
+  color: #111827;
 }
 
-/* Phone number column */
-.officers-table th.phone-col,
-.officers-table td.phone-col {
-  width: 40%;
-  text-align: left;     /* keeps phone close */
-  padding-left: 40px;  /* balanced spacing */
+/* Phone column */
+.officers-table td:last-child {
+  text-align: right;
   color: #374151;
+}
+
+/* ✅ Border below each data row */
+.officers-table tbody tr {
+  border-bottom: 1px solid #dadde0;
 }
 
 /* ===============================
