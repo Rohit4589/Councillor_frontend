@@ -1,0 +1,78 @@
+/* ===============================
+   CATEGORY TABLE WRAPPER
+================================ */
+.categories-table {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  padding: 20px;
+  width: 100%;
+}
+
+/* ===============================
+   TABLE
+================================ */
+.categories-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+/* ===============================
+   TABLE HEADER
+================================ */
+.categories-table th {
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6b7280;
+  padding: 14px 0;
+}
+
+/* Center Actions header */
+.categories-table th.actions-header {
+  text-align: center;
+  width: 140px;
+}
+
+/* ===============================
+   TABLE BODY
+================================ */
+.categories-table td {
+  padding: 18px 0;
+  border-top: 1px solid #f1f5f9;
+  font-size: 14px;
+  color: #101828;
+  vertical-align: middle;
+}
+
+/* ===============================
+   ACTIONS COLUMN (FIXED)
+================================ */
+.actions-cell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+}
+
+/* Icons */
+.actions-cell svg {
+  cursor: pointer;
+}
+
+/* Edit */
+.actions-cell .edit {
+  color: #2563eb;
+}
+
+/* Delete */
+.actions-cell .delete {
+  color: #dc2626;
+}
+
+/* ===============================
+   ROW HOVER
+================================ */
+.categories-table tbody tr:hover {
+  background: #f9fafb;
+}

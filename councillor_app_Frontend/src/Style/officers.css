@@ -1,0 +1,65 @@
+/* ===============================
+   OFFICERS TABLE WRAPPER
+================================ */
+.officers-table {
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  padding: 20px;
+  width: 100%;
+}
+
+/* ===============================
+   TABLE
+================================ */
+.officers-table table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed; /* 🔥 controls column spacing */
+}
+
+/* ===============================
+   TABLE HEADER
+================================ */
+.officers-table th {
+  text-align: left;
+  font-size: 18px;
+  font-weight: 500;
+  color: #6b7280;
+  padding: 14px 0;
+}
+
+/* ===============================
+   TABLE BODY
+================================ */
+.officers-table td {
+  padding: 18px 0;
+  border-top: 1px solid #f1f5f9;
+  font-size: 16px;
+  color: #101828;
+}
+
+/* ===============================
+   COLUMN WIDTH CONTROL
+================================ */
+/* Name column */
+.officers-table th:first-child,
+.officers-table td:first-child {
+  width: 80%;
+}
+
+/* Phone number column */
+.officers-table th.phone-col,
+.officers-table td.phone-col {
+  width: 40%;
+  text-align: left;     /* keeps phone close */
+  padding-left: 40px;  /* balanced spacing */
+  color: #374151;
+}
+
+/* ===============================
+   ROW HOVER
+================================ */
+.officers-table tbody tr:hover {
+  background: #f9fafb;
+}

@@ -95,12 +95,24 @@
 }
 
 /* ===== STATUS ===== */
+/* ===== STATUS ===== */
 .status {
-  padding: 6px 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 120px;
+  height: 36px;              /* 🔥 KEY FIX */
+  padding: 0 16px;           /* horizontal only */
+
   border-radius: 999px;
   font-size: 13px;
   font-weight: 500;
+  line-height: 1;            /* 🔥 IMPORTANT */
+  text-align: center;
+  white-space: nowrap;
 }
+
 
 .status.progress {
   background: #e7f1ff;
@@ -116,6 +128,7 @@
   background: #fef3c7;
   color: #b45309;
 }
+
 
 .time {
   color: #6b7280;

@@ -1,5 +1,5 @@
 export const routesConfig = {
-login: {
+  login: {
     path: "/login",
     title: "Login",
     subtitle: "Login to the system",
@@ -15,6 +15,15 @@ login: {
     path: "/categories",
     title: "Category Management",
     subtitle: "Manage complaint categories",
+
+    // ✅ TOPBAR ACTION BUTTON
+    action: {
+      label: "Add Category",
+      onClick: () => {
+        console.log("Add Category clicked");
+        // later: open modal
+      },
+    },
   },
 
   citizens: {
@@ -31,13 +40,14 @@ login: {
 
   officers: {
     path: "/officers",
-    title: "Officers",
-    subtitle: "Manage ward officers",
+    title: "Citizens Details",
+    
   },
 
   createEvent: {
-    path: "/create-event",
-    title: "Create Event",
-    subtitle: "Create and manage ward events",
-  },
+  path: "/create-event",
+  title: "Create Event",
+  subtitle: "Create and manage ward events",
+},
+
 };
