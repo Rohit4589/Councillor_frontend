@@ -28,20 +28,19 @@ export const routesConfig = {
 
   citizens: {
     path: "/citizens",
-    title: "Citizens",
-    subtitle: "Manage registered citizens",
+    title: "Citizens Details",
+    
   },
 
   complaints: {
     path: "/complaints",
-    title: "Complaints",
-    subtitle: "Track and manage complaints",
+    title: "Complaints Oerview",
   },
 
   officers: {
     path: "/officers",
-    title: "Citizens Details",
-    
+    title: "Officers Details",
+    subtitle: "Manage ward officers",
   },
 
   createEvent: {
