@@ -67,13 +67,25 @@
   background: #fff;
   border-radius: 16px;
   border: 1px solid #e5e7eb;
-  padding: 20px;
+  padding: 0;
+  /* ✅ important */
+  overflow: hidden;
+  /* ✅ keeps rounded corners */
 }
 
-.dashboard-table h3 {
-  font-size: 18px;
+.dashboard-header {
+  margin: -20px -20px 0px;
+  /* 👈 cancels parent padding */
+  padding: 16px 40px;
+  
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.dashboard-header h3 {
+  padding-top:28px;
+  font-size: 22px;
   font-weight: 600;
-  margin-bottom: 16px;
+  
 }
 
 .dashboard-table table {
@@ -83,21 +95,32 @@
 
 .dashboard-table th {
   text-align: left;
-  font-size: 14px;
-  color: #6b7280;
+  font-size: 16px;
+  color: #5e6470;
   padding-bottom: 12px;
+  padding-top: 12px;
+  padding: 14px 20px;
+  background-color: #edeeee;
+  
 }
 
 .dashboard-table td {
-  padding: 14px 0;
-  border-top: 1px solid #f1f5f9;
+ 
+  padding: 14px 20px;
   font-size: 14px;
+  vertical-align: middle;
 }
+
+.dashboard-table tbody tr {
+  border-top: 1px solid #f1f5f9;
+}
+
 
 /* ===== STATUS ===== */
 /* ===== STATUS ===== */
 .status {
   display: inline-flex;
+<<<<<<< HEAD
   align-items: center;
   justify-content: center;
 
@@ -110,6 +133,17 @@
   font-weight: 500;
   line-height: 1;            /* 🔥 IMPORTANT */
   text-align: center;
+=======
+  /* ✅ better than inline-block */
+  align-items: center;
+  /* ✅ vertical centering */
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;
+  /* ✅ prevents text clipping */
+>>>>>>> 738186ee323e07b0d69d97ed33cc94e0fd749e09
   white-space: nowrap;
 }
 
@@ -117,6 +151,8 @@
 .status.progress {
   background: #e7f1ff;
   color: #2563eb;
+  padding: 13px 12px;
+  
 }
 
 .status.completed {

@@ -13,6 +13,8 @@ import Complaints from "./Screens/Complaints";
 import Officers from "./Screens/Officers";
 import CreateEvent from "./Screens/CreateEvent";
 
+import ProtectedRoute from "./Navigation/ProtectedRoutes";
+
 function App() {
   return (
     <BrowserRouter>
@@ -20,11 +22,17 @@ function App() {
         {/* Default redirect */}
         <Route path="/" element={<Navigate to="/login" replace />} />
 
-        {/* Login page (no sidebar/layout) */}
+        {/* Login page (PUBLIC) */}
         <Route path="/login" element={<Login />} />
 
-        {/* Main App Layout */}
-        <Route element={<MainLayout />}>
+        {/* PROTECTED APP ROUTES */}
+        <Route
+          element={
+            <ProtectedRoute>
+              <MainLayout />
+            </ProtectedRoute>
+          }
+        >
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/categories" element={<Categories />} />
           <Route path="/citizens" element={<Citizens />} />
