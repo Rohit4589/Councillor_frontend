@@ -1,25 +1,61 @@
 import "../Style/categories.css";
 import { Pencil, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CategoryModal from "./CategoryModal";
 import DeleteConfirmModal from "./DeleteConfirmModal";
 
 export default function Categories() {
+
+  /* ================================
+     STATE (STATIC FOR NOW)
+     ================================ */
+
+  const [categories, setCategories] = useState([
+    { id: 1, name: "Street Lights", count: 156, phone: "95883 43566" },
+    { id: 2, name: "Roads & Potholes", count: 234, phone: "95883 43566" },
+    { id: 3, name: "Garbage Collection", count: 189, phone: "95883 43566" },
+    { id: 4, name: "Water Supply", count: 98, phone: "95883 43566" },
+    { id: 5, name: "Parks & Gardens", count: 67, phone: "95883 43566" },
+    { id: 6, name: "Public Toilets", count: 54, phone: "95883 43566" },
+    { id: 7, name: "Street Cleaning", count: 112, phone: "95883 43566" },
+    { id: 8, name: "Traffic Signals", count: 39, phone: "95883 43566" },
+  ]);
+
+  const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
-  const categories = [
-    { name: "Street Lights", count: 156, phone: "95883 43566" },
-    { name: "Roads & Potholes", count: 234, phone: "95883 43566" },
-    { name: "Garbage Collection", count: 189, phone: "95883 43566" },
-    { name: "Water Supply", count: 98, phone: "95883 43566" },
-     { name: "Parks & Gardens", count: 67, phone: "95883 43566" },
-  { name: "Public Toilets", count: 54, phone: "95883 43566" },
-  { name: "Street Cleaning", count: 112, phone: "95883 43566" },
-  { name: "Traffic Signals", count: 39, phone: "95883 43566" },
- 
-  ];
+  /* ================================
+     API FETCH (ENABLE LATER)
+     ================================ */
+
+  useEffect(() => {
+
+    /*
+    🔴 WHEN API IS READY
+    -------------------
+    1. Uncomment this block
+    2. Paste API URL
+    */
+
+    /*
+    fetch("http://localhost:5000/api/categories")
+      .then(res => res.json())
+      .then(data => setCategories(data))
+      .catch(err => console.error("Categories API Error:", err));
+    */
+
+  }, []);
+
+  /* ================================
+     HANDLERS
+     ================================ */
+
+  const handleAdd = () => {
+    setSelectedCategory(null);
+    setOpenAdd(true);
+  };
 
   const handleEdit = (cat) => {
     setSelectedCategory(cat);
@@ -31,13 +67,80 @@ export default function Categories() {
     setOpenDelete(true);
   };
 
+  const handleSaveCategory = (data) => {
+
+    // ================= ADD =================
+    if (!selectedCategory) {
+      /*
+      🔴 API VERSION (PASTE LATER)
+      fetch("/api/categories", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      */
+
+      setCategories(prev => [
+        ...prev,
+        {
+          id: Date.now(),
+          name: data.name,
+          phone: data.phone,
+          count: 0
+        }
+      ]);
+    }
+
+    // ================= EDIT =================
+    else {
+      /*
+      🔴 API VERSION (PASTE LATER)
+      fetch(`/api/categories/${selectedCategory.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+      */
+
+      setCategories(prev =>
+        prev.map(item =>
+          item.id === selectedCategory.id
+            ? { ...item, ...data }
+            : item
+        )
+      );
+    }
+
+    setOpenAdd(false);
+    setOpenEdit(false);
+  };
+
   const confirmDelete = () => {
-    console.log("Deleted:", selectedCategory);
+
+    /*
+    🔴 API VERSION (PASTE LATER)
+    fetch(`/api/categories/${selectedCategory.id}`, {
+      method: "DELETE"
+    });
+    */
+
+    setCategories(prev =>
+      prev.filter(item => item.id !== selectedCategory.id)
+    );
+
     setOpenDelete(false);
   };
 
   return (
     <>
+      {/* ===== ADD BUTTON ===== */}
+      <div className="categories-header">
+        <button className="add-category-btn" onClick={handleAdd}>
+          + Add Category
+        </button>
+      </div>
+
+      {/* ===== TABLE ===== */}
       <div className="categories-table">
         <table>
           <thead>
@@ -50,8 +153,8 @@ export default function Categories() {
           </thead>
 
           <tbody>
-            {categories.map((cat) => (
-              <tr key={cat.name}>
+            {categories.map(cat => (
+              <tr key={cat.id}>
                 <td>{cat.name}</td>
                 <td>{cat.count}</td>
                 <td>{cat.phone}</td>
@@ -73,15 +176,24 @@ export default function Categories() {
         </table>
       </div>
 
-      {/* Edit Modal */}
+      {/* ===== ADD MODAL ===== */}
+      <CategoryModal
+        open={openAdd}
+        onClose={() => setOpenAdd(false)}
+        onSave={handleSaveCategory}
+        mode="add"
+      />
+
+      {/* ===== EDIT MODAL ===== */}
       <CategoryModal
         open={openEdit}
         onClose={() => setOpenEdit(false)}
+        onSave={handleSaveCategory}
         mode="edit"
         data={selectedCategory}
       />
 
-      {/* Delete Modal */}
+      {/* ===== DELETE MODAL ===== */}
       <DeleteConfirmModal
         open={openDelete}
         onClose={() => setOpenDelete(false)}

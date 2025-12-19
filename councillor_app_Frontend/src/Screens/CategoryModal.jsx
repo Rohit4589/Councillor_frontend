@@ -1,51 +1,83 @@
 import { X, Save } from "lucide-react";
 import "../Style/addCategoryModal.css";
+import { useEffect, useState } from "react";
 
 export default function CategoryModal({
   open,
   onClose,
+  onSave,
   mode = "add",
   data = {},
 }) {
+
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+
+  /* ================================
+     PREFILL FOR EDIT
+     ================================ */
+  useEffect(() => {
+    if (mode === "edit" && data) {
+      setName(data.name || "");
+      setPhone(data.phone || "");
+    } else {
+      setName("");
+      setPhone("");
+    }
+  }, [mode, data, open]);
+
   if (!open) return null;
+
+  /* ================================
+     SAVE
+     ================================ */
+  const handleSave = () => {
+    if (!name || !phone) return;
+
+    onSave({ name, phone });
+  };
 
   return (
     <div className="modal-overlay">
       <div className="modal-box">
-        {/* Header */}
+
+        {/* ===== HEADER ===== */}
         <div className="modal-header">
           <h3>{mode === "edit" ? "Edit Category" : "Add Category"}</h3>
           <X className="close-icon" onClick={onClose} />
         </div>
 
-        {/* Body */}
+        {/* ===== BODY ===== */}
         <div className="modal-body">
           <label>Category Name</label>
           <input
             type="text"
-            defaultValue={data.name || ""}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
             placeholder="Street Lights"
           />
 
           <label>Phone Number</label>
           <input
             type="text"
-            defaultValue={data.phone || ""}
-            placeholder="678767655756"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            placeholder="9876543210"
           />
         </div>
 
-        {/* Footer */}
+        {/* ===== FOOTER ===== */}
         <div className="modal-footer">
           <button className="btn-cancel" onClick={onClose}>
             Cancel
           </button>
 
-          <button className="btn-save">
+          <button className="btn-save" onClick={handleSave}>
             <Save size={16} />
             Save
           </button>
         </div>
+
       </div>
     </div>
   );
