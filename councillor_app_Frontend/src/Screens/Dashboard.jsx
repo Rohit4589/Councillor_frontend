@@ -1,43 +1,117 @@
 import "../Style/dashboard.css";
-import {
-  FileText,
-  Users,
-  Folder,
-  Clock
-} from "lucide-react";
+import { FileText, Users, Folder, Clock } from "lucide-react";
+import { useEffect, useState } from "react";
 
 export default function Dashboard() {
+
+  /* ================================
+     1️⃣ STATE (STATIC FOR NOW)
+     ================================ */
+
+  const [stats, setStats] = useState({
+    totalComplaints: 1247,
+    totalCouncillors: 45,
+    totalCategories: 12,
+    pendingReview: 38,
+  });
+
+  const [recentComplaints, setRecentComplaints] = useState([
+    {
+      id: "CMP234567",
+      category: "Street Lights",
+      status: "progress",
+      time: "5 min ago",
+    },
+    {
+      id: "CMP234568",
+      category: "Garbage Collection",
+      status: "completed",
+      time: "12 min ago",
+    },
+    {
+      id: "CMP234569",
+      category: "Water Supply",
+      status: "submitted",
+      time: "23 min ago",
+    },
+    {
+      id: "CMP234570",
+      category: "Roads & Potholes",
+      status: "progress",
+      time: "1 hour ago",
+    },
+    {
+      id: "CMP234571",
+      category: "Drainage",
+      status: "submitted",
+      time: "2 hours ago",
+    },
+  ]);
+
+  /* ================================
+     2️⃣ API CALL (ENABLE LATER)
+     ================================ */
+
+  useEffect(() => {
+
+    /*
+    🔴 WHEN API IS READY
+    -------------------
+    1. Uncomment below code
+    2. Replace API URL
+    3. Remove static data if needed
+    */
+
+    /*
+    fetch("http://localhost:5000/api/dashboard")
+      .then((res) => res.json())
+      .then((data) => {
+        setStats(data.stats);
+        setRecentComplaints(data.recentComplaints);
+      })
+      .catch((error) => {
+        console.error("Dashboard API Error:", error);
+      });
+    */
+
+  }, []);
+
   return (
     <div className="page-wrapper">
-      {/* ===== STAT CARDS ===== */}
+
+      {/* ================================
+         STAT CARDS
+         ================================ */}
       <div className="dashboard-cards">
         <StatCard
           icon={<FileText />}
           iconBg="blue"
-          value="1,247"
+          value={stats.totalComplaints}
           label="Total Complaints"
         />
         <StatCard
           icon={<Users />}
           iconBg="purple"
-          value="45"
+          value={stats.totalCouncillors}
           label="Total Councillors"
         />
         <StatCard
           icon={<Folder />}
           iconBg="green"
-          value="12"
+          value={stats.totalCategories}
           label="Total Categories"
         />
         <StatCard
           icon={<Clock />}
           iconBg="yellow"
-          value="38"
+          value={stats.pendingReview}
           label="Pending Review"
         />
       </div>
 
-      {/* ===== RECENT COMPLAINTS ===== */}
+      {/* ================================
+         RECENT COMPLAINTS TABLE
+         ================================ */}
       <div className="dashboard-table mt-4">
         <div className="dashboard-header">
           <h3>Recent Complaints</h3>
@@ -54,36 +128,15 @@ export default function Dashboard() {
           </thead>
 
           <tbody>
-            <Row
-              id="CMP234567"
-              cat="Street Lights"
-              status="progress"
-              time="5 min ago"
-            />
-            <Row
-              id="CMP234568"
-              cat="Garbage Collection"
-              status="completed"
-              time="12 min ago"
-            />
-            <Row
-              id="CMP234569"
-              cat="Water Supply"
-              status="submitted"
-              time="23 min ago"
-            />
-            <Row
-              id="CMP234570"
-              cat="Roads & Potholes"
-              status="progress"
-              time="1 hour ago"
-            />
-            <Row
-              id="CMP234571"
-              cat="Drainage"
-              status="submitted"
-              time="2 hours ago"
-            />
+            {recentComplaints.map((item) => (
+              <Row
+                key={item.id}
+                id={item.id}
+                cat={item.category}
+                status={item.status}
+                time={item.time}
+              />
+            ))}
           </tbody>
         </table>
       </div>
@@ -91,7 +144,9 @@ export default function Dashboard() {
   );
 }
 
-/* ===== CARD ===== */
+/* ================================
+   STAT CARD COMPONENT
+   ================================ */
 function StatCard({ icon, iconBg, value, label }) {
   return (
     <div className="stat-card">
@@ -106,7 +161,9 @@ function StatCard({ icon, iconBg, value, label }) {
   );
 }
 
-/* ===== TABLE ROW ===== */
+/* ================================
+   TABLE ROW COMPONENT
+   ================================ */
 function Row({ id, cat, status, time }) {
   return (
     <tr>
