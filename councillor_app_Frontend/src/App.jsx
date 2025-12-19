@@ -12,6 +12,7 @@ import Citizens from "./Screens/Citizens";
 import Complaints from "./Screens/Complaints";
 import Officers from "./Screens/Officers";
 import CreateEvent from "./Screens/CreateEvent";
+import ComplaintDetails from "./Screens/ComplaintDetails";
 
 import ProtectedRoute from "./Navigation/ProtectedRoutes";
 
@@ -37,6 +38,7 @@ function App() {
           <Route path="/categories" element={<Categories />} />
           <Route path="/citizens" element={<Citizens />} />
           <Route path="/complaints" element={<Complaints />} />
+          <Route path="/complaints/:id" element={<ComplaintDetails />} />
           <Route path="/officers" element={<Officers />} />
           <Route path="/create-event" element={<CreateEvent />} />
         </Route>

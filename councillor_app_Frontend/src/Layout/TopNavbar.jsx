@@ -1,45 +1,73 @@
-import { useLocation } from "react-router-dom";
+// src/Layout/TopNavbar.jsx
+import {
+  useLocation,
+  useNavigate,
+  useParams,
+  matchPath,
+} from "react-router-dom";
 import { routesConfig } from "../Navigation/routes";
-import { Plus } from "lucide-react";
-import { useState } from "react";
-import AddCategoryModal from "../Screens/AddCategoryModal";
+import { Search, ArrowLeft } from "lucide-react";
 import "../Style/topbar.css";
 
-export default function TopNavbar() {
+export default function TopNavbar({ searchValue, onSearchChange }) {
   const location = useLocation();
-  const [openModal, setOpenModal] = useState(false);
+  const navigate = useNavigate();
+  const params = useParams();
+
+  const routes = Object.values(routesConfig).sort(
+    (a, b) => b.path.length - a.path.length
+  );
 
   const currentRoute =
-    Object.values(routesConfig).find((route) =>
-      location.pathname.startsWith(route.path)
+    routes.find((route) =>
+      matchPath({ path: route.path, end: false }, location.pathname)
     ) || routesConfig.dashboard;
 
-  return (
-    <>
-      <div className="topbar">
-        <div className="topbar-content">
-          <div>
-            <h1 className="topbar-title">{currentRoute.title}</h1>
-            <p className="topbar-subtitle">{currentRoute.subtitle}</p>
-          </div>
+  let title = currentRoute.title;
+  let subtitle = currentRoute.subtitle;
+  const actions = currentRoute.topbarActions;
 
-          {currentRoute.action && (
-            <button
-              className="topbar-action-btn"
-              onClick={() => setOpenModal(true)}
-            >
-              <Plus size={18} />
-              {currentRoute.action.label}
-            </button>
-          )}
+  const isComplaintDetails = currentRoute.key === "complaintDetails";
+
+  if (isComplaintDetails && params.id) {
+    title = "Complaint Details";
+    subtitle = params.id;
+  }
+
+  return (
+    <div className="topbar">
+      {/* LEFT */}
+      <div className="topbar-left">
+        {isComplaintDetails && (
+          <button className="back-btn" onClick={() => navigate("/complaints")}>
+            <ArrowLeft size={18} />
+          </button>
+        )}
+
+        <div>
+          <h1 className="topbar-title">{title}</h1>
+          {subtitle && <p className="topbar-subtitle">{subtitle}</p>}
         </div>
       </div>
 
-      {/* Modal */}
-      <AddCategoryModal
-        open={openModal}
-        onClose={() => setOpenModal(false)}
-      />
-    </>
+      {/* RIGHT */}
+      {actions && (
+        <div className="topbar-actions">
+          {actions.search && (
+            <div className="topbar-search">
+              <Search size={16} />
+              <input
+                type="text"
+                value={searchValue}
+                placeholder={actions.searchPlaceholder}
+                onChange={(e) => onSearchChange(e.target.value)}
+              />
+            </div>
+          )}
+          {actions.sort && <button className="topbar-btn">Sort</button>}
+          {actions.filter && <button className="topbar-btn">Filter</button>}
+        </div>
+      )}
+    </div>
   );
 }

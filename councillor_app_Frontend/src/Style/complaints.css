@@ -1,0 +1,88 @@
+/* ================= PAGE ================= */
+.complaints-page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* ================= CARD ================= */
+.complaints-card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 0;
+    /* IMPORTANT */
+}
+
+/* ================= TABLE ================= */
+.complaints-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* ===== TABLE HEADER ===== */
+.complaints-table thead {
+    background: #f3f4f6;
+    
+}
+
+.complaints-table th {
+    padding: 14px 16px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #212327;
+    text-align: left;
+}
+
+/* ===== TABLE BODY ===== */
+.complaints-table td {
+    padding: 14px 16px;
+    font-size: 14px;
+    color: #1f2937;
+    border-top: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+/* ================= STATUS ================= */
+.status {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.status.progress {
+    background: #e7f1ff;
+    color: #2563eb;
+}
+
+.status.submitted {
+    background: #fef3c7;
+    color: #b45309;
+}
+
+.status.completed {
+    background: #dcfce7;
+    color: #15803d;
+}
+
+.status.seen {
+    background: #f3e8ff;
+    color: #7c3aed;
+}
+
+/* ================= ACTION ================= */
+.action-col {
+    text-align: center;
+    color: #2563eb;
+    cursor: pointer;
+}
+
+.action-col svg{
+   
+    color: #2563eb;
+    
+}

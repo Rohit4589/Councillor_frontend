@@ -1,0 +1,361 @@
+.complaint-details-page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* HEADER */
+.details-header {
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 12px;
+}
+
+.details-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    
+}
+
+.back-icon {
+    cursor: pointer;
+    color: #2563eb;
+}
+
+
+
+
+
+/* GRID */
+.details-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 20px;
+}
+
+/* LEFT */
+.details-left {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* RIGHT */
+.details-right {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* CARD */
+.card {
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 16px;
+}
+.card h4{
+    font-size: 16px;
+}
+.tag-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* 👈 pushes date to right */
+    margin-bottom: 8px;
+}
+
+.tag {
+    display: inline-flex;
+    align-items: center;
+    width: fit-content;
+    background: #f3e8ff;
+    color: #7c3aed;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.date {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.muted {
+    color: #6b7280;
+    font-size: 14px;
+}
+
+/* AI CARD */
+.ai-card {
+    background: #e5dbfc;
+}
+
+.ai-card h5{
+    color:rgb(182, 73, 182);
+    font-family:Arial, Helvetica, sans-serif;
+}
+.ai-card p {
+    color: rgb(182, 73, 182)
+}
+/* MAP */
+
+.map-placeholder {
+    margin-top: 10px;
+    height: 170px;
+    background: #dcfce7;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #16a34a;
+}
+
+/* IMAGES */
+.image-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+}
+
+.image-grid img {
+    width: 100%;
+    height: 120px;
+    /* 👈 fixed height */
+    border-radius: 1px;
+    object-fit: cover;
+    /* 👈 prevents distortion */
+}
+
+/* INFO */
+.citizen-card {
+    padding: 16px;
+}
+
+.card-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #111827;
+}
+
+.info-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.info-icon {
+    color: #9ca3af;
+    margin-top: 2px;
+}
+
+.info-label {
+    font-size: 12px;
+    color: #6b7280;
+    line-height: 1.2;
+}
+
+.info-value {
+    font-size: 14px;
+    color: #111827;
+    font-weight: 500;
+}
+/* CARD */
+.timeline-card {
+    padding: 16px;
+    height:45%;
+}
+
+/* TITLE */
+.timeline-card .card-title {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 14px;
+    color: #111827;
+}
+
+/* TIMELINE WRAPPER */
+.timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+/* TIMELINE ITEM */
+.timeline-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: #9ca3af;
+    position: relative;
+    padding-top: 4px;
+    padding-bottom: 40px;
+}
+
+/* DOT */
+.timeline-item .dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: #e5e7eb;
+    border: 2px solid #e5e7eb;
+    flex-shrink: 0;
+}
+
+/* ACTIVE STATE */
+.timeline-item.active {
+    color: #111827;
+}
+
+.timeline-item.active .dot {
+    background: #2563eb;
+    border-color: #2563eb;
+}
+
+/* VERTICAL LINE */
+.timeline-item::before {
+    content: "";
+    position: absolute;
+    left: 6px;
+    top: -14px;
+    width: 2px;
+    height: 14px;
+    background: #e5e7eb;
+}
+
+.timeline-item:first-child::before {
+    display: none;
+}
+
+/* ACTION */
+
+.action-btn {
+    width: 100%;
+    padding: 10px;
+    border-radius: 12px;
+    border: none;
+    background: #e7f1ff;
+    color: #2563eb;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    position:relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    /* ✅ CENTER CONTENT */
+    gap: 6px;
+    /* slightly smaller gap */
+}
+
+.action-btn svg {
+    position: absolute;
+    left: 14px;
+    /* 👈 fully left */
+    top: 50%;
+    transform: translateY(-50%);
+}
+/* ===============================
+   MODAL OVERLAY
+================================ */
+.image-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+/* ===============================
+   MODAL CONTAINER
+================================ */
+.image-modal {
+    background: #ffffff;
+    border-radius: 10px;
+    width: 300px;
+    height: 55%;
+    /* ✅ keep height */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* ===============================
+   MODAL HEADER
+================================ */
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.modal-header h5 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.modal-close {
+    cursor: pointer;
+    color: #6b7280;
+}
+
+.modal-close:hover {
+    color: #111827;
+}
+
+/* ===============================
+   IMAGE SECTION
+================================ */
+.image-modal img {
+    width:100%;
+    flex: 1;
+    
+    object-fit: contain;
+    padding: 14px;
+}
+
+/* ===============================
+   ACTION BUTTONS
+================================ */
+.modal-actions {
+    display: flex;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.modal-actions button {
+    min-width: 130px;
+    padding: 6px 14px;
+    
+    border-radius: 6px;
+    border: none;
+    background: #142f69;
+    color: #ffffff;
+    font-size: 13px;
+    cursor: pointer;
+}
+.modal-actions .back {
+    background: #ffffff;
+    color:rgb(70, 66, 66);
+    border:rgb(233, 225, 225) 1px solid;
+}
+
+.modal-actions button:hover {
+    background: #4429c0;
+}
+
+.modal-actions .back:hover{
+    background: #f0f1f3;
+}

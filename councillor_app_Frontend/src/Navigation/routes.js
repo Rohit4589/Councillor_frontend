@@ -32,11 +32,24 @@ export const routesConfig = {
     
   },
 
-  complaints: {
+   complaints: {
     path: "/complaints",
-    title: "Complaints Oerview",
+    title: "Complaints Overview",
+    subtitle: "",
+    topbarActions: {
+      search: true,
+      sort: true,
+      filter: true,
+      searchPlaceholder: "Search by ID, category, or citizen name...",
+    },
   },
 
+    complaintDetails: {
+    key: "complaintDetails",
+    path: "/complaints/:id",
+    title: "Complaint Details",
+    
+  },
   officers: {
     path: "/officers",
     title: "Officers Details",
