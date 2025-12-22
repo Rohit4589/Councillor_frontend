@@ -9,7 +9,7 @@ import { routesConfig } from "../Navigation/routes";
 import { Search, ArrowLeft } from "lucide-react";
 import "../Style/topbar.css";
 
-export default function TopNavbar({ searchValue, onSearchChange }) {
+export default function TopNavbar({ searchValue, onSearchChange, onSortClick, onFilterClick }) {
   const location = useLocation();
   const navigate = useNavigate();
   const params = useParams();
@@ -55,17 +55,40 @@ export default function TopNavbar({ searchValue, onSearchChange }) {
         <div className="topbar-actions">
           {actions.search && (
             <div className="topbar-search">
-              <Search size={16} />
               <input
                 type="text"
                 value={searchValue}
-                placeholder={actions.searchPlaceholder}
                 onChange={(e) => onSearchChange(e.target.value)}
+                placeholder={actions.searchPlaceholder}
               />
             </div>
           )}
-          {actions.sort && <button className="topbar-btn">Sort</button>}
-          {actions.filter && <button className="topbar-btn">Filter</button>}
+
+          {actions.sort && (
+            <button
+              type="button"
+              className="topbar-btn"
+              onClick={() => {
+                console.log("SORT CLICKED");
+                onSortClick && onSortClick();
+              }}
+            >
+              Sort
+            </button>
+          )}
+
+          {actions.filter && (
+            <button
+              type="button"
+              className="topbar-btn"
+              onClick={() => {
+                console.log("FILTER CLICKED");
+                onFilterClick && onFilterClick();
+              }}
+            >
+              Filter
+            </button>
+          )}
         </div>
       )}
     </div>

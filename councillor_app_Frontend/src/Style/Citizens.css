@@ -101,9 +101,10 @@
 
 /* ❌ Cancel Button */
 .close-btn {
+    position: relative;
     background: none;
     border: none;
-    font-size: 18px;
+    font-size: 12px;
     cursor: pointer;
     color: #6c80a7;
 }

@@ -1,3 +1,15 @@
+
+.add-category-btn {
+  background: #0b3c5d;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
 /* ===============================
    CATEGORY TABLE WRAPPER
 ================================ */

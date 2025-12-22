@@ -1,6 +1,7 @@
 import "../Style/complaints.css";
 import { Eye } from "lucide-react";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import { useState } from "react";
 
 /* ===============================
    STATIC DATA (FOR NOW)
@@ -43,17 +44,59 @@ const complaintsData = [
 export default function Complaints() {
   const navigate = useNavigate();
 
-  /* 🔑 SEARCH VALUE COMING FROM TOPBAR */
-  const { search } = useOutletContext();
+  /* 🔑 SEARCH VALUE FROM TOPBAR (UNCHANGED) */
+  const {
+    search,
+    showSortModal,
+    setShowSortModal,
+    showFilterModal,
+    setShowFilterModal,
+  } = useOutletContext();
 
   const safeSearch = (search || "").toLowerCase();
 
-  /* 🔍 FILTER LOGIC */
+  /* ===============================
+     ✅ SORT & FILTER STATE (ADDED)
+     =============================== */
+  const [sortOrder, setSortOrder] = useState(null); // "new" | "old"
+
+  const [filters, setFilters] = useState({
+    category: "",
+    status: "",
+    ward: "",
+  });
+
+  /* ===============================
+     🔍 SEARCH LOGIC (UNCHANGED)
+     =============================== */
   const filteredComplaints = complaintsData.filter((c) =>
     `${c.id} ${c.category} ${c.summary} ${c.status} ${c.ward} ${c.date}`
       .toLowerCase()
       .includes(safeSearch)
   );
+
+  /* ===============================
+     📅 SORT LOGIC (ADDED)
+     =============================== */
+  const sortedComplaints = [...filteredComplaints].sort((a, b) => {
+    if (!sortOrder) return 0;
+
+    const d1 = new Date(a.date);
+    const d2 = new Date(b.date);
+
+    return sortOrder === "new" ? d2 - d1 : d1 - d2;
+  });
+
+  /* ===============================
+     🎯 FILTER LOGIC (ADDED)
+     =============================== */
+  const finalComplaints = sortedComplaints.filter((c) => {
+    return (
+      (!filters.category || c.category === filters.category) &&
+      (!filters.status || c.status === filters.status) &&
+      (!filters.ward || c.ward === filters.ward)
+    );
+  });
 
   return (
     <div className="complaints-page">
@@ -72,18 +115,122 @@ export default function Complaints() {
           </thead>
 
           <tbody>
-            {filteredComplaints.map((item) => (
+            {finalComplaints.map((item) => (
               <ComplaintRow key={item.id} {...item} navigate={navigate} />
             ))}
+
+            {finalComplaints.length === 0 && (
+              <tr>
+                <td
+                  colSpan="7"
+                  style={{
+                    textAlign: "center",
+                    padding: "24px",
+                    color: "#6b7280",
+                  }}
+                >
+                  No complaints found matching your criteria.
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
+
+      {/* ===============================
+         SORT MODAL
+         =============================== */}
+      {showSortModal && (
+        <div className="modal-overlay">
+          <div className="modal-card">
+            <h4>Sort Complaints</h4>
+
+            <button
+              onClick={() => {
+                setSortOrder("new");
+                setShowSortModal(false);
+              }}
+            >
+              Date: Newest to Oldest
+            </button>
+
+            <button
+              onClick={() => {
+                setSortOrder("old");
+                setShowSortModal(false);
+              }}
+            >
+              Date: Oldest to Newest
+            </button>
+
+            <button className="ghost" onClick={() => setShowSortModal(false)}>
+              Cancel
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ===============================
+         FILTER MODAL
+         =============================== */}
+      {showFilterModal && (
+        <div className="modal-overlay">
+          <div className="modal-card">
+            <div className="modal-header">
+              <h4>Filter Complaints</h4>
+              <button
+                className="modal-close"
+                onClick={() => setShowFilterModal(false)}
+              >
+                ✕
+              </button>
+            </div>
+
+            <select
+              onChange={(e) =>
+                setFilters({ ...filters, category: e.target.value })
+              }
+            >
+              <option value="">All Categories</option>
+              <option>Street Lights</option>
+              <option>Garbage Collection</option>
+              <option>Water Supply</option>
+              <option>Roads & Potholes</option>
+            </select>
+
+            <select
+              onChange={(e) =>
+                setFilters({ ...filters, status: e.target.value })
+              }
+            >
+              <option value="">All Status</option>
+              <option value="progress">In Progress</option>
+              <option value="submitted">Submitted</option>
+              <option value="completed">Completed</option>
+              <option value="seen">Seen</option>
+            </select>
+
+            <select
+              onChange={(e) => setFilters({ ...filters, ward: e.target.value })}
+            >
+              <option value="">All Wards</option>
+              <option>Ward 15</option>
+              <option>Ward 12</option>
+              <option>Ward 8</option>
+            </select>
+
+            <button onClick={() => setShowFilterModal(false)}>
+              Apply Filters
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
 /* ===============================
-   ROW COMPONENT
+   ROW COMPONENT (UNCHANGED)
    =============================== */
 function ComplaintRow({ id, category, summary, status, ward, date, navigate }) {
   return (
