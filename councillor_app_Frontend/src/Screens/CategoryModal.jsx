@@ -7,7 +7,7 @@ export default function CategoryModal({
   onClose,
   onSave,
   mode = "add",
-  data = {},
+  data = null,
 }) {
 
   const [name, setName] = useState("");
@@ -20,11 +20,14 @@ export default function CategoryModal({
     if (mode === "edit" && data) {
       setName(data.name || "");
       setPhone(data.phone || "");
-    } else {
+    }
+
+    if (mode === "add") {
       setName("");
       setPhone("");
     }
   }, [mode, data, open]);
+
 
   if (!open) return null;
 

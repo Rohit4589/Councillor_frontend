@@ -2,10 +2,7 @@
 
 .topbar {
   display: flex;
-  justify-content: space-between;
-  align-items: left;
   background: #ffffff;
-  border-bottom: 1px solid #e5e7eb;
   padding: 20px 32px;
 }
 
@@ -16,13 +13,39 @@
   
 }
 
+
+
 .topbar-subtitle {
   font-size: 14px;
   color: #6b7280;
   margin-top: 4px;
 }
 
-/* RIGHT SIDE */
+/* ===============================
+   TOPBAR PRIMARY ACTION
+================================ */
+.topbar--categories .topbar-primary-btn {
+  margin-left: auto;
+}
+.topbar-primary-btn {
+  background: #0b3c5d;
+  color: #ffffff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+    margin-top: 0;
+}
+
+
+.topbar-primary-btn:hover {
+  background: #084c7a;
+}
+
 .topbar-actions {
   display: flex;
   align-items: center;
@@ -68,6 +91,7 @@
 }
 
 .topbar-left {
+      /* space reserved for button */
   display: flex;
   align-items: center;
   gap: 16px;
@@ -90,4 +114,37 @@
 
 .back-btn:hover {
   background: #eef2ff;
+}
+/* ===============================
+   Categories page ONLY
+   Title + Button on same line
+================================ */
+
+.topbar--categories {
+  align-items: flex-start;
+  position: relative;
+  /* align to title line */
+}
+.topbar--categories .topbar-primary-btn {
+  position: absolute;
+  top: 30px;
+  /* same as topbar padding */
+  right: 32px;
+  /* same as topbar padding */
+  margin: 0;
+}
+
+.topbar--categories .topbar-left {
+  display: flex;
+  flex-direction: column;
+    align-items: flex-start;
+      /* 🔥 key fix */
+  /* title + subtitle */
+}
+
+.topbar--categories .topbar-right {
+  margin-left: auto;
+  /* push to extreme right */
+  align-self: flex-start;
+  /* align with title, not subtitle */
 }

@@ -3,6 +3,14 @@ import { Eye } from "lucide-react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { useState } from "react";
 
+
+
+/* ===============================
+   🔌 BACKEND IMPORTS (COMMENTED)
+   =============================== */
+// import { useEffect } from "react";
+// import axios from "axios";
+
 /* ===============================
    STATIC DATA (FOR NOW)
    =============================== */
@@ -56,7 +64,7 @@ export default function Complaints() {
   const safeSearch = (search || "").toLowerCase();
 
   /* ===============================
-     ✅ SORT & FILTER STATE (ADDED)
+     ✅ SORT & FILTER STATE (UNCHANGED)
      =============================== */
   const [sortOrder, setSortOrder] = useState(null); // "new" | "old"
 
@@ -65,6 +73,27 @@ export default function Complaints() {
     status: "",
     ward: "",
   });
+
+  /* ===============================
+     🔌 BACKEND STATE (COMMENTED)
+     =============================== */
+  // const [backendComplaints, setBackendComplaints] = useState([]);
+
+  /* ===============================
+     🔌 BACKEND API CALL (COMMENTED)
+     =============================== */
+  /*
+  useEffect(() => {
+    axios
+      .get("http://localhost:8080/api/complaints") // change API when needed
+      .then((res) => {
+        setBackendComplaints(res.data);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch complaints", err);
+      });
+  }, []);
+  */
 
   /* ===============================
      🔍 SEARCH LOGIC (UNCHANGED)
@@ -76,7 +105,7 @@ export default function Complaints() {
   );
 
   /* ===============================
-     📅 SORT LOGIC (ADDED)
+     📅 SORT LOGIC (UNCHANGED)
      =============================== */
   const sortedComplaints = [...filteredComplaints].sort((a, b) => {
     if (!sortOrder) return 0;
@@ -88,7 +117,7 @@ export default function Complaints() {
   });
 
   /* ===============================
-     🎯 FILTER LOGIC (ADDED)
+     🎯 FILTER LOGIC (UNCHANGED)
      =============================== */
   const finalComplaints = sortedComplaints.filter((c) => {
     return (
@@ -97,6 +126,12 @@ export default function Complaints() {
       (!filters.ward || c.ward === filters.ward)
     );
   });
+
+  /* ===============================
+     🔄 SWITCH TO BACKEND DATA (COMMENTED)
+     =============================== */
+  // const dataToRender = backendComplaints;
+  const dataToRender = finalComplaints;
 
   return (
     <div className="complaints-page">
@@ -115,11 +150,11 @@ export default function Complaints() {
           </thead>
 
           <tbody>
-            {finalComplaints.map((item) => (
+            {dataToRender.map((item) => (
               <ComplaintRow key={item.id} {...item} navigate={navigate} />
             ))}
 
-            {finalComplaints.length === 0 && (
+            {dataToRender.length === 0 && (
               <tr>
                 <td
                   colSpan="7"
@@ -138,7 +173,7 @@ export default function Complaints() {
       </div>
 
       {/* ===============================
-         SORT MODAL
+         SORT MODAL (UNCHANGED)
          =============================== */}
       {showSortModal && (
         <div className="modal-overlay">
@@ -171,7 +206,7 @@ export default function Complaints() {
       )}
 
       {/* ===============================
-         FILTER MODAL
+         FILTER MODAL (UNCHANGED)
          =============================== */}
       {showFilterModal && (
         <div className="modal-overlay">

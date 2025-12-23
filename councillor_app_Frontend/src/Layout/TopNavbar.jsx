@@ -6,10 +6,16 @@ import {
   matchPath,
 } from "react-router-dom";
 import { routesConfig } from "../Navigation/routes";
-import { Search, ArrowLeft } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import "../Style/topbar.css";
 
-export default function TopNavbar({ searchValue, onSearchChange, onSortClick, onFilterClick }) {
+export default function TopNavbar({
+  searchValue,
+  onSearchChange,
+  onSortClick,
+  onFilterClick,
+  onPrimaryAction,
+}) {
   const location = useLocation();
   const navigate = useNavigate();
   const params = useParams();
@@ -23,9 +29,11 @@ export default function TopNavbar({ searchValue, onSearchChange, onSortClick, on
       matchPath({ path: route.path, end: false }, location.pathname)
     ) || routesConfig.dashboard;
 
+  const primaryAction = currentRoute.action;
+  const actions = currentRoute.topbarActions;
+
   let title = currentRoute.title;
   let subtitle = currentRoute.subtitle;
-  const actions = currentRoute.topbarActions;
 
   const isComplaintDetails = currentRoute.key === "complaintDetails";
 
@@ -35,7 +43,11 @@ export default function TopNavbar({ searchValue, onSearchChange, onSortClick, on
   }
 
   return (
-    <div className="topbar">
+    <div
+      className={`topbar ${
+        currentRoute.path === "/categories" ? "topbar--categories" : ""
+      }`}
+    >
       {/* LEFT */}
       <div className="topbar-left">
         {isComplaintDetails && (
@@ -51,9 +63,10 @@ export default function TopNavbar({ searchValue, onSearchChange, onSortClick, on
       </div>
 
       {/* RIGHT */}
-      {actions && (
+      <div className="topbar-right">
+        {/* Search / Sort / Filter */}
         <div className="topbar-actions">
-          {actions.search && (
+          {actions?.search && (
             <div className="topbar-search">
               <input
                 type="text"
@@ -64,33 +77,26 @@ export default function TopNavbar({ searchValue, onSearchChange, onSortClick, on
             </div>
           )}
 
-          {actions.sort && (
-            <button
-              type="button"
-              className="topbar-btn"
-              onClick={() => {
-                console.log("SORT CLICKED");
-                onSortClick && onSortClick();
-              }}
-            >
+          {actions?.sort && (
+            <button className="topbar-btn" onClick={onSortClick}>
               Sort
             </button>
           )}
 
-          {actions.filter && (
-            <button
-              type="button"
-              className="topbar-btn"
-              onClick={() => {
-                console.log("FILTER CLICKED");
-                onFilterClick && onFilterClick();
-              }}
-            >
+          {actions?.filter && (
+            <button className="topbar-btn" onClick={onFilterClick}>
               Filter
             </button>
           )}
         </div>
-      )}
+
+        {/* PRIMARY ACTION (EXTREME RIGHT) */}
+        {primaryAction && (
+          <button className="topbar-primary-btn" onClick={onPrimaryAction}>
+            {primaryAction.label}
+          </button>
+        )}
+      </div>
     </div>
   );
 }

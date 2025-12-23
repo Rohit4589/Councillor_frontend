@@ -15,11 +15,14 @@
    MODAL CONTAINER
 ================================ */
 .modal-box {
+  position: relative;
+  z-index: 1001;
   background: #ffffff;
   width: 380px;
   border-radius: 16px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
   overflow: hidden;
+  pointer-events: auto;
 }
 
 /* ===============================
@@ -75,6 +78,7 @@
   background: #f3f1f1;
   color: #867e7e;
   font-size: 14px;
+  pointer-events: auto;
 }
 
 .modal-body input::placeholder {

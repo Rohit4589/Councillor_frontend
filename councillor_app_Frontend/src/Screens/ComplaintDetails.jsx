@@ -1,19 +1,151 @@
 import "../Style/complaintDetails.css";
 import { ArrowLeft, MapPin, User, Phone, CheckCircle, X } from "lucide-react";
 import { useNavigate, useParams } from "react-router-dom";
-import { useState } from "react"; // 🔥 ADD
+import { useState } from "react";
+import ComplaintImages from "./ComplaintImages";
+import ComplaintTranslate from "./ComplaintTranslate";
+
+/* ===============================
+   🔌 BACKEND IMPORTS (COMMENTED)
+   =============================== */
+// import { useEffect } from "react";
+// import axios from "axios";
+
+/* ===============================
+   SAME DATA SOURCE (TEMP)
+   =============================== */
+const complaintsData = [
+  {
+    id: "CMP234567",
+    category: "Street Lights",
+    summary: "Broken street light on MG Road",
+    description:
+      "The street light near Shop No. 45, MG Road has been broken for the past 3 days.",
+    statusTimeline: ["Submitted", "Seen", "In Progress"],
+    ward: "Ward 15",
+    date: "2024-12-05",
+    location: "MG Road",
+    citizen: {
+      name: "Rahul Sharma",
+      phone: "+91 9876543210",
+    },
+  },
+  {
+    id: "CMP234568",
+    category: "Garbage Collection",
+    summary: "Garbage not collected for 3 days",
+    description:
+      "Garbage collection has not happened for the last 3 days in Ward 12.",
+    statusTimeline: ["Submitted"],
+    ward: "Ward 12",
+    date: "2024-12-05",
+    location: "Pune Station Area",
+    citizen: {
+      name: "Amit Verma",
+      phone: "+91 9123456789",
+    },
+  },
+  {
+    id: "CMP234569",
+    category: "Water Supply",
+    summary: "No water supply since morning",
+    description:
+      "Residents are facing water supply issues since morning hours.",
+    statusTimeline: ["Submitted", "Seen", "In Progress", "Completed"],
+    ward: "Ward 8",
+    date: "2024-12-04",
+    location: "Vimannagar",
+    citizen: {
+      name: "Sneha Patil",
+      phone: "+91 9988776655",
+    },
+  },
+  {
+    id: "CMP234570",
+    category: "Roads & Potholes",
+    summary: "Large pothole causing accidents",
+    description:
+      "A large pothole near the main junction is causing frequent accidents.",
+    statusTimeline: ["Submitted", "Seen"],
+    ward: "Ward 15",
+    date: "2024-12-04",
+    location: "Hadapsar",
+    citizen: {
+      name: "Rakesh Kulkarni",
+      phone: "+91 9012345678",
+    },
+  },
+];
 
 export default function ComplaintDetails() {
   const navigate = useNavigate();
   const { id } = useParams();
 
-  // 🔥 IMAGE PREVIEW STATE
+  /* ===============================
+     🔌 BACKEND STATE (COMMENTED)
+     =============================== */
+  // const [complaint, setComplaint] = useState(null);
+  // const [images, setImages] = useState([]);
+
+  /* ===============================
+     🔌 FETCH COMPLAINT + IMAGES FROM BACKEND (COMMENTED)
+     =============================== */
+  /*
+  useEffect(() => {
+    axios
+      .get(`http://localhost:8080/api/complaints/${id}`)
+      .then((res) => {
+        setComplaint(res.data);
+        setImages(res.data.images); // images: [url1, url2, url3]
+      })
+      .catch((err) => {
+        console.error("Error loading complaint details", err);
+      });
+  }, [id]);
+  */
+
+  /* ===============================
+     CURRENT WORKING DATA
+     =============================== */
+  const complaint = complaintsData.find((c) => c.id === id);
+
+  /* ===============================
+     TEMP IMAGES (STATIC)
+     =============================== */
   const images = [
     "https://picsum.photos/600/400?1",
     "https://picsum.photos/600/400?2",
     "https://picsum.photos/600/400?3",
   ];
-  const [previewIndex, setPreviewIndex] = useState(null);
+
+
+  if (!complaint) {
+    return (
+      <div className="complaint-details-page">
+        <p style={{ textAlign: "center", padding: "40px" }}>
+          Complaint not found.
+        </p>
+      </div>
+    );
+  }
+
+  const [selectedLang, setSelectedLang] = useState("");
+
+  const translateText = (lang) => {
+    const textToTranslate = `
+  ${complaint.summary}
+  ${complaint.description}
+  Location: ${complaint.location}
+  `;
+
+    const url = `https://translate.google.com/?sl=auto&tl=${lang}&text=${encodeURIComponent(
+      textToTranslate
+    )}&op=translate`;
+
+    window.open(url, "_blank");
+    setShowTranslateModal(false);
+  };
+
 
   return (
     <div className="complaint-details-page">
@@ -22,23 +154,19 @@ export default function ComplaintDetails() {
         <div className="details-left">
           <div className="card">
             <div className="tag-row">
-              <span className="tag">Street Lights</span>
-              <span className="date">2024-12-05</span>
+              <span className="tag">{complaint.category}</span>
+              <span className="date">{complaint.date}</span>
             </div>
 
-            <h4>Broken street light on MG Road</h4>
-            <p className="muted">
-              The street light near Shop No. 45, MG Road has been broken for the
-              past 3 days.
-            </p>
+            <h4>{complaint.summary}</h4>
+            <p className="muted">{complaint.description}</p>
           </div>
 
           <div className="card ai-card">
             <h5>⚡ AI Summary</h5>
             <p>
-              Street light maintenance required at MG Road location. Priority:
-              Medium. Estimated resolution time: 2–3 days. Assigned to Ward 15
-              councillor.
+              Issue related to {complaint.category}. Assigned to{" "}
+              {complaint.ward}. Estimated resolution in 2–3 days.
             </p>
           </div>
 
@@ -46,27 +174,15 @@ export default function ComplaintDetails() {
             <h5>
               <MapPin size={18} color="#1fd863ff" /> Location
             </h5>
-            <p className="muted">MG Road, Ward 15</p>
+            <p className="muted">
+              {complaint.location + ", " + complaint.ward}
+            </p>
 
             <div className="map-placeholder">
               <MapPin size={28} color="#1fd863ff" />
             </div>
           </div>
-
-          {/* 🔥 IMAGES */}
-          <div className="card">
-            <div className="image-grid">
-              {images.map((img, index) => (
-                <img
-                  key={index}
-                  src={img}
-                  alt=""
-                  onClick={() => setPreviewIndex(index)}
-                  style={{ cursor: "pointer" }}
-                />
-              ))}
-            </div>
-          </div>
+          <ComplaintImages />
         </div>
 
         {/* RIGHT SECTION */}
@@ -78,7 +194,7 @@ export default function ComplaintDetails() {
               <User size={16} className="info-icon" />
               <div>
                 <div className="info-label">Name</div>
-                <div className="info-value">Rahul Sharma</div>
+                <div className="info-value">{complaint.citizen.name}</div>
               </div>
             </div>
 
@@ -86,7 +202,7 @@ export default function ComplaintDetails() {
               <Phone size={16} className="info-icon" />
               <div>
                 <div className="info-label">Phone</div>
-                <div className="info-value">+91 9876543210</div>
+                <div className="info-value">{complaint.citizen.phone}</div>
               </div>
             </div>
           </div>
@@ -95,73 +211,42 @@ export default function ComplaintDetails() {
             <h5 className="card-title">Progress Timeline</h5>
 
             <div className="timeline">
-              <div className="timeline-item active">
-                <span className="dot"></span>
-                <span>Submitted</span>
-              </div>
-              <div className="timeline-item active">
-                <span className="dot"></span>
-                <span>Seen</span>
-              </div>
-              <div className="timeline-item active">
-                <span className="dot"></span>
-                <span>In Progress</span>
-              </div>
-              <div className="timeline-item">
-                <span className="dot"></span>
-                <span>Completed</span>
-              </div>
+              {["Submitted", "Seen", "In Progress", "Completed"].map(
+                (step, index) => {
+                  const isActive = complaint.statusTimeline.includes(step);
+                  const isLast = index === 3;
+
+                  return (
+                    <div className="timeline-row" key={step}>
+                      <div className="timeline-left">
+                        <span
+                          className={`timeline-dot ${isActive ? "active" : ""}`}
+                        >
+                          <span className="timeline-dot-inner">
+                            <span className="timeline-dot-core"></span>
+                          </span>
+                        </span>
+
+                        {!isLast && <span className="timeline-line"></span>}
+                      </div>
+
+                      <span
+                        className={`timeline-text ${isActive ? "active" : ""}`}
+                      >
+                        {step}
+                      </span>
+                    </div>
+                  );
+                }
+              )}
             </div>
           </div>
-
-          <div className="card">
-            <h5 style={{ fontSize: "14px" }}>Quick Actions</h5>
-            <button className="action-btn">
-              <CheckCircle size={16} /> Translate
-            </button>
-          </div>
+          <ComplaintTranslate complaint={complaint} />
         </div>
       </div>
-
-      {/* 🔥 IMAGE PREVIEW MODAL */}
-      {previewIndex !== null && (
-        <div
-          className="image-modal-overlay"
-          onClick={() => setPreviewIndex(null)}
-        >
-          <div className="image-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h5>View Image</h5>
-              <X
-                className="modal-close"
-                onClick={() => setPreviewIndex(null)}
-              />
-            </div>
-
-            <img src={images[previewIndex]} alt="" />
-
-            <div className="modal-actions">
-              <button className="back"
-                onClick={() =>
-                  setPreviewIndex((prev) => (prev > 0 ? prev - 1 : prev))
-                }
-              >
-                Back
-              </button>
-
-              <button
-                onClick={() =>
-                  setPreviewIndex((prev) =>
-                    prev < images.length - 1 ? prev + 1 : prev
-                  )
-                }
-              >
-                Next
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
+
+
+

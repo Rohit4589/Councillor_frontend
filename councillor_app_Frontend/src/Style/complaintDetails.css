@@ -163,74 +163,127 @@
     color: #111827;
     font-weight: 500;
 }
-/* CARD */
-.timeline-card {
-    padding: 16px;
-    height:45%;
-}
-
-/* TITLE */
-.timeline-card .card-title {
-    font-size: 14px;
-    font-weight: 600;
-    margin-bottom: 14px;
-    color: #111827;
-}
-
-/* TIMELINE WRAPPER */
+/* ===============================
+   TIMELINE WRAPPER
+================================ */
 .timeline {
+    padding: 10px 4px;
+    
+}
+
+/* ===============================
+   EACH ROW
+================================ */
+.timeline-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    position: relative;
+}
+
+/* ===============================
+   LEFT COLUMN (DOT + LINE)
+================================ */
+.timeline-left {
     display: flex;
     flex-direction: column;
-    gap: 14px;
+    align-items: center;
+    position: relative;
 }
+/* ===============================
+   OUTER CIRCLE (DEFAULT = INACTIVE)
+================================ */
+.timeline-dot {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #d1d5db;
+    box-sizing: border-box;
 
-/* TIMELINE ITEM */
-.timeline-item {
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: center;
+}
+
+/* ===============================
+   ACTIVE OUTER
+================================ */
+.timeline-dot.active {
+    background: #120a85;
+    /* navy blue */
+    border-color: #1c11b3;
+}
+
+/* ===============================
+   INNER CIRCLE (DEFAULT = INACTIVE)
+================================ */
+.timeline-dot-inner {
+    width: 15px;
+    height: 15px;
+    border-radius: 50%;
+    border: 2px solid #ffffff;
+    background: transparent;
+    box-sizing: border-box;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* ===============================
+   ACTIVE INNER (WHITE BORDER)
+================================ */
+.timeline-dot.active .timeline-dot-inner {
+    border-color: #ffffff;
+    display: flex;
+    
+}
+
+/* ===============================
+   CORE DOT (DEFAULT = INACTIVE)
+================================ */
+.timeline-dot-core {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #ffffff;
+}
+
+/* ===============================
+   ACTIVE CORE (WHITE)
+================================ */
+.timeline-dot.active .timeline-dot-core {
+    background: #ffffff;
+    display: flex;
+      
+}
+
+
+/* ===============================
+   LINE
+================================ */
+.timeline-line {
+    width: 2px;
+    height: 40px;
+    background: #d1d5db;
+    margin-top: 2px;
+}
+
+/* ===============================
+   TEXT
+================================ */
+.timeline-text {
     font-size: 14px;
     color: #9ca3af;
-    position: relative;
-    padding-top: 4px;
-    padding-bottom: 40px;
+    padding-bottom: 22px;
 }
 
-/* DOT */
-.timeline-item .dot {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: #e5e7eb;
-    border: 2px solid #e5e7eb;
-    flex-shrink: 0;
+.timeline-text.active {
+    color: #0e3996;
+    font-weight: 500;
+    padding-top:3px;
 }
-
-/* ACTIVE STATE */
-.timeline-item.active {
-    color: #111827;
-}
-
-.timeline-item.active .dot {
-    background: #2563eb;
-    border-color: #2563eb;
-}
-
-/* VERTICAL LINE */
-.timeline-item::before {
-    content: "";
-    position: absolute;
-    left: 6px;
-    top: -14px;
-    width: 2px;
-    height: 14px;
-    background: #e5e7eb;
-}
-
-.timeline-item:first-child::before {
-    display: none;
-}
-
 /* ACTION */
 
 .action-btn {
@@ -358,4 +411,104 @@
 
 .modal-actions .back:hover{
     background: #f0f1f3;
+}
+
+/* ===============================
+   TRANSLATE MODAL OVERLAY
+================================ */
+.translate-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    
+}
+
+/* ===============================
+   TRANSLATE MODAL CARD
+================================ */
+.translate-modal {
+    background: #ffffff;
+    width: 100%;
+    max-width: 300px;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
+    animation: translateScaleIn 0.2s ease-out;
+    overflow: hidden;
+}
+
+/* ===============================
+   HEADER
+================================ */
+.translate-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.translate-modal-header h5 {
+    font-size: 15px;
+    font-weight: 600;
+    color: #111827;
+}
+
+.translate-modal-close {
+    cursor: pointer;
+    color: #6b7280;
+    transition: color 0.2s ease;
+}
+
+.translate-modal-close:hover {
+    color: #111827;
+}
+
+/* ===============================
+   BODY
+================================ */
+.translate-modal-body {
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* ===============================
+   LANGUAGE BUTTONS
+================================ */
+.translate-lang-btn {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 14px;
+    font-weight: 500;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    background: #d3e3f3;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.translate-lang-btn:hover {
+    background: #c3cdf3;
+    border-color: #6f70a8;
+    color: #4338ca;
+}
+
+/* ===============================
+   ANIMATION
+================================ */
+@keyframes translateScaleIn {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
 }

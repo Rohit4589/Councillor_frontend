@@ -11,20 +11,14 @@ export const routesConfig = {
     subtitle: "Overview of the complaint management system",
   },
 
-  categories: {
-    path: "/categories",
-    title: "Category Management",
-    subtitle: "Manage complaint categories",
-
-    // ✅ TOPBAR ACTION BUTTON
-    action: {
-      label: "Add Category",
-      onClick: () => {
-        console.log("Add Category clicked");
-        // later: open modal
-      },
-    },
+ categories: {
+  path: "/categories",
+  title: "Category Management",
+  subtitle: "Manage complaint categories",
+  action: {
+    label: "+ Add Category",
   },
+},
 
   citizens: {
     path: "/citizens",

@@ -3,12 +3,13 @@ import { Pencil, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import CategoryModal from "./CategoryModal";
 import DeleteConfirmModal from "./DeleteConfirmModal";
-
+import { useOutletContext } from "react-router-dom";
 export default function Categories() {
 
   /* ================================
      STATE (STATIC FOR NOW)
      ================================ */
+  const { newCategory, clearNewCategory } = useOutletContext();
 
   const [categories, setCategories] = useState([
     { id: 1, name: "Street Lights", count: 156, phone: "95883 43566" },
@@ -21,7 +22,6 @@ export default function Categories() {
     { id: 8, name: "Traffic Signals", count: 39, phone: "95883 43566" },
   ]);
 
-  const [openAdd, setOpenAdd] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -52,10 +52,7 @@ export default function Categories() {
      HANDLERS
      ================================ */
 
-  const handleAdd = () => {
-    setSelectedCategory(null);
-    setOpenAdd(true);
-  };
+
 
   const handleEdit = (cat) => {
     setSelectedCategory(cat);
@@ -111,7 +108,7 @@ export default function Categories() {
       );
     }
 
-    setOpenAdd(false);
+    // setOpenAdd(false);
     setOpenEdit(false);
   };
 
@@ -131,14 +128,31 @@ export default function Categories() {
     setOpenDelete(false);
   };
 
+  useEffect(() => {
+    if (newCategory) {
+      setCategories((prev) => [
+        ...prev,
+        {
+          id: Date.now(),
+          name: newCategory.name,
+          phone: newCategory.phone,
+          count: 0,
+        },
+      ]);
+
+      clearNewCategory(); // prevent duplicate insert
+    }
+  }, [newCategory, clearNewCategory]);
+
+
   return (
     <>
       {/* ===== ADD BUTTON ===== */}
-      <div className="categories-header">
+      {/* <div className="categories-header">
         <button className="add-category-btn" onClick={handleAdd}>
           + Add Category
         </button>
-      </div>
+      </div> */}
 
       {/* ===== TABLE ===== */}
       <div className="categories-table">
@@ -177,12 +191,12 @@ export default function Categories() {
       </div>
 
       {/* ===== ADD MODAL ===== */}
-      <CategoryModal
+      {/* <CategoryModal
         open={openAdd}
         onClose={() => setOpenAdd(false)}
         onSave={handleSaveCategory}
         mode="add"
-      />
+      /> */}
 
       {/* ===== EDIT MODAL ===== */}
       <CategoryModal
