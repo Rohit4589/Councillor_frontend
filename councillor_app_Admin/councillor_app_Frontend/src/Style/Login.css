@@ -1,0 +1,63 @@
+/* ===== Login Page Input Styles (Figma-style) ===== */
+
+.custom-input {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    background-color: #eef1f5;
+    border: 1px solid #d6dbe1;
+    /* default light border */
+    border-radius: 12px;
+
+    padding: 10px 12px;
+}
+
+/* faded icon */
+.custom-input i {
+    color: #9aa5b1;
+    font-size: 1rem;
+}
+
+/* input inside same section */
+.custom-input input {
+    border: none;
+    outline: none;
+    background: transparent;
+
+    width: 100%;
+    color: #495057;
+    font-size: 0.95rem;
+}
+
+/* placeholder faded */
+.custom-input input::placeholder {
+    color: #9aa5b1;
+}
+
+/* ONLY subtle border change on focus */
+.custom-input:focus-within {
+    border-color: #b8c2cc;
+    /* slightly darker than default */
+}
+
+/* REMOVE browser blue selection inside inputs */
+.custom-input input::selection {
+    background: #dbe3ea;
+    /* soft light grey */
+    color: #495057;
+}
+
+/* REMOVE focus outline / inner glow */
+.custom-input input:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* REMOVE Chrome autofill blue background */
+.custom-input input:-webkit-autofill,
+.custom-input input:-webkit-autofill:hover,
+.custom-input input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 1000px #eef1f5 inset !important;
+    -webkit-text-fill-color: #495057 !important;
+}

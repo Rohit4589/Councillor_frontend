@@ -1,0 +1,54 @@
+.topbar {
+  background: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  padding: 24px;
+  height: 109px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+}
+
+/* 🔹 Title + Button alignment */
+.topbar-content {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Title */
+.topbar-title {
+  font-family: "Inter", sans-serif;
+  font-weight: 500;
+  font-size: 24px;
+  line-height: 36px;
+  color: #101828;
+  margin: 0;
+}
+
+/* Subtitle */
+.topbar-subtitle {
+  font-family: "Inter", sans-serif;
+  font-weight: 400;
+  font-size: 16px;
+  color: #4a5565;
+  margin-top: 4px;
+}
+
+/* 🔹 Add Category Button */
+.topbar-action-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #003a68;
+  color: #ffffff;
+  border: none;
+  padding: 12px 18px;
+  border-radius: 14px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.topbar-action-btn:hover {
+  background: #002f54;
+}

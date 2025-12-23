@@ -1,0 +1,161 @@
+.dashboard-header h1 {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+}
+
+.dashboard-header p {
+  margin: 4px 0 0;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+/* ===== CARDS ===== */
+.dashboard-cards {
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 25px;
+}
+
+.stat-card {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+  padding: 25px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 150px;
+}
+
+.stat-card h2 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 600;
+}
+
+.stat-card span {
+  font-size: 14px;
+  color: #6b7280;
+}
+
+/* ===== ICON BOX ===== */
+.icon-box {
+ width: 40px;
+  height: 40px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-box svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* COLORS */
+.icon-box.blue { background: #e7f1ff; color: #2563eb; }
+.icon-box.purple { background: #f3e8ff; color: #7c3aed; }
+.icon-box.green { background: #e8fff3; color: #059669; }
+.icon-box.yellow { background: #fff6d9; color: #d97706; }
+
+/* ===== TABLE ===== */
+.dashboard-table {
+  margin-top: 30px;
+  background: #fff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  padding: 20px;
+}
+
+.dashboard-table h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.dashboard-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.dashboard-table th {
+  text-align: left;
+  font-size: 14px;
+  color: #6b7280;
+  padding-bottom: 12px;
+}
+
+.dashboard-table td {
+  padding: 14px 0;
+  border-top: 1px solid #f1f5f9;
+  font-size: 14px;
+}
+
+/* ===== STATUS ===== */
+/* ===== STATUS ===== */
+.status {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  min-width: 120px;
+  height: 36px;              /* 🔥 KEY FIX */
+  padding: 0 16px;           /* horizontal only */
+
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1;            /* 🔥 IMPORTANT */
+  text-align: center;
+  white-space: nowrap;
+}
+
+
+.status.progress {
+  background: #e7f1ff;
+  color: #2563eb;
+}
+
+.status.completed {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status.submitted {
+  background: #fef3c7;
+  color: #b45309;
+}
+
+
+.time {
+  color: #6b7280;
+}
+/* ===== ACTION ICONS ===== */
+.table-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+}
+
+.table-actions svg {
+  cursor: pointer;
+  color: #2563eb;
+}
+
+.table-actions svg.delete {
+  color: #dc2626;
+}
+
+/* ===== STATUS ===== */
+.status.active {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.status.inactive {
+  background: #f1f5f9;
+  color: #475569;
+}
