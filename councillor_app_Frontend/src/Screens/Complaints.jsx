@@ -1,18 +1,11 @@
 import "../Style/complaints.css";
 import { Eye } from "lucide-react";
 import { useNavigate, useOutletContext } from "react-router-dom";
-import { useState } from "react";
-
-
-
-/* ===============================
-   🔌 BACKEND IMPORTS (COMMENTED)
-   =============================== */
-// import { useEffect } from "react";
-// import axios from "axios";
+import { useState, useEffect } from "react";
+import { getComplaints } from "../api/complaintsApi";
 
 /* ===============================
-   STATIC DATA (FOR NOW)
+   STATIC DATA (FALLBACK)
    =============================== */
 const complaintsData = [
   {
@@ -64,7 +57,7 @@ export default function Complaints() {
   const safeSearch = (search || "").toLowerCase();
 
   /* ===============================
-     ✅ SORT & FILTER STATE (UNCHANGED)
+     SORT & FILTER STATE (UNCHANGED)
      =============================== */
   const [sortOrder, setSortOrder] = useState(null); // "new" | "old"
 
@@ -75,39 +68,42 @@ export default function Complaints() {
   });
 
   /* ===============================
-     🔌 BACKEND STATE (COMMENTED)
+     BACKEND STATE
      =============================== */
-  // const [backendComplaints, setBackendComplaints] = useState([]);
+  const [backendComplaints, setBackendComplaints] = useState([]);
 
   /* ===============================
-     🔌 BACKEND API CALL (COMMENTED)
+     BACKEND API CALL
      =============================== */
-  /*
   useEffect(() => {
-    axios
-      .get("http://localhost:8080/api/complaints") // change API when needed
-      .then((res) => {
-        setBackendComplaints(res.data);
+    getComplaints()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setBackendComplaints(data);
+        }
       })
-      .catch((err) => {
-        console.error("Failed to fetch complaints", err);
-      });
+      .catch((err) =>
+        console.warn("Complaints API Error, using static data", err)
+      );
   }, []);
-  */
 
-  /* ===============================
-     🔍 SEARCH LOGIC (UNCHANGED)
-     =============================== */
-  const filteredComplaints = complaintsData.filter((c) =>
+  /* ======================================================
+     🔥 UNIFIED DATA PIPELINE (STATIC + BACKEND)
+     ====================================================== */
+
+  // 1️⃣ Choose data source
+  const sourceData =
+    backendComplaints.length > 0 ? backendComplaints : complaintsData;
+
+  // 2️⃣ SEARCH
+  const searchedData = sourceData.filter((c) =>
     `${c.id} ${c.category} ${c.summary} ${c.status} ${c.ward} ${c.date}`
       .toLowerCase()
       .includes(safeSearch)
   );
 
-  /* ===============================
-     📅 SORT LOGIC (UNCHANGED)
-     =============================== */
-  const sortedComplaints = [...filteredComplaints].sort((a, b) => {
+  // 3️⃣ SORT
+  const sortedData = [...searchedData].sort((a, b) => {
     if (!sortOrder) return 0;
 
     const d1 = new Date(a.date);
@@ -116,10 +112,8 @@ export default function Complaints() {
     return sortOrder === "new" ? d2 - d1 : d1 - d2;
   });
 
-  /* ===============================
-     🎯 FILTER LOGIC (UNCHANGED)
-     =============================== */
-  const finalComplaints = sortedComplaints.filter((c) => {
+  // 4️⃣ FILTER
+  const finalComplaints = sortedData.filter((c) => {
     return (
       (!filters.category || c.category === filters.category) &&
       (!filters.status || c.status === filters.status) &&
@@ -127,10 +121,7 @@ export default function Complaints() {
     );
   });
 
-  /* ===============================
-     🔄 SWITCH TO BACKEND DATA (COMMENTED)
-     =============================== */
-  // const dataToRender = backendComplaints;
+  // 5️⃣ FINAL DATA FOR TABLE
   const dataToRender = finalComplaints;
 
   return (

@@ -1,31 +1,49 @@
-import React from "react";
+import React, { useState } from "react";
 import "../style/login.css";
 import logo from "../assets/logo.jpg";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useState } from "react";
-
 
 const Login = () => {
-
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-
   const navigate = useNavigate();
 
+  /* ===============================
+     LOGIN HANDLER
+     =============================== */
   const handleLogin = async () => {
+    /*
+    🔴 BACKEND AUTH VERSION (ENABLE LATER)
+    -------------------------------------
     try {
-      const res = await axios.post("http://localhost:5000/api/auth/login", {
-        email,
-        password,
-      });
+      const res = await axios.post(
+        "http://localhost:5000/api/auth/login",
+        { email, password }
+      );
 
+      // Save JWT token
       localStorage.setItem("token", res.data.token);
+
+      // Navigate only on success
       navigate("/dashboard");
+      return;
     } catch (err) {
       alert("Invalid credentials");
+      return;
     }
+    */
+
+    /* ===============================
+       TEMP SIMPLE LOGIN (NO VALIDATION)
+       =============================== */
+
+    // Optional: store dummy token for protected routes testing
+    localStorage.setItem("token", "dev-token");
+
+    // Always navigate
+    navigate("/dashboard");
   };
 
   return (
@@ -67,12 +85,10 @@ const Login = () => {
           style={{ maxWidth: 400, borderRadius: 20 }}
         >
           <div className="card-body p-4">
-            <h6
-              className="text-start mb-3"
-              style={{ fontWeight: 400 }} // 👈 lighter text
-            >
+            <h6 className="text-start mb-3" style={{ fontWeight: 400 }}>
               Login to Dashboard
             </h6>
+
             {/* Email */}
             <div className="mb-3 text-start">
               <label className="form-label text-muted small">

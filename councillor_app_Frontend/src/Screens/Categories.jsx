@@ -4,10 +4,17 @@ import { useEffect, useState } from "react";
 import CategoryModal from "./CategoryModal";
 import DeleteConfirmModal from "./DeleteConfirmModal";
 import { useOutletContext } from "react-router-dom";
-export default function Categories() {
 
+import {
+  getCategories,
+  addCategory,
+  updateCategory,
+  deleteCategory,
+} from "../api/categoriesApi";
+
+export default function Categories() {
   /* ================================
-     STATE (STATIC FOR NOW)
+     STATE (STATIC FALLBACK)
      ================================ */
   const { newCategory, clearNewCategory } = useOutletContext();
 
@@ -27,33 +34,21 @@ export default function Categories() {
   const [selectedCategory, setSelectedCategory] = useState(null);
 
   /* ================================
-     API FETCH (ENABLE LATER)
+     FETCH FROM BACKEND (SAFE)
      ================================ */
-
   useEffect(() => {
-
-    /*
-    🔴 WHEN API IS READY
-    -------------------
-    1. Uncomment this block
-    2. Paste API URL
-    */
-
-    /*
-    fetch("http://localhost:5000/api/categories")
-      .then(res => res.json())
-      .then(data => setCategories(data))
-      .catch(err => console.error("Categories API Error:", err));
-    */
-
+    getCategories()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setCategories(data);
+        }
+      })
+      .catch(() => console.warn("Backend not ready, using static categories"));
   }, []);
 
   /* ================================
      HANDLERS
      ================================ */
-
-
-
   const handleEdit = (cat) => {
     setSelectedCategory(cat);
     setOpenEdit(true);
@@ -64,96 +59,91 @@ export default function Categories() {
     setOpenDelete(true);
   };
 
-  const handleSaveCategory = (data) => {
-
+  const handleSaveCategory = async (data) => {
     // ================= ADD =================
     if (!selectedCategory) {
-      /*
-      🔴 API VERSION (PASTE LATER)
-      fetch("/api/categories", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
-      */
+      const tempId = Date.now();
 
-      setCategories(prev => [
+      // optimistic UI (same as old static logic)
+      setCategories((prev) => [
         ...prev,
         {
-          id: Date.now(),
+          id: tempId,
           name: data.name,
           phone: data.phone,
-          count: 0
-        }
+          count: 0,
+        },
       ]);
+
+      try {
+        await addCategory(data);
+      } catch (err) {
+        console.error("Add Category API Error:", err);
+      }
     }
 
     // ================= EDIT =================
     else {
-      /*
-      🔴 API VERSION (PASTE LATER)
-      fetch(`/api/categories/${selectedCategory.id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data)
-      });
-      */
-
-      setCategories(prev =>
-        prev.map(item =>
-          item.id === selectedCategory.id
-            ? { ...item, ...data }
-            : item
+      setCategories((prev) =>
+        prev.map((item) =>
+          item.id === selectedCategory.id ? { ...item, ...data } : item
         )
       );
+
+      try {
+        await updateCategory(selectedCategory.id, data);
+      } catch (err) {
+        console.error("Update Category API Error:", err);
+      }
     }
 
-    // setOpenAdd(false);
     setOpenEdit(false);
+    setSelectedCategory(null);
   };
 
-  const confirmDelete = () => {
+  const confirmDelete = async () => {
+    const id = selectedCategory.id;
 
-    /*
-    🔴 API VERSION (PASTE LATER)
-    fetch(`/api/categories/${selectedCategory.id}`, {
-      method: "DELETE"
-    });
-    */
+    setCategories((prev) => prev.filter((item) => item.id !== id));
 
-    setCategories(prev =>
-      prev.filter(item => item.id !== selectedCategory.id)
-    );
+    try {
+      await deleteCategory(id);
+    } catch (err) {
+      console.error("Delete Category API Error:", err);
+    }
 
     setOpenDelete(false);
+    setSelectedCategory(null);
   };
 
+  /* ================================
+     ADD FROM TOP BAR (UNCHANGED FLOW)
+     ================================ */
   useEffect(() => {
     if (newCategory) {
+      const tempId = Date.now();
+
       setCategories((prev) => [
         ...prev,
         {
-          id: Date.now(),
+          id: tempId,
           name: newCategory.name,
           phone: newCategory.phone,
           count: 0,
         },
       ]);
 
-      clearNewCategory(); // prevent duplicate insert
+      // backend sync
+      addCategory(newCategory).catch((err) =>
+        console.error("Add Category API Error:", err)
+      );
+
+      clearNewCategory();
     }
   }, [newCategory, clearNewCategory]);
 
-
   return (
     <>
-      {/* ===== ADD BUTTON ===== */}
-      {/* <div className="categories-header">
-        <button className="add-category-btn" onClick={handleAdd}>
-          + Add Category
-        </button>
-      </div> */}
-
       {/* ===== TABLE ===== */}
       <div className="categories-table">
         <table>
@@ -167,7 +157,7 @@ export default function Categories() {
           </thead>
 
           <tbody>
-            {categories.map(cat => (
+            {categories.map((cat) => (
               <tr key={cat.id}>
                 <td>{cat.name}</td>
                 <td>{cat.count}</td>
@@ -190,15 +180,7 @@ export default function Categories() {
         </table>
       </div>
 
-      {/* ===== ADD MODAL ===== */}
-      {/* <CategoryModal
-        open={openAdd}
-        onClose={() => setOpenAdd(false)}
-        onSave={handleSaveCategory}
-        mode="add"
-      /> */}
-
-      {/* ===== EDIT MODAL ===== */}
+      {/* ===== EDIT MODAL (UNCHANGED) ===== */}
       <CategoryModal
         open={openEdit}
         onClose={() => setOpenEdit(false)}
@@ -207,7 +189,7 @@ export default function Categories() {
         data={selectedCategory}
       />
 
-      {/* ===== DELETE MODAL ===== */}
+      {/* ===== DELETE MODAL (UNCHANGED) ===== */}
       <DeleteConfirmModal
         open={openDelete}
         onClose={() => setOpenDelete(false)}

@@ -1,9 +1,8 @@
 import "../Style/createEvent.css";
 import { Camera } from "lucide-react";
 import { useEffect, useState } from "react";
-
+import { getEventCategories, createEvent } from "../api/eventsApi";
 export default function CreateEvent() {
-
   /* ================================
      STATE (STATIC FOR NOW)
      ================================ */
@@ -26,16 +25,15 @@ export default function CreateEvent() {
      ================================ */
 
   useEffect(() => {
-
-    /*
-    🔴 WHEN API IS READY
-    -------------------
-    fetch("http://localhost:5000/api/event-categories")
-      .then(res => res.json())
-      .then(data => setCategories(data))
-      .catch(err => console.error("Category API Error:", err));
-    */
-
+    getEventCategories()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setCategories(data);
+        }
+      })
+      .catch((err) =>
+        console.warn("Event category API error, using static data", err)
+      );
   }, []);
 
   /* ================================
@@ -48,7 +46,6 @@ export default function CreateEvent() {
   };
 
   const handleSubmit = () => {
-
     const eventData = {
       eventName,
       category,
@@ -58,23 +55,7 @@ export default function CreateEvent() {
 
     console.log("EVENT DATA:", eventData);
 
-    /*
-    🔴 API VERSION (PASTE LATER)
-    ---------------------------
-    const formData = new FormData();
-    formData.append("eventName", eventName);
-    formData.append("category", category);
-    formData.append("description", description);
-
-    photos.forEach(photo => {
-      formData.append("photos", photo);
-    });
-
-    fetch("http://localhost:5000/api/events", {
-      method: "POST",
-      body: formData
-    });
-    */
+    
 
     // RESET FORM (STATIC MODE)
     setEventName("");
@@ -86,7 +67,6 @@ export default function CreateEvent() {
   return (
     <div className="create-event-wrapper">
       <div className="create-event-card">
-
         {/* ===== EVENT NAME ===== */}
         <div className="form-group">
           <label>Event Name</label>
@@ -131,19 +111,12 @@ export default function CreateEvent() {
             <Camera size={28} />
             <p>Upload Photos</p>
             <span>Max 5 images</span>
-            <input
-              type="file"
-              multiple
-              hidden
-              onChange={handlePhotoUpload}
-            />
+            <input type="file" multiple hidden onChange={handlePhotoUpload} />
           </label>
 
           {/* Preview count */}
           {photos.length > 0 && (
-            <p className="photo-count">
-              {photos.length} image(s) selected
-            </p>
+            <p className="photo-count">{photos.length} image(s) selected</p>
           )}
         </div>
       </div>

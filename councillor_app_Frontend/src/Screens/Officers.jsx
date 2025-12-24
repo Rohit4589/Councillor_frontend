@@ -1,5 +1,6 @@
 import "../Style/officers.css";
 import { useEffect, useState } from "react";
+import { getOfficers } from "../api/officersApi";
 
 export default function Officers() {
 
@@ -19,22 +20,17 @@ export default function Officers() {
      ================================ */
 
   useEffect(() => {
-
-    /*
-    🔴 WHEN API IS READY
-    -------------------
-    1. Uncomment below code
-    2. Paste your API URL
-    */
-
-    /*
-    fetch("http://localhost:5000/api/officers")
-      .then(res => res.json())
-      .then(data => setOfficers(data))
-      .catch(err => console.error("Officers API Error:", err));
-    */
-
+    getOfficers()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setOfficers(data);
+        }
+      })
+      .catch((err) =>
+        console.warn("Officers API Error, using static data", err)
+      );
   }, []);
+
 
   return (
     <div className="officers-table">

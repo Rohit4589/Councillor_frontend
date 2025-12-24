@@ -1,14 +1,10 @@
 import { X } from "lucide-react";
 import { useState } from "react";
 
-export default function ComplaintImages() {
-  const images = [
-    "https://picsum.photos/600/400?1",
-    "https://picsum.photos/600/400?2",
-    "https://picsum.photos/600/400?3",
-  ];
-
+export default function ComplaintImages({ images = [] }) {
   const [previewIndex, setPreviewIndex] = useState(null);
+
+  if (!images.length) return null;
 
   return (
     <>

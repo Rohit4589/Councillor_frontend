@@ -1,6 +1,8 @@
 import "../Style/dashboard.css";
 import { FileText, Users, Folder, Clock } from "lucide-react";
 import { useEffect, useState } from "react";
+import { getDashboardData } from "../api/dashboardApi";
+
 
 export default function Dashboard() {
 
@@ -52,29 +54,16 @@ export default function Dashboard() {
      2️⃣ API CALL (ENABLE LATER)
      ================================ */
 
-  useEffect(() => {
-
-    /*
-    🔴 WHEN API IS READY
-    -------------------
-    1. Uncomment below code
-    2. Replace API URL
-    3. Remove static data if needed
-    */
-
-    /*
-    fetch("http://localhost:5000/api/dashboard")
-      .then((res) => res.json())
-      .then((data) => {
-        setStats(data.stats);
-        setRecentComplaints(data.recentComplaints);
-      })
-      .catch((error) => {
-        console.error("Dashboard API Error:", error);
-      });
-    */
-
-  }, []);
+   useEffect(() => {
+     getDashboardData()
+       .then((data) => {
+         setStats(data.stats);
+         setRecentComplaints(data.recentComplaints);
+       })
+       .catch((error) => {
+         console.error("Dashboard API Error:", error);
+       });
+   }, []);
 
   return (
     <div className="page-wrapper">

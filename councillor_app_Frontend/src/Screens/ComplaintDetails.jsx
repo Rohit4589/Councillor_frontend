@@ -4,11 +4,12 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useState } from "react";
 import ComplaintImages from "./ComplaintImages";
 import ComplaintTranslate from "./ComplaintTranslate";
+import { getComplaintById } from "../api/complaintsApi";
 
 /* ===============================
    🔌 BACKEND IMPORTS (COMMENTED)
    =============================== */
-// import { useEffect } from "react";
+import { useEffect } from "react";
 // import axios from "axios";
 
 /* ===============================
@@ -84,39 +85,42 @@ export default function ComplaintDetails() {
   /* ===============================
      🔌 BACKEND STATE (COMMENTED)
      =============================== */
-  // const [complaint, setComplaint] = useState(null);
-  // const [images, setImages] = useState([]);
+  const [backendComplaint, setBackendComplaint] = useState(null);
+  const [backendImages, setBackendImages] = useState([]);
+
 
   /* ===============================
      🔌 FETCH COMPLAINT + IMAGES FROM BACKEND (COMMENTED)
      =============================== */
-  /*
-  useEffect(() => {
-    axios
-      .get(`http://localhost:8080/api/complaints/${id}`)
-      .then((res) => {
-        setComplaint(res.data);
-        setImages(res.data.images); // images: [url1, url2, url3]
-      })
-      .catch((err) => {
-        console.error("Error loading complaint details", err);
-      });
-  }, [id]);
-  */
+ useEffect(() => {
+   getComplaintById(id)
+     .then((data) => {
+       setBackendComplaint(data);
+       setBackendImages(data.images || []);
+     })
+     .catch(() =>
+       console.warn("Backend not ready, using static complaint data")
+     );
+ }, [id]);
+
 
   /* ===============================
      CURRENT WORKING DATA
      =============================== */
-  const complaint = complaintsData.find((c) => c.id === id);
+const complaint = backendComplaint || complaintsData.find((c) => c.id === id);
 
   /* ===============================
      TEMP IMAGES (STATIC)
      =============================== */
-  const images = [
-    "https://picsum.photos/600/400?1",
-    "https://picsum.photos/600/400?2",
-    "https://picsum.photos/600/400?3",
-  ];
+ const images =
+   backendImages.length > 0
+     ? backendImages
+     : [
+         "https://picsum.photos/600/400?1",
+         "https://picsum.photos/600/400?2",
+         "https://picsum.photos/600/400?3",
+       ];
+
 
 
   if (!complaint) {
@@ -182,7 +186,7 @@ export default function ComplaintDetails() {
               <MapPin size={28} color="#1fd863ff" />
             </div>
           </div>
-          <ComplaintImages />
+          <ComplaintImages images={images} />
         </div>
 
         {/* RIGHT SECTION */}

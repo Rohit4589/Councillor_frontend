@@ -1,5 +1,6 @@
 import "../Style/Citizens.css";
 import { useEffect, useState } from "react";
+import { getCitizens } from "../api/citizensApi";
 
 export default function Citizens() {
 
@@ -65,22 +66,17 @@ export default function Citizens() {
      ================================ */
 
   useEffect(() => {
-
-    /*
-    🔴 WHEN API IS READY
-    -------------------
-    1. Uncomment this
-    2. Paste API URL
-    */
-
-    /*
-    fetch("http://localhost:5000/api/citizens")
-      .then(res => res.json())
-      .then(data => setCitizens(data))
-      .catch(err => console.error("Citizens API Error:", err));
-    */
-
+    getCitizens()
+      .then((data) => {
+        if (Array.isArray(data) && data.length > 0) {
+          setCitizens(data);
+        }
+      })
+      .catch((err) =>
+        console.warn("Citizens API Error, using static data", err)
+      );
   }, []);
+
 
   /* ================================
      HANDLERS
