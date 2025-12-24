@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../style/login.css";
 import logo from "../assets/logo.jpg";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from "axios"; // 🔴 will be used later
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -19,14 +19,19 @@ const Login = () => {
     -------------------------------------
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/auth/login",
-        { email, password }
+        "https://api.councillorapp.com/api/v1/auth/login",
+        {
+          username: email, // backend expects username
+          password,
+        }
       );
 
-      // Save JWT token
+      // Save JWT token & details
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("role", res.data.role);
+      localStorage.setItem("wardId", res.data.wardId);
+      localStorage.setItem("userId", res.data.userId);
 
-      // Navigate only on success
       navigate("/dashboard");
       return;
     } catch (err) {
@@ -36,11 +41,14 @@ const Login = () => {
     */
 
     /* ===============================
-       TEMP SIMPLE LOGIN (NO VALIDATION)
+       TEMP SIMPLE LOGIN (NO BACKEND)
        =============================== */
 
-    // Optional: store dummy token for protected routes testing
+    // Dummy auth data for now
     localStorage.setItem("token", "dev-token");
+    localStorage.setItem("role", "WARD_ADMIN");
+    localStorage.setItem("wardId", "WARD_01");
+    localStorage.setItem("userId", "USER_01");
 
     // Always navigate
     navigate("/dashboard");
