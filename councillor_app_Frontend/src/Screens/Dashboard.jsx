@@ -1,76 +1,64 @@
 import "../Style/dashboard.css";
 import { FileText, Users, Folder, Clock } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getDashboardData } from "../api/dashboardApi";
-
+import { getDashboardData } from "../Api/dashboardApi";
 
 export default function Dashboard() {
-
   /* ================================
-     1️⃣ STATE (STATIC FOR NOW)
-     ================================ */
-
+     STATE
+  ================================ */
   const [stats, setStats] = useState({
-    totalComplaints: 1247,
-    totalCouncillors: 45,
-    totalCategories: 12,
-    pendingReview: 38,
+    totalComplaints: 0,
+     // static for now
+    totalCategories: 0,
+    pendingReview: 0,
   });
 
-  const [recentComplaints, setRecentComplaints] = useState([
-    {
-      id: "CMP234567",
-      category: "Street Lights",
-      status: "progress",
-      time: "5 min ago",
-    },
-    {
-      id: "CMP234568",
-      category: "Garbage Collection",
-      status: "completed",
-      time: "12 min ago",
-    },
-    {
-      id: "CMP234569",
-      category: "Water Supply",
-      status: "submitted",
-      time: "23 min ago",
-    },
-    {
-      id: "CMP234570",
-      category: "Roads & Potholes",
-      status: "progress",
-      time: "1 hour ago",
-    },
-    {
-      id: "CMP234571",
-      category: "Drainage",
-      status: "submitted",
-      time: "2 hours ago",
-    },
-  ]);
+  const [recentComplaints, setRecentComplaints] = useState([]);
+
+  const [loading, setLoading] = useState(true);
 
   /* ================================
-     2️⃣ API CALL (ENABLE LATER)
-     ================================ */
+     API CALL
+  ================================ */
+  useEffect(() => {
+    getDashboardData()
+      .then((res) => {
+        const data = res.data;
 
-   useEffect(() => {
-     getDashboardData()
-       .then((data) => {
-         setStats(data.stats);
-         setRecentComplaints(data.recentComplaints);
-       })
-       .catch((error) => {
-         console.error("Dashboard API Error:", error);
-       });
-   }, []);
+        setStats({
+          totalComplaints: data.total_complaints,
+          totalCouncillors: 45,
+          totalCategories: data.total_categories,
+          pendingReview: data.pending_review,
+        });
+
+        setRecentComplaints(
+          data.recent_complaints.map((item) => ({
+            id: item.complaint_id,
+            category: item.category,
+            status: mapStatus(item.status),
+            time: item.time,
+          }))
+        );
+
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Dashboard API Error:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return <p style={{ padding: 20 }}>Loading dashboard...</p>;
+  }
 
   return (
     <div className="page-wrapper">
-
       {/* ================================
          STAT CARDS
-         ================================ */}
+      ================================ */}
       <div className="dashboard-cards">
         <StatCard
           icon={<FileText />}
@@ -78,12 +66,7 @@ export default function Dashboard() {
           value={stats.totalComplaints}
           label="Total Complaints"
         />
-        <StatCard
-          icon={<Users />}
-          iconBg="purple"
-          value={stats.totalCouncillors}
-          label="Total Councillors"
-        />
+       
         <StatCard
           icon={<Folder />}
           iconBg="green"
@@ -99,8 +82,8 @@ export default function Dashboard() {
       </div>
 
       {/* ================================
-         RECENT COMPLAINTS TABLE
-         ================================ */}
+         RECENT COMPLAINTS
+      ================================ */}
       <div className="dashboard-table mt-4">
         <div className="dashboard-header">
           <h3>Recent Complaints</h3>
@@ -134,14 +117,21 @@ export default function Dashboard() {
 }
 
 /* ================================
-   STAT CARD COMPONENT
-   ================================ */
+   HELPERS
+================================ */
+function mapStatus(status) {
+  if (status === "IN_PROGRESS") return "progress";
+  if (status === "COMPLETED") return "completed";
+  return "submitted";
+}
+
+/* ================================
+   STAT CARD
+================================ */
 function StatCard({ icon, iconBg, value, label }) {
   return (
     <div className="stat-card">
-      <div className={`icon-box ${iconBg}`}>
-        {icon}
-      </div>
+      <div className={`icon-box ${iconBg}`}>{icon}</div>
       <div>
         <h2>{value}</h2>
         <span>{label}</span>
@@ -151,8 +141,8 @@ function StatCard({ icon, iconBg, value, label }) {
 }
 
 /* ================================
-   TABLE ROW COMPONENT
-   ================================ */
+   TABLE ROW
+================================ */
 function Row({ id, cat, status, time }) {
   return (
     <tr>

@@ -1,56 +1,89 @@
 // src/api/complaintsApi.js
+import { faker } from "@faker-js/faker";
 
-const BASE_URL = "http://localhost:8080/api/complaints";
+const USE_FAKE_DATA = true;
+
+/* ===============================
+   STATUS → TIMELINE MAPPER
+   =============================== */
+const buildTimeline = (status) => {
+  switch (status) {
+    case "submitted":
+      return ["Submitted"];
+    case "seen":
+      return ["Submitted", "Seen"];
+    case "progress":
+      return ["Submitted", "Seen", "In Progress"];
+    case "completed":
+      return ["Submitted", "Seen", "In Progress", "Completed"];
+    default:
+      return ["Submitted"];
+  }
+};
 
 /* ===============================
    GET ALL COMPLAINTS
    =============================== */
 export const getComplaints = async () => {
-  const response = await fetch(BASE_URL);
+  if (USE_FAKE_DATA) {
+    return Array.from({ length: 8 }, () => {
+      const statuses = ["submitted", "seen", "progress", "completed"];
+      const status = faker.helpers.arrayElement(statuses);
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch complaints");
+      return {
+        id: faker.string.alphanumeric(8).toUpperCase(),
+        category: faker.helpers.arrayElement([
+          "Street Lights",
+          "Garbage Collection",
+          "Water Supply",
+          "Roads & Potholes",
+        ]),
+        summary: faker.lorem.sentence(6),
+        status, // 🔥 SINGLE SOURCE OF TRUTH
+        ward: `Ward ${faker.number.int({ min: 1, max: 20 })}`,
+        date: faker.date.recent().toISOString().split("T")[0],
+      };
+    });
   }
 
-  const data = await response.json();
-
-  // Normalize backend response to match UI shape
-  return data.map((item) => ({
-    id: item.id || item.complaintId || item._id,
-    category: item.category,
-    summary: item.summary,
-    status: item.status,
-    ward: item.ward,
-    date: item.date,
-  }));
+  // backend later
+  return [];
 };
 
 /* ===============================
-   GET COMPLAINT BY ID (DETAILS PAGE)
+   GET COMPLAINT BY ID
    =============================== */
 export const getComplaintById = async (id) => {
-  const response = await fetch(`${BASE_URL}/${id}`);
+  if (USE_FAKE_DATA) {
+    const statuses = ["submitted", "seen", "progress", "completed"];
+    const status = faker.helpers.arrayElement(statuses);
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch complaint details");
+    return {
+      id,
+      category: faker.helpers.arrayElement([
+        "Street Lights",
+        "Garbage Collection",
+        "Water Supply",
+        "Roads & Potholes",
+      ]),
+      summary: faker.lorem.sentence(6),
+      description: faker.lorem.paragraph(),
+      ward: `Ward ${faker.number.int({ min: 1, max: 20 })}`,
+      date: faker.date.recent().toISOString().split("T")[0],
+      location: faker.location.street(),
+      status,
+      statusTimeline: buildTimeline(status), // ✅ FIX
+      citizen: {
+        name: faker.person.fullName(),
+        phone: faker.phone.number("+91 ##########"),
+      },
+      images: [
+        "https://picsum.photos/600/400?1",
+        "https://picsum.photos/600/400?2",
+        "https://picsum.photos/600/400?3",
+      ],
+    };
   }
 
-  const data = await response.json();
-
-  // normalize backend response to match UI
-  return {
-    id: data.id || data.complaintId || data._id,
-    category: data.category,
-    summary: data.summary,
-    description: data.description,
-    ward: data.ward,
-    date: data.date,
-    location: data.location,
-    statusTimeline: data.statusTimeline || [],
-    citizen: {
-      name: data.citizen?.name,
-      phone: data.citizen?.phone,
-    },
-    images: data.images || [],
-  };
+  return null;
 };

@@ -2,27 +2,22 @@ import "../Style/createEvent.css";
 import { Camera } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getEventCategories, createEvent } from "../api/eventsApi";
+import { faker } from "@faker-js/faker";
+
 export default function CreateEvent() {
   /* ================================
-     STATE (STATIC FOR NOW)
-     ================================ */
-
+     STATE
+  ================================ */
   const [eventName, setEventName] = useState("");
-  const [category, setCategory] = useState("");
+  const [categoryId, setCategoryId] = useState("");
   const [description, setDescription] = useState("");
   const [photos, setPhotos] = useState([]);
-
-  /* Categories (STATIC → API READY) */
-  const [categories, setCategories] = useState([
-    { id: 1, name: "Cleanliness Drive" },
-    { id: 2, name: "Water Supply" },
-    { id: 3, name: "Road Repair" },
-    { id: 4, name: "Health Camp" },
-  ]);
+  const [loading, setLoading] = useState(false);
 
   /* ================================
-     API FETCH FOR CATEGORIES (LATER)
-     ================================ */
+     CATEGORY LIST (API + FAKER)
+  ================================ */
+  const [categories, setCategories] = useState([]);
 
   useEffect(() => {
     getEventCategories()
@@ -31,43 +26,63 @@ export default function CreateEvent() {
           setCategories(data);
         }
       })
-      .catch((err) =>
-        console.warn("Event category API error, using static data", err)
-      );
+      .catch(() => {
+        // ✅ Faker fallback
+        setCategories(
+          Array.from({ length: 5 }).map((_, i) => ({
+            id: i + 1,
+            name: faker.commerce.department(),
+          }))
+        );
+      });
   }, []);
 
   /* ================================
-     HANDLERS
-     ================================ */
-
+     FILE HANDLING
+  ================================ */
   const handlePhotoUpload = (e) => {
     const files = Array.from(e.target.files);
-    setPhotos(files.slice(0, 5)); // max 5 images
+    setPhotos(files.slice(0, 5));
   };
 
-  const handleSubmit = () => {
-    const eventData = {
-      eventName,
-      category,
-      description,
-      photos,
-    };
+  /* ================================
+     SUBMIT
+  ================================ */
+  const handleSubmit = async () => {
+    if (!eventName || !categoryId || !description) {
+      alert("All required fields must be filled");
+      return;
+    }
 
-    console.log("EVENT DATA:", eventData);
+    setLoading(true);
 
-    
+    try {
+      await createEvent({
+        event_name: eventName,
+        category_id: categoryId,
+        description,
+        photos,
+      });
 
-    // RESET FORM (STATIC MODE)
-    setEventName("");
-    setCategory("");
-    setDescription("");
-    setPhotos([]);
+      alert("Event created successfully");
+
+      // reset
+      setEventName("");
+      setCategoryId("");
+      setDescription("");
+      setPhotos([]);
+    } catch (err) {
+      console.error("Create Event Error:", err);
+      alert("Failed to create event");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
     <div className="create-event-wrapper">
       <div className="create-event-card">
-        {/* ===== EVENT NAME ===== */}
+        {/* Event Name */}
         <div className="form-group">
           <label>Event Name</label>
           <input
@@ -78,23 +93,23 @@ export default function CreateEvent() {
           />
         </div>
 
-        {/* ===== CATEGORY ===== */}
+        {/* Category */}
         <div className="form-group">
           <label>Category</label>
           <select
-            value={category}
-            onChange={(e) => setCategory(e.target.value)}
+            value={categoryId}
+            onChange={(e) => setCategoryId(e.target.value)}
           >
             <option value="">Select</option>
             {categories.map((cat) => (
-              <option key={cat.id} value={cat.name}>
+              <option key={cat.id} value={cat.id}>
                 {cat.name}
               </option>
             ))}
           </select>
         </div>
 
-        {/* ===== DESCRIPTION ===== */}
+        {/* Description */}
         <div className="form-group">
           <label>Description</label>
           <textarea
@@ -104,7 +119,7 @@ export default function CreateEvent() {
           />
         </div>
 
-        {/* ===== UPLOAD PHOTOS ===== */}
+        {/* Photos */}
         <div className="form-group">
           <label>Photos (Optional)</label>
           <label className="upload-box">
@@ -114,20 +129,19 @@ export default function CreateEvent() {
             <input type="file" multiple hidden onChange={handlePhotoUpload} />
           </label>
 
-          {/* Preview count */}
           {photos.length > 0 && (
             <p className="photo-count">{photos.length} image(s) selected</p>
           )}
         </div>
       </div>
 
-      {/* ===== FOOTER BUTTONS ===== */}
+      {/* Footer */}
       <div className="create-event-footer">
         <button
           className="btn-cancel"
           onClick={() => {
             setEventName("");
-            setCategory("");
+            setCategoryId("");
             setDescription("");
             setPhotos([]);
           }}
@@ -135,8 +149,8 @@ export default function CreateEvent() {
           Cancel
         </button>
 
-        <button className="btn-post" onClick={handleSubmit}>
-          Post
+        <button className="btn-post" onClick={handleSubmit} disabled={loading}>
+          {loading ? "Posting..." : "Post"}
         </button>
       </div>
     </div>

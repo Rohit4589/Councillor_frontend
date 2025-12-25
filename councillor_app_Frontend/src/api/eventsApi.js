@@ -1,53 +1,55 @@
 // src/api/eventsApi.js
 
-const BASE_URL = "http://localhost:5000/api";
+const BASE_URL = "http://localhost:5000/api/admin";
 
 /* ===============================
    GET EVENT CATEGORIES
    =============================== */
 export const getEventCategories = async () => {
-  const res = await fetch(`${BASE_URL}/event-categories`);
+  const res = await fetch(`${BASE_URL}/category`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch event categories");
-  }
+  if (!res.ok) throw new Error("Failed to fetch categories");
 
-  const data = await res.json();
+  const json = await res.json();
 
-  // normalize response
-  return data.map((item) => ({
-    id: item.id || item._id,
-    name: item.name,
+  return json.data.map((item) => ({
+    id: item.category_id,
+    name: item.category_name,
   }));
 };
 
 /* ===============================
-   CREATE EVENT (WITH PHOTOS)
+   CREATE EVENT (DOC COMPLIANT)
    =============================== */
 export const createEvent = async ({
-  eventName,
-  category,
+  event_name,
+  category_id,
   description,
   photos,
 }) => {
   const formData = new FormData();
 
-  formData.append("eventName", eventName);
-  formData.append("category", category);
+  formData.append("event_name", event_name);
+  formData.append("category_id", category_id);
   formData.append("description", description);
 
-  photos.forEach((photo) => {
-    formData.append("photos", photo);
+  photos.forEach((file) => {
+    formData.append("photos[]", file);
   });
 
-  const res = await fetch(`${BASE_URL}/events`, {
+  const res = await fetch(`${BASE_URL}/announcement`, {
     method: "POST",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
     body: formData,
   });
 
-  if (!res.ok) {
-    throw new Error("Failed to create event");
-  }
+  if (!res.ok) throw new Error("Create event failed");
 
   return res.json();
 };

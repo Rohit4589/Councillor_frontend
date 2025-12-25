@@ -3,34 +3,28 @@ import { useEffect, useState } from "react";
 import { getOfficers } from "../api/officersApi";
 
 export default function Officers() {
+  /* ================================
+     STATE
+  ================================ */
+  const [officers, setOfficers] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   /* ================================
-     STATE (STATIC FOR NOW)
-     ================================ */
-
-  const [officers, setOfficers] = useState([
-    { id: 1, name: "Rajesh Sharma", phone: "+91 9876543210" },
-    { id: 2, name: "Amit Kumar", phone: "+91 9876543211" },
-    { id: 3, name: "Sneha Patel", phone: "+91 9876543212" },
-    { id: 4, name: "Vijay Singh", phone: "+91 9876543213" },
-  ]);
-
-  /* ================================
-     API FETCH (ENABLE LATER)
-     ================================ */
-
+     FETCH OFFICERS
+  ================================ */
   useEffect(() => {
     getOfficers()
       .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          setOfficers(data);
-        }
+        setOfficers(data);
       })
-      .catch((err) =>
-        console.warn("Officers API Error, using static data", err)
-      );
+      .finally(() => {
+        setLoading(false);
+      });
   }, []);
 
+  if (loading) {
+    return <p style={{ padding: 20 }}>Loading officers...</p>;
+  }
 
   return (
     <div className="officers-table">

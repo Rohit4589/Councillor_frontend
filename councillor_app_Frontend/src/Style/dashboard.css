@@ -1,3 +1,6 @@
+/* ===============================
+   DASHBOARD HEADER
+================================ */
 .dashboard-header h1 {
   font-size: 24px;
   font-weight: 600;
@@ -10,41 +13,55 @@
   font-size: 14px;
 }
 
-/* ===== CARDS ===== */
+/* ===============================
+   STAT CARDS (FIXED LAYOUT)
+   👉 3 cards, equal width
+================================ */
 .dashboard-cards {
-  margin-top: 20px;
+  margin-top: 24px;
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 25px;
+  grid-template-columns: repeat(3, 1fr); /* 🔥 33.33% each */
+  gap: 24px;
+  width: 100%;
 }
 
+/* Card */
 .stat-card {
-  background: #fff;
+  background: #ffffff;
   border: 1px solid #e5e7eb;
-  border-radius: 14px;
-  padding: 25px;
+  border-radius: 16px;
+  padding: 24px;
+
   display: flex;
   align-items: center;
-  gap: 10px;
-  min-height: 150px;
+  gap: 16px;
+
+  height: 140px;              /* 🔥 same height */
+  box-sizing: border-box;
 }
 
+/* Numbers */
 .stat-card h2 {
   margin: 0;
-  font-size: 22px;
+  font-size: 26px;
   font-weight: 600;
+  color: #111827;
 }
 
+/* Labels */
 .stat-card span {
   font-size: 14px;
   color: #6b7280;
 }
 
-/* ===== ICON BOX ===== */
+/* ===============================
+   ICON BOX
+================================ */
 .icon-box {
- width: 40px;
-  height: 40px;
-  border-radius: 10px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+
   display: flex;
   align-items: center;
   justify-content: center;
@@ -55,39 +72,48 @@
   height: 22px;
 }
 
-/* COLORS */
-.icon-box.blue { background: #e7f1ff; color: #2563eb; }
-.icon-box.purple { background: #f3e8ff; color: #7c3aed; }
-.icon-box.green { background: #e8fff3; color: #059669; }
-.icon-box.yellow { background: #fff6d9; color: #d97706; }
-
-/* ===== TABLE ===== */
-.dashboard-table {
-  margin-top: 30px;
-  background: #fff;
-  border-radius: 16px;
-  border: 1px solid #e5e7eb;
-  padding: 0;
-  /* ✅ important */
-  overflow: hidden;
-  /* ✅ keeps rounded corners */
+/* Icon colors */
+.icon-box.blue {
+  background: #e7f1ff;
+  color: #2563eb;
 }
 
-.dashboard-header {
-  margin: -20px -20px 0px;
-  /* 👈 cancels parent padding */
-  padding: 16px 40px;
-  
+.icon-box.green {
+  background: #e8fff3;
+  color: #059669;
+}
+
+.icon-box.yellow {
+  background: #fff6d9;
+  color: #d97706;
+}
+
+/* ===============================
+   TABLE CONTAINER
+================================ */
+.dashboard-table {
+  margin-top: 32px;
+  background: #ffffff;
+  border-radius: 16px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+}
+
+/* Table Header */
+.dashboard-table .dashboard-header {
+  padding: 20px 24px;
   border-bottom: 1px solid #e5e7eb;
 }
 
-.dashboard-header h3 {
-  padding-top:28px;
+.dashboard-table .dashboard-header h3 {
+  margin: 0;
   font-size: 22px;
   font-weight: 600;
-  
 }
 
+/* ===============================
+   TABLE
+================================ */
 .dashboard-table table {
   width: 100%;
   border-collapse: collapse;
@@ -95,17 +121,14 @@
 
 .dashboard-table th {
   text-align: left;
-  font-size: 16px;
+  font-size: 14px;
+  font-weight: 500;
   color: #5e6470;
-  padding-bottom: 12px;
-  padding-top: 12px;
   padding: 14px 20px;
-  background-color: #edeeee;
-  
+  background-color: #f1f3f5;
 }
 
 .dashboard-table td {
- 
   padding: 14px 20px;
   font-size: 14px;
   vertical-align: middle;
@@ -115,32 +138,28 @@
   border-top: 1px solid #f1f5f9;
 }
 
-
-/* ===== STATUS ===== */
-/* ===== STATUS ===== */
+/* ===============================
+   STATUS BADGES
+================================ */
 .status {
   display: inline-flex;
   align-items: center;
   justify-content: center;
 
   min-width: 120px;
-  height: 36px;              /* 🔥 KEY FIX */
-  padding: 0 16px;           /* horizontal only */
+  height: 36px;
+  padding: 0 16px;
 
   border-radius: 999px;
   font-size: 13px;
   font-weight: 500;
-  line-height: 1;            /* 🔥 IMPORTANT */
-  text-align: center;
   white-space: nowrap;
 }
 
-
+/* Status colors */
 .status.progress {
   background: #e7f1ff;
   color: #2563eb;
-  padding: 13px 12px;
-  
 }
 
 .status.completed {
@@ -153,7 +172,22 @@
   color: #b45309;
 }
 
-
+/* ===============================
+   TIME COLUMN
+================================ */
 .time {
   color: #6b7280;
+}
+
+/* ===============================
+   RESPONSIVE (MOBILE)
+================================ */
+@media (max-width: 768px) {
+  .dashboard-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card {
+    height: auto;
+  }
 }

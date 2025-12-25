@@ -1,7 +1,6 @@
 import "../Style/categories.css";
-import { Pencil, Trash2 } from "lucide-react";
+import { Pencil, Trash2, X, Save } from "lucide-react";
 import { useEffect, useState } from "react";
-import CategoryModal from "./CategoryModal";
 import DeleteConfirmModal from "./DeleteConfirmModal";
 import { useOutletContext } from "react-router-dom";
 
@@ -13,103 +12,139 @@ import {
 } from "../api/categoriesApi";
 
 export default function Categories() {
-  /* ================================
-     STATE (STATIC FALLBACK)
-     ================================ */
   const { newCategory, clearNewCategory } = useOutletContext();
 
+  /* ================================
+     STATE
+  ================================ */
   const [categories, setCategories] = useState([
-    { id: 1, name: "Street Lights", count: 156, phone: "95883 43566" },
-    { id: 2, name: "Roads & Potholes", count: 234, phone: "95883 43566" },
-    { id: 3, name: "Garbage Collection", count: 189, phone: "95883 43566" },
-    { id: 4, name: "Water Supply", count: 98, phone: "95883 43566" },
-    { id: 5, name: "Parks & Gardens", count: 67, phone: "95883 43566" },
-    { id: 6, name: "Public Toilets", count: 54, phone: "95883 43566" },
-    { id: 7, name: "Street Cleaning", count: 112, phone: "95883 43566" },
-    { id: 8, name: "Traffic Signals", count: 39, phone: "95883 43566" },
-  ]);
+  {
+    id: 101,
+    name: "Street Lights",
+    count: 156,
+    phone: "9588343566",
+  },
+  {
+    id: 102,
+    name: "Roads & Potholes",
+    count: 234,
+    phone: "9588343566",
+  },
+  {
+    id: 103,
+    name: "Garbage Collection",
+    count: 189,
+    phone: "9588343566",
+  },
+  {
+    id: 104,
+    name: "Water Supply",
+    count: 98,
+    phone: "9588343566",
+  },
+  {
+    id: 105,
+    name: "Street Cleaning",
+    count: 112,
+    phone: "9588343566",
+  },
+]);
 
-  const [openEdit, setOpenEdit] = useState(false);
+  const [openModal, setOpenModal] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
 
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
+
   /* ================================
-     FETCH FROM BACKEND (SAFE)
-     ================================ */
+     FETCH CATEGORIES
+  ================================ */
   useEffect(() => {
     getCategories()
-      .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          setCategories(data);
-        }
-      })
-      .catch(() => console.warn("Backend not ready, using static categories"));
+      .then(setCategories)
+      .catch(() =>
+        console.warn("Backend not ready, using empty categories")
+      );
   }, []);
 
   /* ================================
-     HANDLERS
-     ================================ */
-  const handleEdit = (cat) => {
-    setSelectedCategory(cat);
-    setOpenEdit(true);
-  };
-
-  const handleDelete = (cat) => {
-    setSelectedCategory(cat);
-    setOpenDelete(true);
-  };
-
-  const handleSaveCategory = async (data) => {
-    // ================= ADD =================
-    if (!selectedCategory) {
+     ADD FROM TOP BAR
+  ================================ */
+  useEffect(() => {
+    if (newCategory) {
       const tempId = Date.now();
 
-      // optimistic UI (same as old static logic)
       setCategories((prev) => [
         ...prev,
-        {
-          id: tempId,
-          name: data.name,
-          phone: data.phone,
-          count: 0,
-        },
+        { id: tempId, name: newCategory.name, phone: newCategory.phone, count: 0 },
+      ]);
+
+      addCategory(newCategory).catch(console.error);
+      clearNewCategory();
+    }
+  }, [newCategory, clearNewCategory]);
+
+  /* ================================
+     HANDLERS
+  ================================ */
+  const openAdd = () => {
+    setSelectedCategory(null);
+    setName("");
+    setPhone("");
+    setOpenModal(true);
+  };
+
+  const openEdit = (cat) => {
+    setSelectedCategory(cat);
+    setName(cat.name);
+    setPhone(cat.phone);
+    setOpenModal(true);
+  };
+
+  const saveCategory = async () => {
+    if (!name || !phone) return;
+
+    // ADD
+    if (!selectedCategory) {
+      const tempId = Date.now();
+      setCategories((prev) => [
+        ...prev,
+        { id: tempId, name, phone, count: 0 },
       ]);
 
       try {
-        await addCategory(data);
-      } catch (err) {
-        console.error("Add Category API Error:", err);
+        await addCategory({ name, phone });
+      } catch (e) {
+        console.error(e);
       }
     }
-
-    // ================= EDIT =================
+    // EDIT
     else {
       setCategories((prev) =>
-        prev.map((item) =>
-          item.id === selectedCategory.id ? { ...item, ...data } : item
+        prev.map((c) =>
+          c.id === selectedCategory.id ? { ...c, name, phone } : c
         )
       );
 
       try {
-        await updateCategory(selectedCategory.id, data);
-      } catch (err) {
-        console.error("Update Category API Error:", err);
+        await updateCategory(selectedCategory.id, { name, phone });
+      } catch (e) {
+        console.error(e);
       }
     }
 
-    setOpenEdit(false);
-    setSelectedCategory(null);
+    setOpenModal(false);
   };
 
   const confirmDelete = async () => {
     const id = selectedCategory.id;
-
-    setCategories((prev) => prev.filter((item) => item.id !== id));
+    setCategories((prev) => prev.filter((c) => c.id !== id));
 
     try {
       await deleteCategory(id);
-    } catch (err) {
-      console.error("Delete Category API Error:", err);
+    } catch (e) {
+      console.error(e);
     }
 
     setOpenDelete(false);
@@ -117,31 +152,8 @@ export default function Categories() {
   };
 
   /* ================================
-     ADD FROM TOP BAR (UNCHANGED FLOW)
-     ================================ */
-  useEffect(() => {
-    if (newCategory) {
-      const tempId = Date.now();
-
-      setCategories((prev) => [
-        ...prev,
-        {
-          id: tempId,
-          name: newCategory.name,
-          phone: newCategory.phone,
-          count: 0,
-        },
-      ]);
-
-      // backend sync
-      addCategory(newCategory).catch((err) =>
-        console.error("Add Category API Error:", err)
-      );
-
-      clearNewCategory();
-    }
-  }, [newCategory, clearNewCategory]);
-
+     UI
+  ================================ */
   return (
     <>
       {/* ===== TABLE ===== */}
@@ -166,12 +178,15 @@ export default function Categories() {
                   <Pencil
                     size={18}
                     className="edit"
-                    onClick={() => handleEdit(cat)}
+                    onClick={() => openEdit(cat)}
                   />
                   <Trash2
                     size={18}
                     className="delete"
-                    onClick={() => handleDelete(cat)}
+                    onClick={() => {
+                      setSelectedCategory(cat);
+                      setOpenDelete(true);
+                    }}
                   />
                 </td>
               </tr>
@@ -180,16 +195,44 @@ export default function Categories() {
         </table>
       </div>
 
-      {/* ===== EDIT MODAL (UNCHANGED) ===== */}
-      <CategoryModal
-        open={openEdit}
-        onClose={() => setOpenEdit(false)}
-        onSave={handleSaveCategory}
-        mode="edit"
-        data={selectedCategory}
-      />
+      {/* ===== ADD / EDIT MODAL ===== */}
+      {openModal && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <div className="modal-header">
+              <h3>{selectedCategory ? "Edit Category" : "Add Category"}</h3>
+              <X className="close-icon" onClick={() => setOpenModal(false)} />
+            </div>
 
-      {/* ===== DELETE MODAL (UNCHANGED) ===== */}
+            <div className="modal-body">
+              <label>Category Name</label>
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Street Lights"
+              />
+
+              <label>Phone Number</label>
+              <input
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                placeholder="9876543210"
+              />
+            </div>
+
+            <div className="modal-footer">
+              <button className="btn-cancel" onClick={() => setOpenModal(false)}>
+                Cancel
+              </button>
+              <button className="btn-save" onClick={saveCategory}>
+                <Save size={16} /> Save
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ===== DELETE MODAL ===== */}
       <DeleteConfirmModal
         open={openDelete}
         onClose={() => setOpenDelete(false)}
