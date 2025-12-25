@@ -1,45 +1,139 @@
-const BASE_URL = "http://localhost:5000/api/categories";
+// src/api/categoriesApi.js
+import { faker } from "@faker-js/faker";
 
-export const getCategories = async () => {
-  const res = await fetch(BASE_URL);
-  if (!res.ok) throw new Error("Fetch failed");
+/* ======================================================
+   CONFIG
+====================================================== */
+const USE_FAKE_DATA = true; // 🔁 change to false when backend is ready
 
-  const data = await res.json();
+const BASE_URL = "http://localhost:5000/admin/category";
 
-  return data.map((item) => ({
-    id: item.id || item.categoryId || item._id,
-    name: item.name,
-    phone: item.phone,
-    count: item.count ?? 0,
+/* ======================================================
+   FAKE DATA (FOR TESTING)
+====================================================== */
+const generateFakeCategories = (count = 8) => {
+  return Array.from({ length: count }).map((_, index) => ({
+    id: index + 1,
+    name: faker.helpers.arrayElement([
+      "Street Lights",
+      "Roads & Potholes",
+      "Garbage Collection",
+      "Water Supply",
+      "Parks & Gardens",
+      "Public Toilets",
+      "Street Cleaning",
+      "Traffic Signals",
+    ]),
+    count: faker.number.int({ min: 10, max: 300 }),
+    phone: faker.phone.number("9#########"),
   }));
 };
 
+/* ======================================================
+   GET CATEGORIES
+====================================================== */
+export const getCategories = async () => {
+  // 🧪 Fake mode
+  if (USE_FAKE_DATA) {
+    return new Promise((resolve) => {
+      setTimeout(() => resolve(generateFakeCategories()), 500);
+    });
+  }
+
+  // 🌐 Real API
+  const res = await fetch(BASE_URL, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
+
+  if (!res.ok) throw new Error("Failed to fetch categories");
+
+  const json = await res.json();
+
+  return json.data.map((item) => ({
+    id: item.category_id,
+    name: item.category_name,
+    count: item.total_complaints,
+    phone: item.phone_number,
+  }));
+};
+
+/* ======================================================
+   ADD CATEGORY
+====================================================== */
 export const addCategory = async (data) => {
+  if (USE_FAKE_DATA) {
+    return Promise.resolve({
+      success: true,
+      message: "Category created (fake)",
+    });
+  }
+
   const res = await fetch(BASE_URL, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: JSON.stringify({
+      category_name: data.name,
+      phone_number: data.phone,
+    }),
   });
 
-  if (!res.ok) throw new Error("Add failed");
+  if (!res.ok) throw new Error("Add category failed");
+
   return res.json();
 };
 
+/* ======================================================
+   UPDATE CATEGORY
+====================================================== */
 export const updateCategory = async (id, data) => {
+  if (USE_FAKE_DATA) {
+    return Promise.resolve({
+      success: true,
+      message: "Category updated (fake)",
+    });
+  }
+
   const res = await fetch(`${BASE_URL}/${id}`, {
     method: "PUT",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+    body: JSON.stringify({
+      category_name: data.name,
+      phone_number: data.phone,
+    }),
   });
 
-  if (!res.ok) throw new Error("Update failed");
+  if (!res.ok) throw new Error("Update category failed");
+
   return res.json();
 };
 
+/* ======================================================
+   DELETE CATEGORY
+====================================================== */
 export const deleteCategory = async (id) => {
+  if (USE_FAKE_DATA) {
+    return Promise.resolve({
+      success: true,
+      message: "Category deleted (fake)",
+    });
+  }
+
   const res = await fetch(`${BASE_URL}/${id}`, {
     method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
   });
 
-  if (!res.ok) throw new Error("Delete failed");
+  if (!res.ok) throw new Error("Delete category failed");
+
+  return res.json();
 };
