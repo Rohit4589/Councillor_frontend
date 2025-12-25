@@ -1,21 +1,34 @@
-// src/api/complaintsApi.js
 import { faker } from "@faker-js/faker";
+// import axios from "axios";
 
 const USE_FAKE_DATA = true;
 
 /* ===============================
-   STATUS → TIMELINE MAPPER
+   BACKEND → FRONTEND MAPPERS
    =============================== */
-const buildTimeline = (status) => {
+
+// backend: IN_PROGRESS | SUBMITTED | COMPLETED
+// frontend: progress | submitted | completed | seen
+const mapBackendStatus = (status) => {
   switch (status) {
-    case "submitted":
-      return ["Submitted"];
-    case "seen":
-      return ["Submitted", "Seen"];
-    case "progress":
+    case "IN_PROGRESS":
+      return "progress";
+    case "SUBMITTED":
+      return "submitted";
+    case "COMPLETED":
+      return "completed";
+    default:
+      return "submitted";
+  }
+};
+
+const buildTimelineFromBackend = (status) => {
+  switch (status) {
+    case "IN_PROGRESS":
       return ["Submitted", "Seen", "In Progress"];
-    case "completed":
+    case "COMPLETED":
       return ["Submitted", "Seen", "In Progress", "Completed"];
+    case "SUBMITTED":
     default:
       return ["Submitted"];
   }
@@ -24,14 +37,19 @@ const buildTimeline = (status) => {
 /* ===============================
    GET ALL COMPLAINTS
    =============================== */
-export const getComplaints = async () => {
+export const getComplaints = async ({
+  councillorId,
+  limit = 20,
+  offset = 0,
+  filters = {},
+} = {}) => {
   if (USE_FAKE_DATA) {
     return Array.from({ length: 8 }, () => {
-      const statuses = ["submitted", "seen", "progress", "completed"];
-      const status = faker.helpers.arrayElement(statuses);
+      const backendStatuses = ["IN_PROGRESS", "SUBMITTED", "COMPLETED"];
+      const backendStatus = faker.helpers.arrayElement(backendStatuses);
 
       return {
-        id: faker.string.alphanumeric(8).toUpperCase(),
+        id: faker.string.alphanumeric(8).toUpperCase(), // complaint_id
         category: faker.helpers.arrayElement([
           "Street Lights",
           "Garbage Collection",
@@ -39,14 +57,42 @@ export const getComplaints = async () => {
           "Roads & Potholes",
         ]),
         summary: faker.lorem.sentence(6),
-        status, // 🔥 SINGLE SOURCE OF TRUTH
+        status: mapBackendStatus(backendStatus),
         ward: `Ward ${faker.number.int({ min: 1, max: 20 })}`,
         date: faker.date.recent().toISOString().split("T")[0],
       };
     });
   }
 
-  // backend later
+  /* ===============================
+     BACKEND IMPLEMENTATION (READY)
+     =============================== */
+  /*
+  const response = await axios.get(
+    `/admin/complaints/my`,
+    {
+      params: {
+        councillorid: councillorId,
+        limit,
+        offset,
+        ...filters,
+      },
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data.data.map((c) => ({
+    id: c.complaint_id,
+    category: c.category,
+    summary: c.summary,
+    status: mapBackendStatus(c.status),
+    ward: c.ward,
+    date: c.date,
+  }));
+  */
+
   return [];
 };
 
@@ -55,8 +101,8 @@ export const getComplaints = async () => {
    =============================== */
 export const getComplaintById = async (id) => {
   if (USE_FAKE_DATA) {
-    const statuses = ["submitted", "seen", "progress", "completed"];
-    const status = faker.helpers.arrayElement(statuses);
+    const backendStatuses = ["IN_PROGRESS", "SUBMITTED", "COMPLETED"];
+    const backendStatus = faker.helpers.arrayElement(backendStatuses);
 
     return {
       id,
@@ -71,8 +117,8 @@ export const getComplaintById = async (id) => {
       ward: `Ward ${faker.number.int({ min: 1, max: 20 })}`,
       date: faker.date.recent().toISOString().split("T")[0],
       location: faker.location.street(),
-      status,
-      statusTimeline: buildTimeline(status), // ✅ FIX
+      status: mapBackendStatus(backendStatus),
+      statusTimeline: buildTimelineFromBackend(backendStatus),
       citizen: {
         name: faker.person.fullName(),
         phone: faker.phone.number("+91 ##########"),
@@ -84,6 +130,36 @@ export const getComplaintById = async (id) => {
       ],
     };
   }
+
+  /* ===============================
+     BACKEND IMPLEMENTATION (READY)
+     =============================== */
+  /*
+  const response = await axios.get(
+    `/admin/complaints/${id}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  const c = response.data.data;
+
+  return {
+    id: c.complaint_id,
+    category: c.category,
+    summary: c.summary,
+    description: c.description,
+    ward: c.ward,
+    date: c.date,
+    location: c.location,
+    status: mapBackendStatus(c.status),
+    statusTimeline: buildTimelineFromBackend(c.status),
+    citizen: c.citizen,
+    images: c.images || [],
+  };
+  */
 
   return null;
 };
