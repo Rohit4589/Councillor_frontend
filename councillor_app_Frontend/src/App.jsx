@@ -16,6 +16,11 @@ import ComplaintDetails from "./Screens/ComplaintDetails";
 
 import ProtectedRoute from "./Navigation/ProtectedRoutes";
 
+// 🆕 SUPER ADMIN IMPORTS
+import SuperMainLayout from "./superAdmin/layout/SuperMainLayout";
+import superAdminRoutes from "./superAdmin/routes/superAdminRoutes";
+import SuperAdminProtectedRoute from "./Navigation/SuperAdminProtectedRoute";
+
 function App() {
   return (
     <BrowserRouter>
@@ -23,10 +28,10 @@ function App() {
         {/* Default redirect */}
         <Route path="/" element={<Navigate to="/login" replace />} />
 
-        {/* Login page (PUBLIC) */}
+        {/* Login page */}
         <Route path="/login" element={<Login />} />
 
-        {/* PROTECTED APP ROUTES */}
+        {/* ================= WARD ADMIN (UNCHANGED) ================= */}
         <Route
           element={
             <ProtectedRoute>
@@ -41,6 +46,18 @@ function App() {
           <Route path="/complaints/:id" element={<ComplaintDetails />} />
           <Route path="/officers" element={<Officers />} />
           <Route path="/create-event" element={<CreateEvent />} />
+        </Route>
+
+        {/* ================= SUPER ADMIN ================= */}
+        <Route
+          path="/super"
+          element={
+            <SuperAdminProtectedRoute>
+              <SuperMainLayout />
+            </SuperAdminProtectedRoute>
+          }
+        >
+          {superAdminRoutes}
         </Route>
       </Routes>
     </BrowserRouter>

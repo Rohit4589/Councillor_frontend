@@ -45,14 +45,26 @@ const Login = () => {
        =============================== */
 
     // Dummy auth data for now
-    localStorage.setItem("token", "dev-token");
-    localStorage.setItem("role", "WARD_ADMIN");
-    localStorage.setItem("wardId", "WARD_01");
-    localStorage.setItem("userId", "USER_01");
+    
+  // Dummy auth data for now
+  const role = email.includes("super")
+    ? "SUPER_ADMIN"
+    : "WARD_ADMIN";
 
-    // Always navigate
+  localStorage.setItem("token", "dev-token");
+  localStorage.setItem("role", role);
+  localStorage.setItem("wardId", "WARD_01");
+  localStorage.setItem("userId", "USER_01");
+
+  // 🔥 ROLE BASED REDIRECT
+  if (role === "SUPER_ADMIN") {
+    navigate("/super/councillor");
+  } else {
     navigate("/dashboard");
-  };
+  }
+};
+  
+
 
   return (
     <div
@@ -139,6 +151,7 @@ const Login = () => {
                 fontWeight: 300,
               }}
               onClick={handleLogin}
+              
             >
               Login to Dashboard
             </button>

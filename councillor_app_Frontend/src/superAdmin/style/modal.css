@@ -1,0 +1,105 @@
+/* ===== MODAL OVERLAY ===== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 999;
+}
+
+/* ===== MODAL CARD ===== */
+.modal-card {
+    background: #ffffff;
+    width: 420px;
+    border-radius: 16px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    animation: scaleIn 0.2s ease-in-out;
+}
+
+/* Header */
+.modal-header {
+    padding: 18px 20px;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.modal-header svg {
+    cursor: pointer;
+    color: #6b7280;
+}
+
+/* Body */
+.modal-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.modal-body label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.modal-body input {
+    height: 44px;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    padding: 0 14px;
+    font-size: 14px;
+}
+
+/* Footer */
+.super-admin .modal-footer {
+    padding: 16px 20px;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+}
+
+.super-admin .btn-cancel {
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    padding: 10px 18px;
+    border-radius: 12px;
+    cursor: pointer;
+}
+
+.btn-primary {
+    background: #003a68;
+    color: #ffffff;
+    border: none;
+    padding: 10px 22px;
+    border-radius: 12px;
+    cursor: pointer;
+    width:43%;
+}
+
+.btn-primary:hover {
+    background: #002f54;
+}
+
+/* Animation */
+@keyframes scaleIn {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
