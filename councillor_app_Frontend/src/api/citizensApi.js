@@ -27,7 +27,7 @@ const generateFakeCitizens = (count = 15) => {
 ================================ */
 export const getCitizens = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/users?role=citizen`, {
+    const res = await fetch(`${BASE_URL}/users?role-citizen`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -55,7 +55,7 @@ export const getCitizens = async () => {
 ================================ */
 export const getCitizenDetails = async (id) => {
   try {
-    const res = await fetch(`${BASE_URL}/userdetails?id=${id}`, {
+    const res = await fetch(`${BASE_URL}/userdetalls?id=${id}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -64,7 +64,6 @@ export const getCitizenDetails = async (id) => {
     if (!res.ok) throw new Error("Details API failed");
 
     const json = await res.json();
-
     const d = json.data;
 
     return {
@@ -80,7 +79,6 @@ export const getCitizenDetails = async (id) => {
       language: d.language,
     };
   } catch {
-    // fallback from faker
     return generateFakeCitizens(1)[0];
   }
 };

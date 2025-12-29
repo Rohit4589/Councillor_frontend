@@ -215,13 +215,21 @@ export default function Categories() {
               <label>Phone Number</label>
               <input
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => {
+                  const numericValue = e.target.value.replace(/\D/g, "");
+                  if (numericValue.length <= 10) {
+                    setPhone(numericValue);
+                  }
+                }}
                 placeholder="9876543210"
               />
             </div>
 
             <div className="modal-footer">
-              <button className="btn-cancel" onClick={() => setOpenModal(false)}>
+              <button
+                className="btn-cancel"
+                onClick={() => setOpenModal(false)}
+              >
                 Cancel
               </button>
               <button className="btn-save" onClick={saveCategory}>

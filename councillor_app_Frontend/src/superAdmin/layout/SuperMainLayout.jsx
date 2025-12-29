@@ -1,68 +1,72 @@
 import { Outlet } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Sidebar from "./SuperSidebar";
 import SuperTopNavbar from "./SuperTopNavbar";
 import "../Style/layout.css";
+import { faker } from "@faker-js/faker";
 
 // 🔴 BACKEND (ENABLE LATER)
-// import { useEffect } from "react";
 // import {
 //   getCouncillors,
 //   createCouncillor,
 // } from "../../api/superAdminCouncillorApi";
 
+/* ================================
+   FAKER DATA GENERATOR
+================================ */
+const generateFakeCouncillors = (count = 6) => {
+  return Array.from({ length: count }).map(() => ({
+    id: faker.string.uuid(),
+    name: faker.person.fullName(),
+    phone: faker.phone.number("9#########"),
+    ward: `Ward ${faker.number.int({ min: 1, max: 25 })}`,
+    status: faker.helpers.arrayElement(["active", "inactive"]),
+  }));
+};
+
 export default function SuperMainLayout() {
   /* ================================
-     SHARED STATE (STATIC FOR NOW)
-     ================================ */
-  const [councillors, setCouncillors] = useState([
-    {
-      id: 1,
-      name: "Rajesh Sharma",
-      phone: "+91 9876543210",
-      ward: "Ward 15",
-      status: "active",
-    },
-    {
-      id: 2,
-      name: "Priya Desai",
-      phone: "+91 9876543211",
-      ward: "Ward 12",
-      status: "active",
-    },
-  ]);
+     SHARED STATE
+  ================================ */
+  const [councillors, setCouncillors] = useState([]);
 
   /* ================================
-     CREATE (STATIC VERSION)
-     ================================ */
-  const handleCreateCouncillor = (newCouncillor) => {
+     FETCH / INIT DATA
+  ================================ */
+  useEffect(() => {
+    // 🔴 BACKEND VERSION
+    /*
+    const fetchData = async () => {
+      const data = await getCouncillors();
+      setCouncillors(data);
+    };
+    fetchData();
+    */
+
+    // ✅ FAKER DATA (DEV MODE)
+    setCouncillors(generateFakeCouncillors());
+  }, []);
+
+  /* ================================
+     CREATE COUNCILLOR
+  ================================ */
+  const handleCreateCouncillor = async (newCouncillor) => {
+    // 🔴 BACKEND VERSION
+    /*
+    const savedCouncillor = await createCouncillor(newCouncillor);
+    setCouncillors((prev) => [...prev, savedCouncillor]);
+    */
+
+    // ✅ STATIC (FAKER MODE)
     setCouncillors((prev) => [
       ...prev,
       {
-        id: Date.now(),
+        id: faker.string.uuid(),
         status: "active",
         ...newCouncillor,
       },
     ]);
   };
-
-  /* ================================
-     🔴 BACKEND VERSION (ENABLE LATER)
-     ================================ */
-  /*
-  useEffect(() => {
-    getCouncillors()
-      .then((data) => setCouncillors(data))
-      .catch((err) =>
-        console.error("Councillor API Error:", err)
-      );
-  }, []);
-
-  const handleCreateCouncillor = async (newCouncillor) => {
-    const savedCouncillor = await createCouncillor(newCouncillor);
-    setCouncillors((prev) => [...prev, savedCouncillor]);
-  };
-  */
 
   return (
     <div className="super-admin admin-layout">

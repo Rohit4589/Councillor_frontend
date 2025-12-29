@@ -1,6 +1,6 @@
 import "../Style/Citizens.css";
 import { useEffect, useMemo, useState } from "react";
-import { getCitizens } from "../api/citizensApi";
+import { getCitizens, getCitizenDetails } from "../api/citizensApi";
 
 export default function Citizens() {
   /* ================================
@@ -14,62 +14,12 @@ export default function Citizens() {
   const PAGE_SIZE = 5;
 
   /* ================================
-     FETCH DATA (API + FALLBACK)
+     FETCH DATA (API decides faker/backend)
   ================================ */
   useEffect(() => {
-    getCitizens()
-      .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          setCitizens(data);
-        }
-      })
-      .catch(() => {
-        // faker-style fallback
-        setCitizens([
-          {
-            id: 1,
-            name: "Johnathan Shanahan",
-            phone: "616-393-9976",
-            ward: "Ward 15",
-            email: "rashawn35@gmail.com",
-          },
-          {
-            id: 2,
-            name: "Wallace Sipes",
-            phone: "1-989-987-3375",
-            ward: "Ward 19",
-            email: "green_collins@hotmail.com",
-          },
-          {
-            id: 3,
-            name: "Reginald Bogisich",
-            phone: "206-381-5052",
-            ward: "Ward 27",
-            email: "alfredo.ritchie67@yahoo.com",
-          },
-          {
-            id: 4,
-            name: "Dr. Jacob Little",
-            phone: "1-232-884-8612",
-            ward: "Ward 27",
-            email: "enola63@yahoo.com",
-          },
-          {
-            id: 5,
-            name: "Lauren Rau",
-            phone: "798-222-3028",
-            ward: "Ward 9",
-            email: "marquise3@gmail.com",
-          },
-          {
-            id: 6,
-            name: "Michael Scott",
-            phone: "987-654-3210",
-            ward: "Ward 12",
-            email: "michael@dundermifflin.com",
-          },
-        ]);
-      });
+    getCitizens().then((data) => {
+      setCitizens(data);
+    });
   }, []);
 
   /* ================================
@@ -85,10 +35,29 @@ export default function Citizens() {
 
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
 
-  const paginated = filtered.slice(
-    (page - 1) * PAGE_SIZE,
-    page * PAGE_SIZE
-  );
+  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+
+  /* ================================
+     VIEW DETAILS (FULL DATA)
+  ================================ */
+const handleViewDetails = async (citizen) => {
+  // ✅ OPEN MODAL IMMEDIATELY with existing data
+  setSelectedCitizen(citizen);
+
+  // 🔄 FETCH FULL DETAILS IN BACKGROUND
+  try {
+    const fullDetails = await getCitizenDetails(citizen.id);
+
+    // ✅ UPDATE MODAL WITH FULL DATA
+    setSelectedCitizen((prev) => ({
+      ...prev,
+      ...fullDetails,
+    }));
+  } catch {
+    // fallback: keep existing data
+  }
+};
+
 
   /* ================================
      UI
@@ -131,7 +100,7 @@ export default function Citizens() {
                 <td>
                   <button
                     className="view-btn"
-                    onClick={() => setSelectedCitizen(citizen)}
+                    onClick={() => handleViewDetails(citizen)}
                   >
                     View Details
                   </button>
@@ -143,10 +112,7 @@ export default function Citizens() {
 
         {/* PAGINATION */}
         <div className="pagination">
-          <button
-            disabled={page === 1}
-            onClick={() => setPage((p) => p - 1)}
-          >
+          <button disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
             Prev
           </button>
 
@@ -163,7 +129,7 @@ export default function Citizens() {
         </div>
       </div>
 
-      {/* MODAL */}
+      {/* MODAL (UI UNCHANGED) */}
       {selectedCitizen && (
         <div className="modal-overlay">
           <div className="modal-card">
@@ -178,10 +144,60 @@ export default function Citizens() {
             </div>
 
             <div className="modal-body">
-              <p><span>Name</span>{selectedCitizen.name}</p>
-              <p><span>Phone</span>{selectedCitizen.phone}</p>
-              <p><span>Email</span>{selectedCitizen.email}</p>
-              <p><span>Ward</span>{selectedCitizen.ward}</p>
+              <p>
+                <span>Name</span>
+                {selectedCitizen.name}
+              </p>
+              <p>
+                <span>Phone</span>
+                {selectedCitizen.phone}
+              </p>
+              <p>
+                <span>Email</span>
+                {selectedCitizen.email}
+              </p>
+              <p>
+                <span>Ward</span>
+                {selectedCitizen.ward}
+              </p>
+
+              {/* These will appear automatically from faker/backend */}
+              {selectedCitizen.aadhar && (
+                <p>
+                  <span>Aadhar</span>
+                  {selectedCitizen.aadhar}
+                </p>
+              )}
+              {selectedCitizen.city && (
+                <p>
+                  <span>City</span>
+                  {selectedCitizen.city}
+                </p>
+              )}
+              {selectedCitizen.state && (
+                <p>
+                  <span>State</span>
+                  {selectedCitizen.state}
+                </p>
+              )}
+              {selectedCitizen.bloodGroup && (
+                <p>
+                  <span>Blood Group</span>
+                  {selectedCitizen.bloodGroup}
+                </p>
+              )}
+              {selectedCitizen.disability && (
+                <p>
+                  <span>Disability</span>
+                  {selectedCitizen.disability}
+                </p>
+              )}
+              {selectedCitizen.language && (
+                <p>
+                  <span>Language</span>
+                  {selectedCitizen.language}
+                </p>
+              )}
             </div>
           </div>
         </div>

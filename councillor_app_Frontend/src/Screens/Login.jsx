@@ -104,7 +104,7 @@ const Login = () => {
           className="card shadow mx-auto"
           style={{ maxWidth: 400, borderRadius: 20 }}
         >
-          <div className="card-body p-4">
+<form className="card-body p-4" onSubmit={handleLogin}>
             <h6 className="text-start mb-3" style={{ fontWeight: 400 }}>
               Login to Dashboard
             </h6>
@@ -142,7 +142,7 @@ const Login = () => {
             </div>
 
             <button
-              type="button"
+              type="submit"
               className="btn w-100 py-2 text-white"
               style={{
                 borderRadius: 12,
@@ -155,7 +155,7 @@ const Login = () => {
             >
               Login to Dashboard
             </button>
-          </div>
+          </form>
         </div>
       </div>
     </div>

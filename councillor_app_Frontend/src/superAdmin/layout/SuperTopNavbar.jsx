@@ -11,28 +11,24 @@ export default function SuperTopNavbar({ onCreate }) {
   const [openModal, setOpenModal] = useState(false);
 
   /* ================================
-     FORM STATE (STATIC FOR NOW)
-     ================================ */
-
+     FORM STATE
+  ================================ */
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [ward, setWard] = useState("");
-  const [city, setCity] = useState("");
 
   const currentRoute = Object.values(superAdminRoutesConfig).find((route) =>
     location.pathname.startsWith(route.path)
   );
 
-
   /* ================================
      HANDLERS
-     ================================ */
+  ================================ */
 
   const resetForm = () => {
     setName("");
     setPhone("");
     setWard("");
-    setCity("");
   };
 
   const handleCreate = () => {
@@ -40,20 +36,11 @@ export default function SuperTopNavbar({ onCreate }) {
       name,
       phone,
       ward,
-      status: "active",
     };
-    
 
-    /*
-    🔴 API VERSION (PASTE LATER)
-    ---------------------------
-    fetch("http://localhost:5000/api/councillors", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload)
-    });
-    */
-    onCreate(payload); 
+    // ✅ Pass data to layout (static OR backend handled there)
+    onCreate(payload);
+
     resetForm();
     setOpenModal(false);
   };
@@ -62,7 +49,7 @@ export default function SuperTopNavbar({ onCreate }) {
     <>
       {/* ================================
          TOP BAR
-         ================================ */}
+      ================================ */}
       <div className="topbar">
         <div className="topbar-content">
           <div>
@@ -84,7 +71,7 @@ export default function SuperTopNavbar({ onCreate }) {
 
       {/* ================================
          ADD COUNCILLOR MODAL
-         ================================ */}
+      ================================ */}
       {openModal && (
         <div className="modal-overlay">
           <div className="modal-card">
@@ -107,7 +94,10 @@ export default function SuperTopNavbar({ onCreate }) {
                 type="text"
                 placeholder="7548984763"
                 value={phone}
-                onChange={(e) => setPhone(e.target.value)}
+                onChange={(e) => {
+                  const numericValue = e.target.value.replace(/\D/g, "");
+                  setPhone(numericValue.slice(0, 10));
+                }}
               />
 
               <label>Ward</label>
@@ -117,14 +107,6 @@ export default function SuperTopNavbar({ onCreate }) {
                 value={ward}
                 onChange={(e) => setWard(e.target.value)}
               />
-
-              {/* <label>City</label>
-              <input
-                type="text"
-                placeholder="Pune"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-              /> */}
             </div>
 
             <div className="modal-footer">

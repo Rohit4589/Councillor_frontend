@@ -1,54 +1,72 @@
-import { Pencil, X, Save } from "lucide-react";
+import { Pencil, X, Save, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import "../style/councillor.css";
 import "../style/modal.css";
 import { useOutletContext } from "react-router-dom";
 
 // 🔴 BACKEND (ENABLE LATER)
-// import { updateCouncillor } from "../../api/superAdminCouncillorApi";
+import {
+  getCouncillors,
+  updateCouncillor,
+  deleteCouncillor,
+} from "../api/superAdminCouncillorApi"
 
 export default function Councillor() {
   /* ================================
      STATE FROM LAYOUT
-     ================================ */
+  ================================ */
   const { councillors, setCouncillors } = useOutletContext();
 
   const [openEdit, setOpenEdit] = useState(false);
   const [selected, setSelected] = useState(null);
 
-  /* ================================
-     FETCH (NOT USED – STATIC MODE)
-     ================================ */
-  useEffect(() => {
-    /*
-    fetch("http://localhost:5000/api/councillors")
-      .then(res => res.json())
-      .then(data => setCouncillors(data))
-      .catch(err => console.error(err));
-    */
-  }, []);
+ 
 
   /* ================================
      HANDLERS
-     ================================ */
+  ================================ */
 
   const handleEdit = (row) => {
     setSelected(row);
     setOpenEdit(true);
   };
 
-  const handleSave = () => {
-    // 🔴 BACKEND VERSION (ENABLE LATER)
+  const handleSave = async () => {
+    // 🔴 BACKEND VERSION
     /*
-    await updateCouncillor(selected.id, selected);
+    const updated = await updateCouncillor(selected.id, {
+      name: selected.name,
+      phone: selected.phone,
+      ward: selected.ward,
+    });
+
+    setCouncillors((prev) =>
+      prev.map((c) => (c.id === updated.id ? updated : c))
+    );
     */
 
-    // ✅ STATIC UPDATE
+    // ✅ TEMP UPDATE
     setCouncillors((prev) =>
-      prev.map((item) => (item.id === selected.id ? selected : item))
+      prev.map((c) => (c.id === selected.id ? selected : c))
     );
 
     setOpenEdit(false);
+  };
+
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this councillor?"
+    );
+
+    if (!confirmDelete) return;
+
+    // 🔴 BACKEND VERSION
+    /*
+    await deleteCouncillor(id);
+    */
+
+    // ✅ TEMP DELETE
+    setCouncillors((prev) => prev.filter((c) => c.id !== id));
   };
 
   return (
@@ -61,13 +79,18 @@ export default function Councillor() {
               <th>Phone Number</th>
               <th>Ward Assigned</th>
               <th>Status</th>
-              <th style={{ textAlign: "right" }}>Actions</th>
+              <th style={{ textAlign: "center" }}>Actions</th>
             </tr>
           </thead>
 
           <tbody>
             {councillors.map((row) => (
-              <Row key={row.id} data={row} onEdit={handleEdit} />
+              <Row
+                key={row.id}
+                data={row}
+                onEdit={handleEdit}
+                onDelete={handleDelete}
+              />
             ))}
           </tbody>
         </table>
@@ -75,7 +98,7 @@ export default function Councillor() {
 
       {/* ================================
          EDIT MODAL
-         ================================ */}
+      ================================ */}
       {openEdit && selected && (
         <div className="modal-overlay">
           <div className="modal-card">
@@ -96,9 +119,13 @@ export default function Councillor() {
               <label>Phone Number</label>
               <input
                 value={selected.phone}
-                onChange={(e) =>
-                  setSelected({ ...selected, phone: e.target.value })
-                }
+                onChange={(e) => {
+                  const numericValue = e.target.value.replace(/\D/g, "");
+                  setSelected({
+                    ...selected,
+                    phone: numericValue.slice(0, 10),
+                  });
+                }}
               />
 
               <label>Ward</label>
@@ -128,9 +155,10 @@ export default function Councillor() {
 }
 
 /* ================================
-   TABLE ROW
-   ================================ */
-function Row({ data, onEdit }) {
+   TABLE ROW (UNCHANGED UI)
+================================ */
+
+function Row({ data, onEdit, onDelete }) {
   return (
     <tr>
       <td>{data.name}</td>
@@ -144,6 +172,11 @@ function Row({ data, onEdit }) {
       <td style={{ textAlign: "right" }}>
         <div className="table-actions">
           <Pencil size={18} onClick={() => onEdit(data)} />
+          <Trash2
+            size={18}
+            style={{ marginLeft: "10px", cursor: "pointer" }}
+            onClick={() => onDelete(data.id)}
+          />
         </div>
       </td>
     </tr>

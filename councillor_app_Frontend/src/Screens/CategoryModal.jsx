@@ -34,16 +34,15 @@ export default function CategoryModal({
   /* ================================
      SAVE
      ================================ */
-  const handleSave = () => {
-    if (!name || !phone) return;
+ const handleSave = () => {
+   if (!name || phone.length !== 10) return;
+   onSave({ name, phone });
+ };
 
-    onSave({ name, phone });
-  };
 
   return (
     <div className="modal-overlay">
       <div className="modal-box">
-
         {/* ===== HEADER ===== */}
         <div className="modal-header">
           <h3>{mode === "edit" ? "Edit Category" : "Add Category"}</h3>
@@ -64,7 +63,12 @@ export default function CategoryModal({
           <input
             type="text"
             value={phone}
-            onChange={(e) => setPhone(e.target.value)}
+            onChange={(e) => {
+              const numericValue = e.target.value.replace(/\D/g, "");
+              if (numericValue.length <= 10) {
+                setPhone(numericValue);
+              }
+            }}
             placeholder="9876543210"
           />
         </div>
@@ -80,7 +84,6 @@ export default function CategoryModal({
             Save
           </button>
         </div>
-
       </div>
     </div>
   );
