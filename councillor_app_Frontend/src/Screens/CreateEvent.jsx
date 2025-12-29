@@ -1,7 +1,7 @@
 import "../Style/createEvent.css";
 import { Camera } from "lucide-react";
-import { useEffect, useState } from "react";
-import { getEventCategories, createEvent } from "../api/eventsApi";
+import { useEffect, useRef, useState } from "react";
+import { getEventCategories, createEvent } from "../Api/eventsApi";
 import { faker } from "@faker-js/faker";
 
 export default function CreateEvent() {
@@ -9,13 +9,16 @@ export default function CreateEvent() {
      STATE
   ================================ */
   const [eventName, setEventName] = useState("");
+  const [eventNameError, setEventNameError] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [description, setDescription] = useState("");
   const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const fileInputRef = useRef(null);
+
   /* ================================
-     CATEGORY LIST (API + FAKER)
+     CATEGORY LIST
   ================================ */
   const [categories, setCategories] = useState([]);
 
@@ -27,15 +30,32 @@ export default function CreateEvent() {
         }
       })
       .catch(() => {
-        // ✅ Faker fallback
         setCategories(
-          Array.from({ length: 2 }).map((_, i) => ({
+          Array.from({ length: 5 }).map((_, i) => ({
             id: i + 1,
             name: faker.commerce.department(),
           }))
         );
       });
   }, []);
+
+  /* ================================
+     EVENT NAME HANDLER (ONLY ALPHABETS)
+  ================================ */
+  const handleEventNameChange = (e) => {
+    const value = e.target.value;
+
+    // Allow only alphabets & spaces
+    const regex = /^[A-Za-z\s]*$/;
+
+    if (!regex.test(value)) {
+      setEventNameError("Only alphabets are allowed");
+      return;
+    }
+
+    setEventNameError("");
+    setEventName(value);
+  };
 
   /* ================================
      FILE HANDLING
@@ -46,6 +66,21 @@ export default function CreateEvent() {
   };
 
   /* ================================
+     RESET FORM
+  ================================ */
+  const resetForm = () => {
+    setEventName("");
+    setEventNameError("");
+    setCategoryId("");
+    setDescription("");
+    setPhotos([]);
+
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  };
+
+  /* ================================
      SUBMIT
   ================================ */
   const handleSubmit = async () => {
@@ -53,6 +88,8 @@ export default function CreateEvent() {
       alert("All required fields must be filled");
       return;
     }
+
+    if (eventNameError) return;
 
     setLoading(true);
 
@@ -65,14 +102,9 @@ export default function CreateEvent() {
       });
 
       alert("Event created successfully");
-
-      // reset
-      setEventName("");
-      setCategoryId("");
-      setDescription("");
-      setPhotos([]);
+      resetForm();
     } catch (err) {
-      console.error("Create Event Error:", err);
+      console.error(err);
       alert("Failed to create event");
     } finally {
       setLoading(false);
@@ -89,8 +121,11 @@ export default function CreateEvent() {
             type="text"
             placeholder="Clean City Drive"
             value={eventName}
-            onChange={(e) => setEventName(e.target.value)}
+            onChange={handleEventNameChange}
           />
+          {eventNameError && (
+            <p className="error-text">{eventNameError}</p>
+          )}
         </div>
 
         {/* Category */}
@@ -126,7 +161,13 @@ export default function CreateEvent() {
             <Camera size={28} />
             <p>Upload Photos</p>
             <span>Max 5 images</span>
-            <input type="file" multiple hidden onChange={handlePhotoUpload} />
+            <input
+              type="file"
+              multiple
+              hidden
+              ref={fileInputRef}
+              onChange={handlePhotoUpload}
+            />
           </label>
 
           {photos.length > 0 && (
@@ -137,19 +178,15 @@ export default function CreateEvent() {
 
       {/* Footer */}
       <div className="create-event-footer">
-        <button
-          className="btn-cancel"
-          onClick={() => {
-            setEventName("");
-            setCategoryId("");
-            setDescription("");
-            setPhotos([]);
-          }}
-        >
+        <button className="btn-cancel" onClick={resetForm}>
           Cancel
         </button>
 
-        <button className="btn-post" onClick={handleSubmit} disabled={loading}>
+        <button
+          className="btn-post"
+          onClick={handleSubmit}
+          disabled={loading || eventNameError}
+        >
           {loading ? "Posting..." : "Post"}
         </button>
       </div>
