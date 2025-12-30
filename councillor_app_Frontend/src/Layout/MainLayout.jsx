@@ -11,14 +11,22 @@ export default function MainLayout() {
       const [newCategory, setNewCategory] = useState(null);
       const [showSortModal, setShowSortModal] = useState(false);
       const [showFilterModal, setShowFilterModal] = useState(false);
-
+    const [sidebarOpen, setSidebarOpen] = useState(false);
   return (
     <div className="admin-layout">
-      <Sidebar />
+      {sidebarOpen && (
+        <div
+          className="sidebar-overlay"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       <div className="main-wrapper">
         {/* FULL WIDTH TOPBAR */}
         <TopNavbar
+          setSidebarOpen={setSidebarOpen}
           searchValue={search}
           onSearchChange={setSearch}
           onSortClick={() => {
@@ -36,9 +44,9 @@ export default function MainLayout() {
           onClose={() => setShowAddCategoryModal(false)}
           onSave={(data) => {
             setNewCategory(data);
-            setShowAddCategoryModal(false)}}
+            setShowAddCategoryModal(false);
+          }}
           mode="add"
-          
         />
 
         {/* PAGE CONTENT ONLY */}

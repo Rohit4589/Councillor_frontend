@@ -1,14 +1,16 @@
 import { useLocation } from "react-router-dom";
 import { superAdminRoutesConfig } from "../routes/superAdminRoutesConfig";
 import { Plus, X } from "lucide-react";
+import { Menu } from "lucide-react";
 import { useState } from "react";
 
 import "../Style/topbar.css";
 import "../Style/modal.css";
 
-export default function SuperTopNavbar({ onCreate }) {
+export default function SuperTopNavbar({ onCreate,setSidebarOpen }) {
   const location = useLocation();
   const [openModal, setOpenModal] = useState(false);
+
 
   /* ================================
      FORM STATE
@@ -52,6 +54,13 @@ export default function SuperTopNavbar({ onCreate }) {
       ================================ */}
       <div className="topbar">
         <div className="topbar-content">
+          <button
+            className="mobile-menu-btn"
+            onClick={() => setSidebarOpen(true)}
+          >
+            <Menu size={22} />
+          </button>
+
           <div>
             <h1 className="topbar-title">{currentRoute.title}</h1>
             <p className="topbar-subtitle">{currentRoute.subtitle}</p>

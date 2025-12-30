@@ -141,15 +141,7 @@ body {
 }
 
 /* ================= RESPONSIVE ================= */
-@media (max-width: 768px) {
-    .super-admin .admin-layout {
-        flex-direction: column;
-    }
-
-    .sidebar {
-        width: 100%;
-        height: auto;
-        border-right: none;
-        border-bottom: 1px solid #e5e7eb;
-    }
-}
+/* ===============================
+   MOBILE RESPONSIVENESS
+   (DO NOT TOUCH DESKTOP)
+================================ */

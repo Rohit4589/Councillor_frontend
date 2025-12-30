@@ -14,41 +14,13 @@ import {
 export default function Categories() {
   const { newCategory, clearNewCategory } = useOutletContext();
 
-  /* ================================
-     STATE
-  ================================ */
   const [categories, setCategories] = useState([
-  {
-    id: 101,
-    name: "Street Lights",
-    count: 156,
-    phone: "9588343566",
-  },
-  {
-    id: 102,
-    name: "Roads & Potholes",
-    count: 234,
-    phone: "9588343566",
-  },
-  {
-    id: 103,
-    name: "Garbage Collection",
-    count: 189,
-    phone: "9588343566",
-  },
-  {
-    id: 104,
-    name: "Water Supply",
-    count: 98,
-    phone: "9588343566",
-  },
-  {
-    id: 105,
-    name: "Street Cleaning",
-    count: 112,
-    phone: "9588343566",
-  },
-]);
+    { id: 101, name: "Street Lights", count: 156, phone: "9588343566" },
+    { id: 102, name: "Roads & Potholes", count: 234, phone: "9588343566" },
+    { id: 103, name: "Garbage Collection", count: 189, phone: "9588343566" },
+    { id: 104, name: "Water Supply", count: 98, phone: "9588343566" },
+    { id: 105, name: "Street Cleaning", count: 112, phone: "9588343566" },
+  ]);
 
   const [openModal, setOpenModal] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
@@ -57,43 +29,30 @@ export default function Categories() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
 
-  /* ================================
-     FETCH CATEGORIES
-  ================================ */
   useEffect(() => {
     getCategories()
       .then(setCategories)
-      .catch(() =>
-        console.warn("Backend not ready, using empty categories")
-      );
+      .catch(() => console.warn("Backend not ready, using empty categories"));
   }, []);
 
-  /* ================================
-     ADD FROM TOP BAR
-  ================================ */
   useEffect(() => {
     if (newCategory) {
       const tempId = Date.now();
 
       setCategories((prev) => [
         ...prev,
-        { id: tempId, name: newCategory.name, phone: newCategory.phone, count: 0 },
+        {
+          id: tempId,
+          name: newCategory.name,
+          phone: newCategory.phone,
+          count: 0,
+        },
       ]);
 
       addCategory(newCategory).catch(console.error);
       clearNewCategory();
     }
   }, [newCategory, clearNewCategory]);
-
-  /* ================================
-     HANDLERS
-  ================================ */
-  const openAdd = () => {
-    setSelectedCategory(null);
-    setName("");
-    setPhone("");
-    setOpenModal(true);
-  };
 
   const openEdit = (cat) => {
     setSelectedCategory(cat);
@@ -105,33 +64,17 @@ export default function Categories() {
   const saveCategory = async () => {
     if (!name || !phone) return;
 
-    // ADD
     if (!selectedCategory) {
       const tempId = Date.now();
-      setCategories((prev) => [
-        ...prev,
-        { id: tempId, name, phone, count: 0 },
-      ]);
-
-      try {
-        await addCategory({ name, phone });
-      } catch (e) {
-        console.error(e);
-      }
-    }
-    // EDIT
-    else {
+      setCategories((prev) => [...prev, { id: tempId, name, phone, count: 0 }]);
+      await addCategory({ name, phone });
+    } else {
       setCategories((prev) =>
         prev.map((c) =>
           c.id === selectedCategory.id ? { ...c, name, phone } : c
         )
       );
-
-      try {
-        await updateCategory(selectedCategory.id, { name, phone });
-      } catch (e) {
-        console.error(e);
-      }
+      await updateCategory(selectedCategory.id, { name, phone });
     }
 
     setOpenModal(false);
@@ -140,25 +83,16 @@ export default function Categories() {
   const confirmDelete = async () => {
     const id = selectedCategory.id;
     setCategories((prev) => prev.filter((c) => c.id !== id));
-
-    try {
-      await deleteCategory(id);
-    } catch (e) {
-      console.error(e);
-    }
-
+    await deleteCategory(id);
     setOpenDelete(false);
     setSelectedCategory(null);
   };
 
-  /* ================================
-     UI
-  ================================ */
   return (
     <>
       {/* ===== TABLE ===== */}
       <div className="categories-table">
-        <table>
+        <table className="categories-data-table">
           <thead>
             <tr>
               <th>Category Name</th>
@@ -171,10 +105,13 @@ export default function Categories() {
           <tbody>
             {categories.map((cat) => (
               <tr key={cat.id}>
-                <td>{cat.name}</td>
-                <td>{cat.count}</td>
-                <td>{cat.phone}</td>
-                <td className="actions-cell">
+                <td data-label="Category Name">{cat.name}</td>
+
+                <td data-label="Total Complaints">{cat.count}</td>
+
+                <td data-label="Phone Number">{cat.phone}</td>
+
+                <td data-label="Actions" className="actions-cell">
                   <Pencil
                     size={18}
                     className="edit"
@@ -206,22 +143,15 @@ export default function Categories() {
 
             <div className="modal-body">
               <label>Category Name</label>
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                placeholder="Street Lights"
-              />
+              <input value={name} onChange={(e) => setName(e.target.value)} />
 
               <label>Phone Number</label>
               <input
                 value={phone}
                 onChange={(e) => {
-                  const numericValue = e.target.value.replace(/\D/g, "");
-                  if (numericValue.length <= 10) {
-                    setPhone(numericValue);
-                  }
+                  const v = e.target.value.replace(/\D/g, "");
+                  if (v.length <= 10) setPhone(v);
                 }}
-                placeholder="9876543210"
               />
             </div>
 
@@ -240,7 +170,6 @@ export default function Categories() {
         </div>
       )}
 
-      {/* ===== DELETE MODAL ===== */}
       <DeleteConfirmModal
         open={openDelete}
         onClose={() => setOpenDelete(false)}

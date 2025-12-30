@@ -6,7 +6,8 @@ import {
   matchPath,
 } from "react-router-dom";
 import { routesConfig } from "../Navigation/routes";
-import { ArrowLeft } from "lucide-react";
+import { ArrowLeft, Menu } from "lucide-react";
+
 import "../Style/topbar.css";
 
 export default function TopNavbar({
@@ -15,6 +16,7 @@ export default function TopNavbar({
   onSortClick,
   onFilterClick,
   onPrimaryAction,
+  setSidebarOpen,
 }) {
   const location = useLocation();
   const navigate = useNavigate();
@@ -50,6 +52,14 @@ export default function TopNavbar({
     >
       {/* LEFT */}
       <div className="topbar-left">
+        {/* MOBILE SIDEBAR BUTTON */}
+        <button
+          className="mobile-menu-btn"
+          onClick={() => setSidebarOpen(true)}
+        >
+          <Menu size={22} />
+        </button>
+
         {isComplaintDetails && (
           <button className="back-btn" onClick={() => navigate("/complaints")}>
             <ArrowLeft size={18} />
@@ -64,7 +74,6 @@ export default function TopNavbar({
 
       {/* RIGHT */}
       <div className="topbar-right">
-        {/* Search / Sort / Filter */}
         <div className="topbar-actions">
           {actions?.search && (
             <div className="topbar-search">
@@ -90,7 +99,6 @@ export default function TopNavbar({
           )}
         </div>
 
-        {/* PRIMARY ACTION (EXTREME RIGHT) */}
         {primaryAction && (
           <button className="topbar-primary-btn" onClick={onPrimaryAction}>
             {primaryAction.label}

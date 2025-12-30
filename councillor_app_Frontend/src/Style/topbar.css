@@ -148,3 +148,144 @@
   align-self: flex-start;
   /* align with title, not subtitle */
 }
+/* =================================
+   MOBILE TOPBAR – CLEAN RESET
+================================= */
+@media (max-width: 768px) {
+
+  /* Reset topbar completely */
+  .topbar {
+    display: block !important;
+    padding: 16px !important;
+  }
+
+  /* Title section */
+  .topbar-left {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  /* Actions section */
+  .topbar-right {
+    display: block !important;
+    width: 100%;
+  }
+
+  /* Search / Sort / Filter container */
+  .topbar-actions {
+    display: block !important;
+    width: 100%;
+  }
+
+  /* Search full width */
+  .topbar-search {
+    width: 100% !important;
+    margin: 0 0 8px 0 !important;
+  }
+
+  .topbar-search input {
+    width: 100%;
+    height: 42px;
+  }
+
+  /* Sort + Filter row */
+  .topbar-btn {
+    width: 48% !important;
+    height: 40px;
+    margin: 0;
+  }
+
+  .topbar-actions {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* Primary action at bottom */
+  .topbar-primary-btn {
+    width: 100% !important;
+    margin-top: 10px !important;
+  }
+}
+
+/* =================================
+   MOBILE TOPBAR – CLEAN RESET
+================================= */
+@media (max-width: 768px) {
+
+  /* Reset topbar completely */
+  .topbar {
+    display: block !important;
+    padding: 16px !important;
+  }
+
+  /* Title section */
+  .topbar-left {
+    display: flex !important;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  /* Actions section */
+  .topbar-right {
+    display: block !important;
+    width: 100%;
+  }
+
+  /* Search / Sort / Filter container */
+  .topbar-actions {
+    display: block !important;
+    width: 100%;
+  }
+
+  /* Search full width */
+  .topbar-search {
+    width: 100% !important;
+    margin: 0 0 8px 0 !important;
+  }
+
+  .topbar-search input {
+    width: 100%;
+    height: 42px;
+  }
+
+  /* Sort + Filter row */
+  .topbar-btn {
+    width: 48% !important;
+    height: 40px;
+    margin: 0;
+  }
+
+  .topbar-actions {
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  /* Primary action at bottom */
+  .topbar-primary-btn {
+    width: 40% !important;
+    margin-top: 10px !important;
+  }
+}
+
+/* =================================
+   MOBILE FIX – TOPBAR ABOVE CONTENT
+================================= */
+@media (max-width: 768px) {
+
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: #ffffff;
+  }
+
+  /* Ensure content starts BELOW topbar */
+  .page-content {
+    padding-top: 8px;
+  }
+}

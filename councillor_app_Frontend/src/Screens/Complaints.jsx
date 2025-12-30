@@ -6,7 +6,7 @@ import { getComplaints } from "../api/complaintsApi";
 
 /* ===============================
    STATIC DATA (FALLBACK)
-   =============================== */
+================================ */
 const complaintsData = [
   {
     id: "CMP234567",
@@ -45,7 +45,6 @@ const complaintsData = [
 export default function Complaints() {
   const navigate = useNavigate();
 
-  /* 🔑 SEARCH VALUE FROM TOPBAR (UNCHANGED) */
   const {
     search,
     showSortModal,
@@ -56,25 +55,15 @@ export default function Complaints() {
 
   const safeSearch = (search || "").toLowerCase();
 
-  /* ===============================
-     SORT & FILTER STATE (UNCHANGED)
-     =============================== */
-  const [sortOrder, setSortOrder] = useState(null); // "new" | "old"
-
+  const [sortOrder, setSortOrder] = useState(null);
   const [filters, setFilters] = useState({
     category: "",
     status: "",
     ward: "",
   });
 
-  /* ===============================
-     BACKEND STATE
-     =============================== */
   const [backendComplaints, setBackendComplaints] = useState([]);
 
-  /* ===============================
-     BACKEND API CALL
-     =============================== */
   useEffect(() => {
     getComplaints({
       councillorId: "ID_FROM_AUTH",
@@ -87,39 +76,26 @@ export default function Complaints() {
           setBackendComplaints(data);
         }
       })
-      .catch((err) =>
-        console.warn("Complaints API Error, using static data", err)
-      );
+      .catch(() => console.warn("Complaints API Error, using static data"));
   }, []);
 
-
-  /* ======================================================
-     🔥 UNIFIED DATA PIPELINE (STATIC + BACKEND)
-     ====================================================== */
-
-  // 1️⃣ Choose data source
   const sourceData =
     backendComplaints.length > 0 ? backendComplaints : complaintsData;
 
-  // 2️⃣ SEARCH
   const searchedData = sourceData.filter((c) =>
     `${c.id} ${c.category} ${c.summary} ${c.status} ${c.ward} ${c.date}`
       .toLowerCase()
       .includes(safeSearch)
   );
 
-  // 3️⃣ SORT
   const sortedData = [...searchedData].sort((a, b) => {
     if (!sortOrder) return 0;
-
-    const d1 = new Date(a.date);
-    const d2 = new Date(b.date);
-
-    return sortOrder === "new" ? d2 - d1 : d1 - d2;
+    return sortOrder === "new"
+      ? new Date(b.date) - new Date(a.date)
+      : new Date(a.date) - new Date(b.date);
   });
 
-  // 4️⃣ FILTER
-  const finalComplaints = sortedData.filter((c) => {
+  const dataToRender = sortedData.filter((c) => {
     return (
       (!filters.category || c.category === filters.category) &&
       (!filters.status || c.status === filters.status) &&
@@ -127,13 +103,11 @@ export default function Complaints() {
     );
   });
 
-  // 5️⃣ FINAL DATA FOR TABLE
-  const dataToRender = finalComplaints;
-
   return (
     <div className="complaints-page">
       <div className="complaints-card">
-        <table className="complaints-table">
+        {/* 🔑 Added class for mobile */}
+        <table className="complaints-table complaints-data-table">
           <thead>
             <tr>
               <th>Complaint ID</th>
@@ -153,14 +127,7 @@ export default function Complaints() {
 
             {dataToRender.length === 0 && (
               <tr>
-                <td
-                  colSpan="7"
-                  style={{
-                    textAlign: "center",
-                    padding: "24px",
-                    color: "#6b7280",
-                  }}
-                >
+                <td colSpan="7" style={{ textAlign: "center", padding: 24 }}>
                   No complaints found matching your criteria.
                 </td>
               </tr>
@@ -169,14 +136,11 @@ export default function Complaints() {
         </table>
       </div>
 
-      {/* ===============================
-         SORT MODAL (UNCHANGED)
-         =============================== */}
+      {/* SORT & FILTER MODALS — UNCHANGED */}
       {showSortModal && (
         <div className="modal-overlay">
           <div className="modal-card">
             <h4>Sort Complaints</h4>
-
             <button
               onClick={() => {
                 setSortOrder("new");
@@ -185,7 +149,6 @@ export default function Complaints() {
             >
               Date: Newest to Oldest
             </button>
-
             <button
               onClick={() => {
                 setSortOrder("old");
@@ -194,7 +157,6 @@ export default function Complaints() {
             >
               Date: Oldest to Newest
             </button>
-
             <button className="ghost" onClick={() => setShowSortModal(false)}>
               Cancel
             </button>
@@ -202,9 +164,6 @@ export default function Complaints() {
         </div>
       )}
 
-      {/* ===============================
-         FILTER MODAL (UNCHANGED)
-         =============================== */}
       {showFilterModal && (
         <div className="modal-overlay">
           <div className="modal-card">
@@ -262,15 +221,15 @@ export default function Complaints() {
 }
 
 /* ===============================
-   ROW COMPONENT (UNCHANGED)
-   =============================== */
+   ROW (ONLY MOBILE ATTRIBUTES ADDED)
+================================ */
 function ComplaintRow({ id, category, summary, status, ward, date, navigate }) {
   return (
     <tr>
-      <td>{id}</td>
-      <td>{category}</td>
-      <td>{summary}</td>
-      <td>
+      <td data-label="Complaint ID">{id}</td>
+      <td data-label="Category">{category}</td>
+      <td data-label="Summary">{summary}</td>
+      <td data-label="Status">
         <span className={`status ${status}`}>
           {status === "progress" && "In Progress"}
           {status === "submitted" && "Submitted"}
@@ -278,9 +237,9 @@ function ComplaintRow({ id, category, summary, status, ward, date, navigate }) {
           {status === "seen" && "Seen"}
         </span>
       </td>
-      <td>{ward}</td>
-      <td>{date}</td>
-      <td className="action-col">
+      <td data-label="Ward">{ward}</td>
+      <td data-label="Date">{date}</td>
+      <td data-label="Actions" className="action-col">
         <Eye
           size={16}
           className="eye-icon"

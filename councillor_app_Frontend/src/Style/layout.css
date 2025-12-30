@@ -141,16 +141,48 @@ body {
   flex: 1;
 }
 
-/* ================= RESPONSIVE ================= */
+
+
+/* =================================
+   MOBILE FIX – REMOVE SIDEBAR SPACE
+================================= */
 @media (max-width: 768px) {
-  .admin-layout {
-    flex-direction: column;
+
+  .main-wrapper {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    width: 100% !important;
   }
 
-  .sidebar {
+  .page-content {
     width: 100%;
+    padding: 16px;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+}
+
+/* =================================
+   MOBILE LAYOUT – FINAL FIX
+================================= */
+@media (max-width: 768px) {
+
+  .admin-layout {
+    overflow-x: visible;
+    /* 🔥 allow full width */
     height: auto;
-    border-right: none;
-    border-bottom: 1px solid #e5e7eb;
+  }
+
+  .main-wrapper {
+    margin-left: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .page-content {
+    padding: 16px;
+    width: 100%;
   }
 }

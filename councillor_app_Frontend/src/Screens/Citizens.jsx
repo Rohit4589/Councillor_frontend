@@ -3,9 +3,6 @@ import { useEffect, useMemo, useState } from "react";
 import { getCitizens, getCitizenDetails } from "../api/citizensApi";
 
 export default function Citizens() {
-  /* ================================
-     STATE
-  ================================ */
   const [citizens, setCitizens] = useState([]);
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
@@ -13,18 +10,12 @@ export default function Citizens() {
 
   const PAGE_SIZE = 5;
 
-  /* ================================
-     FETCH DATA (API decides faker/backend)
-  ================================ */
   useEffect(() => {
     getCitizens().then((data) => {
       setCitizens(data);
     });
   }, []);
 
-  /* ================================
-     SEARCH + PAGINATION
-  ================================ */
   const filtered = useMemo(() => {
     return citizens.filter(
       (c) =>
@@ -37,31 +28,18 @@ export default function Citizens() {
 
   const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
 
-  /* ================================
-     VIEW DETAILS (FULL DATA)
-  ================================ */
-const handleViewDetails = async (citizen) => {
-  // ✅ OPEN MODAL IMMEDIATELY with existing data
-  setSelectedCitizen(citizen);
+  const handleViewDetails = async (citizen) => {
+    setSelectedCitizen(citizen);
 
-  // 🔄 FETCH FULL DETAILS IN BACKGROUND
-  try {
-    const fullDetails = await getCitizenDetails(citizen.id);
+    try {
+      const fullDetails = await getCitizenDetails(citizen.id);
+      setSelectedCitizen((prev) => ({
+        ...prev,
+        ...fullDetails,
+      }));
+    } catch {}
+  };
 
-    // ✅ UPDATE MODAL WITH FULL DATA
-    setSelectedCitizen((prev) => ({
-      ...prev,
-      ...fullDetails,
-    }));
-  } catch {
-    // fallback: keep existing data
-  }
-};
-
-
-  /* ================================
-     UI
-  ================================ */
   return (
     <div className="page-wrapper">
       <div className="citizens-card">
@@ -79,7 +57,7 @@ const handleViewDetails = async (citizen) => {
         </div>
 
         {/* TABLE */}
-        <table className="citizens-table">
+        <table className="citizens-table citizens-data-table">
           <thead>
             <tr>
               <th>Name</th>
@@ -93,11 +71,15 @@ const handleViewDetails = async (citizen) => {
           <tbody>
             {paginated.map((citizen) => (
               <tr key={citizen.id}>
-                <td>{citizen.name}</td>
-                <td>{citizen.phone}</td>
-                <td>{citizen.ward}</td>
-                <td>{citizen.email}</td>
-                <td>
+                <td data-label="Name">{citizen.name}</td>
+
+                <td data-label="Phone">{citizen.phone}</td>
+
+                <td data-label="Ward">{citizen.ward}</td>
+
+                <td data-label="Email">{citizen.email}</td>
+
+                <td data-label="Action">
                   <button
                     className="view-btn"
                     onClick={() => handleViewDetails(citizen)}
@@ -129,7 +111,7 @@ const handleViewDetails = async (citizen) => {
         </div>
       </div>
 
-      {/* MODAL (UI UNCHANGED) */}
+      {/* MODAL (UNCHANGED) */}
       {selectedCitizen && (
         <div className="modal-overlay">
           <div className="modal-card">
@@ -161,7 +143,6 @@ const handleViewDetails = async (citizen) => {
                 {selectedCitizen.ward}
               </p>
 
-              {/* These will appear automatically from faker/backend */}
               {selectedCitizen.aadhar && (
                 <p>
                   <span>Aadhar</span>

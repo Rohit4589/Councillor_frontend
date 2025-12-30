@@ -1,26 +1,18 @@
 import "../Style/dashboard.css";
-import { FileText, Users, Folder, Clock } from "lucide-react";
+import { FileText, Folder, Clock } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getDashboardData } from "../Api/dashboardApi";
 
 export default function Dashboard() {
-  /* ================================
-     STATE
-  ================================ */
   const [stats, setStats] = useState({
     totalComplaints: 0,
-     // static for now
     totalCategories: 0,
     pendingReview: 0,
   });
 
   const [recentComplaints, setRecentComplaints] = useState([]);
-
   const [loading, setLoading] = useState(true);
 
-  /* ================================
-     API CALL
-  ================================ */
   useEffect(() => {
     getDashboardData()
       .then((res) => {
@@ -28,7 +20,6 @@ export default function Dashboard() {
 
         setStats({
           totalComplaints: data.total_complaints,
-          totalCouncillors: 45,
           totalCategories: data.total_categories,
           pendingReview: data.pending_review,
         });
@@ -56,9 +47,7 @@ export default function Dashboard() {
 
   return (
     <div className="page-wrapper">
-      {/* ================================
-         STAT CARDS
-      ================================ */}
+      {/* ================= STAT CARDS ================= */}
       <div className="dashboard-cards">
         <StatCard
           icon={<FileText />}
@@ -66,13 +55,14 @@ export default function Dashboard() {
           value={stats.totalComplaints}
           label="Total Complaints"
         />
-       
+
         <StatCard
           icon={<Folder />}
           iconBg="green"
           value={stats.totalCategories}
           label="Total Categories"
         />
+
         <StatCard
           icon={<Clock />}
           iconBg="yellow"
@@ -81,15 +71,13 @@ export default function Dashboard() {
         />
       </div>
 
-      {/* ================================
-         RECENT COMPLAINTS
-      ================================ */}
+      {/* ================= RECENT COMPLAINTS ================= */}
       <div className="dashboard-table mt-4">
         <div className="dashboard-header">
           <h3>Recent Complaints</h3>
         </div>
 
-        <table>
+        <table className="dashboard-data-table">
           <thead>
             <tr>
               <th>Complaint ID</th>
@@ -116,18 +104,14 @@ export default function Dashboard() {
   );
 }
 
-/* ================================
-   HELPERS
-================================ */
+/* ================= HELPERS ================= */
 function mapStatus(status) {
   if (status === "IN_PROGRESS") return "progress";
   if (status === "COMPLETED") return "completed";
   return "submitted";
 }
 
-/* ================================
-   STAT CARD
-================================ */
+/* ================= STAT CARD ================= */
 function StatCard({ icon, iconBg, value, label }) {
   return (
     <div className="stat-card">
@@ -140,22 +124,25 @@ function StatCard({ icon, iconBg, value, label }) {
   );
 }
 
-/* ================================
-   TABLE ROW
-================================ */
+/* ================= TABLE ROW ================= */
 function Row({ id, cat, status, time }) {
   return (
     <tr>
-      <td>{id}</td>
-      <td>{cat}</td>
-      <td>
+      <td data-label="Complaint ID">{id}</td>
+
+      <td data-label="Category">{cat}</td>
+
+      <td data-label="Status">
         <span className={`status ${status}`}>
           {status === "progress" && "In Progress"}
           {status === "completed" && "Completed"}
           {status === "submitted" && "Submitted"}
         </span>
       </td>
-      <td className="time">{time}</td>
+
+      <td data-label="Time" className="time">
+        {time}
+      </td>
     </tr>
   );
 }

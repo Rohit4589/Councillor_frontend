@@ -1,29 +1,18 @@
-import {
-  LayoutDashboard,
-  Layers,
-  Users,
-  FileText,
-  UserCog,
-  CalendarPlus,
-  LogOut,
-} from "lucide-react";
-import { NavLink } from "react-router-dom";
-import logo from "../../assets/logo.jpg";
-import { useNavigate } from "react-router-dom";
+import { LayoutDashboard, LogOut } from "lucide-react";
 
-export default function Sidebar() {
+import { NavLink, useNavigate } from "react-router-dom";
+import logo from "../../assets/logo.jpg";
+
+export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    // later you’ll clear JWT here
-    // localStorage.removeItem("token");
-    localStorage.clear(); 
-
+    localStorage.clear();
     navigate("/login", { replace: true });
   };
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${sidebarOpen ? "open" : ""}`}>
       {/* LOGO */}
       <div className="sidebar-logo d-flex align-items-center gap-3">
         <img src={logo} alt="WardMitra" className="sidebar-logo-img" />
@@ -36,9 +25,9 @@ export default function Sidebar() {
       {/* MENU */}
       <nav className="sidebar-menu">
         <SidebarLink
-          to="/councillor"
+          to="/super/councillor"
           icon={<LayoutDashboard size={18} />}
-          label="Councillor "
+          label="Councillor"
         />
       </nav>
 

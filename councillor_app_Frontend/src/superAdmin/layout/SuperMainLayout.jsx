@@ -25,6 +25,9 @@ const generateFakeCouncillors = (count = 6) => {
 };
 
 export default function SuperMainLayout() {
+
+    const [sidebarOpen, setSidebarOpen] = useState(false);
+
   /* ================================
      SHARED STATE
   ================================ */
@@ -70,11 +73,18 @@ export default function SuperMainLayout() {
 
   return (
     <div className="super-admin admin-layout">
-      <Sidebar />
+      {sidebarOpen && (
+        <div
+          className="sidebar-overlay"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      <Sidebar sidebarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
 
       <div className="main-wrapper">
         {/* ✅ SINGLE TOPBAR */}
-        <SuperTopNavbar onCreate={handleCreateCouncillor} />
+        <SuperTopNavbar onCreate={handleCreateCouncillor} setSidebarOpen={setSidebarOpen} />
 
         <div className="page-content">
           {/* ✅ SHARE STATE WITH PAGES */}

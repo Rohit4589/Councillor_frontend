@@ -1,78 +1,38 @@
 import { Pencil, X, Save, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "../style/councillor.css";
 import "../style/modal.css";
 import { useOutletContext } from "react-router-dom";
 
-// 🔴 BACKEND (ENABLE LATER)
-import {
-  getCouncillors,
-  updateCouncillor,
-  deleteCouncillor,
-} from "../api/superAdminCouncillorApi"
-
 export default function Councillor() {
-  /* ================================
-     STATE FROM LAYOUT
-  ================================ */
   const { councillors, setCouncillors } = useOutletContext();
 
   const [openEdit, setOpenEdit] = useState(false);
   const [selected, setSelected] = useState(null);
-
- 
-
-  /* ================================
-     HANDLERS
-  ================================ */
 
   const handleEdit = (row) => {
     setSelected(row);
     setOpenEdit(true);
   };
 
-  const handleSave = async () => {
-    // 🔴 BACKEND VERSION
-    /*
-    const updated = await updateCouncillor(selected.id, {
-      name: selected.name,
-      phone: selected.phone,
-      ward: selected.ward,
-    });
-
-    setCouncillors((prev) =>
-      prev.map((c) => (c.id === updated.id ? updated : c))
-    );
-    */
-
-    // ✅ TEMP UPDATE
+  const handleSave = () => {
     setCouncillors((prev) =>
       prev.map((c) => (c.id === selected.id ? selected : c))
     );
-
     setOpenEdit(false);
   };
 
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this councillor?"
-    );
+  const handleDelete = (id) => {
+    if (!window.confirm("Are you sure you want to delete this councillor?"))
+      return;
 
-    if (!confirmDelete) return;
-
-    // 🔴 BACKEND VERSION
-    /*
-    await deleteCouncillor(id);
-    */
-
-    // ✅ TEMP DELETE
     setCouncillors((prev) => prev.filter((c) => c.id !== id));
   };
 
   return (
     <div className="page-wrapper">
       <div className="dashboard-table">
-        <table>
+        <table className="data-table">
           <thead>
             <tr>
               <th>Name</th>
@@ -96,9 +56,7 @@ export default function Councillor() {
         </table>
       </div>
 
-      {/* ================================
-         EDIT MODAL
-      ================================ */}
+      {/* ================= EDIT MODAL ================= */}
       {openEdit && selected && (
         <div className="modal-overlay">
           <div className="modal-card">
@@ -120,11 +78,8 @@ export default function Councillor() {
               <input
                 value={selected.phone}
                 onChange={(e) => {
-                  const numericValue = e.target.value.replace(/\D/g, "");
-                  setSelected({
-                    ...selected,
-                    phone: numericValue.slice(0, 10),
-                  });
+                  const num = e.target.value.replace(/\D/g, "");
+                  setSelected({ ...selected, phone: num.slice(0, 10) });
                 }}
               />
 
@@ -154,22 +109,24 @@ export default function Councillor() {
   );
 }
 
-/* ================================
-   TABLE ROW (UNCHANGED UI)
-================================ */
+/* ================= TABLE ROW ================= */
 
 function Row({ data, onEdit, onDelete }) {
   return (
     <tr>
-      <td>{data.name}</td>
-      <td>{data.phone}</td>
-      <td>{data.ward}</td>
-      <td>
+      <td data-label="Name">{data.name}</td>
+
+      <td data-label="Phone Number">{data.phone}</td>
+
+      <td data-label="Ward Assigned">{data.ward}</td>
+
+      <td data-label="Status">
         <span className={`status ${data.status}`}>
           {data.status === "active" ? "Active" : "Inactive"}
         </span>
       </td>
-      <td style={{ textAlign: "right" }}>
+
+      <td data-label="Actions">
         <div className="table-actions">
           <Pencil size={18} onClick={() => onEdit(data)} />
           <Trash2

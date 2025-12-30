@@ -1,0 +1,324 @@
+/* ===============================
+   SUPER ADMIN MOBILE FIX (FINAL)
+================================ */
+@media (max-width: 768px) {
+
+    /* Sidebar drawer */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 260px;
+        height: 100vh;
+        z-index: 1200;
+        transition: left 0.3s ease;
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    /* Overlay */
+    .sidebar-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.35);
+        z-index: 1100;
+    }
+
+    /* 🔴 THIS FIXES THE NARROW COLUMN */
+    .main-wrapper {
+        margin-left: 0 !important;
+        width: 100vw !important;
+        max-width: 100vw !important;
+        min-width: 100vw !important;
+    }
+
+    .page-content {
+        padding: 16px !important;
+    }
+
+    body {
+        overflow-x: hidden;
+    }
+
+    /* Mobile menu button */
+    .mobile-menu-btn {
+        display: inline-flex;
+        background: none;
+        border: none;
+        cursor: pointer;
+        margin-right: 12px;
+    }
+}
+
+/* Desktop only */
+@media (min-width: 769px) {
+    .mobile-menu-btn {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+
+    /* Hide table header */
+    .data-table thead {
+        display: none;
+    }
+
+    /* Table → Card layout */
+    .data-table,
+    .data-table tbody,
+    .data-table tr {
+        display: block;
+        width: 100%;
+    }
+
+    .data-table tr {
+        background: #ffffff;
+        border-radius: 14px;
+        margin-bottom: 14px;
+        padding: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .data-table td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border: none;
+    }
+
+    .data-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #6b7280;
+    }
+
+    .table-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .dashboard-cards{
+        margin-top:0px;
+    }
+
+    /* Hide table header */
+    .dashboard-data-table thead {
+        display: none;
+    }
+
+    /* Convert rows to cards */
+    .dashboard-data-table,
+    .dashboard-data-table tbody,
+    .dashboard-data-table tr {
+        display: block;
+        width: 100%;
+    }
+
+    .dashboard-data-table tr {
+        background: #ffffff;
+        border-radius: 14px;
+        margin-bottom: 14px;
+        padding: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .dashboard-data-table td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border: none;
+    }
+
+    .dashboard-data-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #6b7280;
+    }
+}
+
+
+@media (max-width: 768px) {
+
+    /* Hide headers */
+    .categories-data-table thead {
+        display: none;
+    }
+
+    /* Table → Card */
+    .categories-data-table,
+    .categories-data-table tbody,
+    .categories-data-table tr {
+        display: block;
+        width: 100%;
+    }
+
+    .categories-data-table tr {
+        background: #ffffff;
+        border-radius: 14px;
+        margin-bottom: 14px;
+        padding: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .categories-data-table td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border: none;
+    }
+
+    .categories-data-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #6b7280;
+    }
+
+    .actions-cell {
+        justify-content: flex-end;
+        gap: 12px;
+    }
+}
+
+
+/* =================================
+   TOPBAR – MOBILE CLEAN FIX
+   (MATCHES JSX STRUCTURE EXACTLY)
+================================= */
+
+
+/* DESKTOP: keep existing behavior */
+@media (min-width: 769px) {
+    .mobile-menu-btn {
+        display: none;
+    }
+}
+/* Desktop: hide hamburger */
+@media (min-width: 769px) {
+    .mobile-menu-btn {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+
+    /* Hide headers */
+    .citizens-data-table thead {
+        display: none;
+    }
+
+    /* Table → Card */
+    .citizens-data-table,
+    .citizens-data-table tbody,
+    .citizens-data-table tr {
+        display: block;
+        width: 100%;
+    }
+
+    .citizens-data-table tr {
+        background: #ffffff;
+        border-radius: 14px;
+        margin-bottom: 14px;
+        padding: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .citizens-data-table td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border: none;
+    }
+
+    .citizens-data-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #6b7280;
+    }
+
+    .citizens-data-table .view-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+
+    .complaints-data-table thead {
+        display: none;
+        
+        
+    }
+
+    .complaints-data-table,
+    .complaints-data-table tbody,
+    .complaints-data-table tr {
+        display: block;
+        width: 100%;
+            margin-top: 50px;
+    }
+
+    .complaints-data-table tr {
+        background: #ffffff;
+        border-radius: 14px;
+        margin-bottom: 14px;
+        padding: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .complaints-data-table td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border: none;
+    }
+
+    .complaints-data-table td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #6b7280;
+    }
+
+    .action-col {
+        justify-content: flex-end;
+    }
+}
+
+/* =================================
+   CREATE EVENT – MOBILE BUTTON FIX
+================================= */
+@media (max-width: 768px) {
+
+    .create-event-footer {
+        position: sticky;
+        bottom: 0;
+        background: #ffffff;
+        padding: 12px 16px;
+        display: flex;
+        gap: 12px;
+        border-top: 1px solid #e5e7eb;
+        z-index: 50;
+    }
+
+    .create-event-footer button {
+        flex: 1;
+        height: 44px;
+        font-size: 15px;
+        border-radius: 12px;
+    }
+
+    .create-event-footer .btn-cancel {
+        background: #f3f4f6;
+        color: #374151;
+    }
+
+    .create-event-footer .btn-post {
+        background: #0b3c5d;
+        color: #ffffff;
+    }
+}

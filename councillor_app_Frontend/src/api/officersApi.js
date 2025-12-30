@@ -6,7 +6,7 @@ const BASE_URL = "http://localhost:5000/officers";
 /* ===============================
    FAKER FALLBACK
 ================================ */
-const generateFakeOfficers = (count = 6) => {
+const generateFakeOfficers = (count = 10) => {
   return Array.from({ length: count }).map(() => ({
     id: faker.number.int({ min: 100, max: 999 }),
     name: faker.person.fullName(),

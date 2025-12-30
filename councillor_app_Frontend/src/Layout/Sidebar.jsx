@@ -12,7 +12,7 @@ import logo from "../assets/logo.jpg";
 import { useNavigate } from "react-router-dom";
 
 
-export default function Sidebar() {
+export default function Sidebar({ sidebarOpen, setSidebarOpen }) {
 
   const navigate = useNavigate();
 
@@ -28,7 +28,7 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${sidebarOpen ? "open" : ""}`}>
       {/* LOGO */}
       <div className="sidebar-logo d-flex align-items-center gap-3">
         <img src={logo} alt="WardMitra" className="sidebar-logo-img" />

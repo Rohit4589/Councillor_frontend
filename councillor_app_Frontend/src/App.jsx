@@ -20,7 +20,7 @@ import ProtectedRoute from "./Navigation/ProtectedRoutes";
 import SuperMainLayout from "./superAdmin/layout/SuperMainLayout";
 import superAdminRoutes from "./superAdmin/routes/superAdminRoutes";
 import SuperAdminProtectedRoute from "./Navigation/SuperAdminProtectedRoute";
-
+import "./Style/mobile.css";
 function App() {
   return (
     <BrowserRouter>
