@@ -14,7 +14,7 @@ const complaintsData = [
     summary: "Broken street light on MG Road",
     status: "progress",
     ward: "Ward 15",
-    date: "2024-12-05",
+    date: "2024-12-05T10:30:00",
   },
   {
     id: "CMP234568",
@@ -22,7 +22,7 @@ const complaintsData = [
     summary: "Garbage not collected for 3 days",
     status: "submitted",
     ward: "Ward 12",
-    date: "2024-12-05",
+    date: "2024-12-05T14:15:00",
   },
   {
     id: "CMP234569",
@@ -30,7 +30,7 @@ const complaintsData = [
     summary: "No water supply since morning",
     status: "completed",
     ward: "Ward 8",
-    date: "2024-12-04",
+    date: "2024-12-04T09:45:00",
   },
   {
     id: "CMP234570",
@@ -38,9 +38,28 @@ const complaintsData = [
     summary: "Large pothole causing accidents",
     status: "seen",
     ward: "Ward 15",
-    date: "2024-12-04",
+    date: "2024-12-04T16:20:00",
   },
 ];
+
+/* ===============================
+   ✅ ADDED: DATE + TIME FORMATTER
+   =============================== */
+const formatDateTime = (value) => {
+  if (!value) return "-";
+
+  const d = new Date(value);
+  if (isNaN(d)) return value; // safety for backend strings
+
+  return d.toLocaleString("en-IN", {
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+};
 
 export default function Complaints() {
   const navigate = useNavigate();
@@ -79,6 +98,11 @@ export default function Complaints() {
       .catch(() => console.warn("Complaints API Error, using static data"));
   }, []);
 
+  /* ======================================================
+     🔥 UNIFIED DATA PIPELINE (STATIC + BACKEND)
+     ====================================================== */
+
+  // 1️⃣ Choose data source
   const sourceData =
     backendComplaints.length > 0 ? backendComplaints : complaintsData;
 
@@ -88,20 +112,22 @@ export default function Complaints() {
       .includes(safeSearch)
   );
 
-  const sortedData = [...searchedData].sort((a, b) => {
-    if (!sortOrder) return 0;
-    return sortOrder === "new"
-      ? new Date(b.date) - new Date(a.date)
-      : new Date(a.date) - new Date(b.date);
-  });
+ const filteredData = searchedData.filter((c) => {
+   return (
+     (!filters.category || c.category === filters.category) &&
+     (!filters.status || c.status === filters.status) &&
+     (!filters.ward || c.ward === filters.ward)
+   );
+ });
 
-  const dataToRender = sortedData.filter((c) => {
-    return (
-      (!filters.category || c.category === filters.category) &&
-      (!filters.status || c.status === filters.status) &&
-      (!filters.ward || c.ward === filters.ward)
-    );
-  });
+ const dataToRender = [...filteredData].sort((a, b) => {
+   if (!sortOrder) return 0;
+
+   return sortOrder === "new"
+     ? new Date(b.date) - new Date(a.date)
+     : new Date(a.date) - new Date(b.date);
+ });
+
 
   return (
     <div className="complaints-page">
@@ -115,14 +141,18 @@ export default function Complaints() {
               <th>Summary</th>
               <th>Status</th>
               <th>Ward</th>
-              <th>Date</th>
+              <th>Date & Time</th>
               <th>Actions</th>
             </tr>
           </thead>
 
           <tbody>
             {dataToRender.map((item) => (
-              <ComplaintRow key={item.id} {...item} navigate={navigate} />
+              <ComplaintRow
+                key={item.id}
+                {...item}
+                navigate={navigate}
+              />
             ))}
 
             {dataToRender.length === 0 && (
@@ -202,7 +232,9 @@ export default function Complaints() {
             </select>
 
             <select
-              onChange={(e) => setFilters({ ...filters, ward: e.target.value })}
+              onChange={(e) =>
+                setFilters({ ...filters, ward: e.target.value })
+              }
             >
               <option value="">All Wards</option>
               <option>Ward 15</option>
@@ -238,7 +270,7 @@ function ComplaintRow({ id, category, summary, status, ward, date, navigate }) {
         </span>
       </td>
       <td data-label="Ward">{ward}</td>
-      <td data-label="Date">{date}</td>
+      <td data-label="Date">{formatDateTime(date)}</td>
       <td data-label="Actions" className="action-col">
         <Eye
           size={16}
@@ -249,3 +281,4 @@ function ComplaintRow({ id, category, summary, status, ward, date, navigate }) {
     </tr>
   );
 }
+  

@@ -289,3 +289,30 @@
     padding-top: 8px;
   }
 }
+/* ===============================
+   Officers page ONLY
+   Same layout as Categories
+================================ */
+
+.topbar--officers {
+  align-items: flex-start;
+  position: relative;
+}
+
+.topbar--officers .topbar-primary-btn {
+  position: absolute;
+  top: 30px;
+  right: 32px;
+  margin: 0;
+}
+
+.topbar--officers .topbar-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.topbar--officers .topbar-right {
+  margin-left: auto;
+  align-self: flex-start;
+}

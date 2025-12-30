@@ -36,8 +36,10 @@ export default function Councillor() {
           <thead>
             <tr>
               <th>Name</th>
-              <th>Phone Number</th>
-              <th>Ward Assigned</th>
+              <th>Phone</th>
+              <th>Ward</th>
+              <th>City</th>
+              <th>Municipal Corporation</th>
               <th>Status</th>
               <th style={{ textAlign: "center" }}>Actions</th>
             </tr>
@@ -45,12 +47,26 @@ export default function Councillor() {
 
           <tbody>
             {councillors.map((row) => (
-              <Row
-                key={row.id}
-                data={row}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-              />
+              <tr key={row.id}>
+                <td>{row.name}</td>
+                <td>{row.phone}</td>
+                <td>{row.ward}</td>
+                <td>{row.city}</td>
+                <td>{row.corporation}</td>
+                <td>
+                  <span className={`status ${row.status}`}>
+                    {row.status === "active" ? "Active" : "Inactive"}
+                  </span>
+                </td>
+                <td style={{ textAlign: "right" }}>
+                  <Pencil size={18} onClick={() => handleEdit(row)} />
+                  <Trash2
+                    size={18}
+                    style={{ marginLeft: 10 }}
+                    onClick={() => handleDelete(row.id)}
+                  />
+                </td>
+              </tr>
             ))}
           </tbody>
         </table>
@@ -74,7 +90,7 @@ export default function Councillor() {
                 }
               />
 
-              <label>Phone Number</label>
+              <label>Phone</label>
               <input
                 value={selected.phone}
                 onChange={(e) => {
@@ -90,6 +106,22 @@ export default function Councillor() {
                   setSelected({ ...selected, ward: e.target.value })
                 }
               />
+
+              <label>City</label>
+              <input
+                value={selected.city}
+                onChange={(e) =>
+                  setSelected({ ...selected, city: e.target.value })
+                }
+              />
+
+              <label>Municipal Corporation</label>
+              <input
+                value={selected.corporation}
+                onChange={(e) =>
+                  setSelected({ ...selected, corporation: e.target.value })
+                }
+              />
             </div>
 
             <div className="modal-footer">
@@ -98,8 +130,7 @@ export default function Councillor() {
               </button>
 
               <button className="btn-primary" onClick={handleSave}>
-                <Save size={16} />
-                Save
+                <Save size={16} /> Save
               </button>
             </div>
           </div>

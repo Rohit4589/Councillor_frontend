@@ -1,9 +1,9 @@
 import "../Style/categories.css";
 import { Pencil, Trash2, X, Save } from "lucide-react";
 import { useEffect, useState } from "react";
-import DeleteConfirmModal from "./DeleteConfirmModal";
 import { useOutletContext } from "react-router-dom";
 
+import DeleteConfirmModal from "./DeleteConfirmModal";
 import {
   getCategories,
   addCategory,
@@ -12,8 +12,11 @@ import {
 } from "../api/categoriesApi";
 
 export default function Categories() {
-  const { newCategory, clearNewCategory } = useOutletContext();
+const { newCategory, clearNewCategory } = useOutletContext();
 
+  /* ================================
+     STATE
+  ================================ */
   const [categories, setCategories] = useState([
     { id: 101, name: "Street Lights", count: 156, phone: "9588343566" },
     { id: 102, name: "Roads & Potholes", count: 234, phone: "9588343566" },
@@ -29,31 +32,55 @@ export default function Categories() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
 
+  /* ================================
+     FETCH CATEGORIES
+  ================================ */
   useEffect(() => {
     getCategories()
       .then(setCategories)
-      .catch(() => console.warn("Backend not ready, using empty categories"));
+      .catch(() =>
+        console.warn("Backend not ready, using existing categories")
+      );
   }, []);
-
   useEffect(() => {
-    if (newCategory) {
-      const tempId = Date.now();
+    if (!newCategory) return;
 
-      setCategories((prev) => [
-        ...prev,
-        {
-          id: tempId,
-          name: newCategory.name,
-          phone: newCategory.phone,
-          count: 0,
-        },
-      ]);
+    const tempId = Date.now();
 
-      addCategory(newCategory).catch(console.error);
-      clearNewCategory();
-    }
-  }, [newCategory, clearNewCategory]);
+    setCategories((prev) => [
+      ...prev,
+      {
+        id: tempId,
+        name: newCategory.name,
+        phone: newCategory.phone,
+        count: 0,
+      },
+    ]);
 
+    addCategory(newCategory).catch(console.error);
+    clearNewCategory();
+  }, [newCategory]);
+
+
+  /* ================================
+     TOPBAR PRIMARY ACTION
+  ================================ */
+  // useEffect(() => {
+  //   if (!outletContext?.setPrimaryAction) return;
+
+  //   outletContext.setPrimaryAction(() => () => {
+  //     setSelectedCategory(null);
+  //     setName("");
+  //     setPhone("");
+  //     setOpenModal(true);
+  //   });
+
+  //   return () => outletContext.setPrimaryAction(null);
+  // }, [outletContext]);
+
+  /* ================================
+     HANDLERS
+  ================================ */
   const openEdit = (cat) => {
     setSelectedCategory(cat);
     setName(cat.name);
@@ -88,9 +115,12 @@ export default function Categories() {
     setSelectedCategory(null);
   };
 
+  /* ================================
+     UI
+  ================================ */
   return (
     <>
-      {/* ===== TABLE ===== */}
+      {/* TABLE */}
       <div className="categories-table">
         <table className="categories-data-table">
           <thead>
@@ -106,9 +136,7 @@ export default function Categories() {
             {categories.map((cat) => (
               <tr key={cat.id}>
                 <td data-label="Category Name">{cat.name}</td>
-
                 <td data-label="Total Complaints">{cat.count}</td>
-
                 <td data-label="Phone Number">{cat.phone}</td>
 
                 <td data-label="Actions" className="actions-cell">
@@ -132,7 +160,7 @@ export default function Categories() {
         </table>
       </div>
 
-      {/* ===== ADD / EDIT MODAL ===== */}
+      {/* ADD / EDIT MODAL */}
       {openModal && (
         <div className="modal-overlay">
           <div className="modal-box">
@@ -149,8 +177,8 @@ export default function Categories() {
               <input
                 value={phone}
                 onChange={(e) => {
-                  const v = e.target.value.replace(/\D/g, "");
-                  if (v.length <= 10) setPhone(v);
+                  const numeric = e.target.value.replace(/\D/g, "");
+                  if (numeric.length <= 10) setPhone(numeric);
                 }}
               />
             </div>
@@ -170,6 +198,7 @@ export default function Categories() {
         </div>
       )}
 
+      {/* DELETE MODAL */}
       <DeleteConfirmModal
         open={openDelete}
         onClose={() => setOpenDelete(false)}

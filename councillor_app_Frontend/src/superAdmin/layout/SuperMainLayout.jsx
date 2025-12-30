@@ -5,23 +5,23 @@ import SuperTopNavbar from "./SuperTopNavbar";
 import "../Style/layout.css";
 import { faker } from "@faker-js/faker";
 
-// 🔴 BACKEND (ENABLE LATER)
-// import {
-//   getCouncillors,
-//   createCouncillor,
-// } from "../../api/superAdminCouncillorApi";
-
 /* ================================
    FAKER DATA GENERATOR
 ================================ */
 const generateFakeCouncillors = (count = 6) => {
-  return Array.from({ length: count }).map(() => ({
-    id: faker.string.uuid(),
-    name: faker.person.fullName(),
-    phone: faker.phone.number("9#########"),
-    ward: `Ward ${faker.number.int({ min: 1, max: 25 })}`,
-    status: faker.helpers.arrayElement(["active", "inactive"]),
-  }));
+  return Array.from({ length: count }).map(() => {
+    const city = faker.location.city();
+
+    return {
+      id: faker.string.uuid(),
+      name: faker.person.fullName(),
+      phone: faker.phone.number("9#########"),
+      ward: `Ward ${faker.number.int({ min: 1, max: 25 })}`,
+      city: city,
+      corporation: `${city} Municipal Corporation`,
+      status: faker.helpers.arrayElement(["active", "inactive"]),
+    };
+  });
 };
 
 export default function SuperMainLayout() {
@@ -34,33 +34,16 @@ export default function SuperMainLayout() {
   const [councillors, setCouncillors] = useState([]);
 
   /* ================================
-     FETCH / INIT DATA
+     INIT DATA
   ================================ */
   useEffect(() => {
-    // 🔴 BACKEND VERSION
-    /*
-    const fetchData = async () => {
-      const data = await getCouncillors();
-      setCouncillors(data);
-    };
-    fetchData();
-    */
-
-    // ✅ FAKER DATA (DEV MODE)
     setCouncillors(generateFakeCouncillors());
   }, []);
 
   /* ================================
      CREATE COUNCILLOR
   ================================ */
-  const handleCreateCouncillor = async (newCouncillor) => {
-    // 🔴 BACKEND VERSION
-    /*
-    const savedCouncillor = await createCouncillor(newCouncillor);
-    setCouncillors((prev) => [...prev, savedCouncillor]);
-    */
-
-    // ✅ STATIC (FAKER MODE)
+  const handleCreateCouncillor = (newCouncillor) => {
     setCouncillors((prev) => [
       ...prev,
       {
@@ -87,7 +70,6 @@ export default function SuperMainLayout() {
         <SuperTopNavbar onCreate={handleCreateCouncillor} setSidebarOpen={setSidebarOpen} />
 
         <div className="page-content">
-          {/* ✅ SHARE STATE WITH PAGES */}
           <Outlet context={{ councillors, setCouncillors }} />
         </div>
       </div>

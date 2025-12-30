@@ -1,5 +1,5 @@
 import "../Style/createEvent.css";
-import { Camera } from "lucide-react";
+import { Camera, Video } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { getEventCategories, createEvent } from "../Api/eventsApi";
 import { faker } from "@faker-js/faker";
@@ -13,9 +13,11 @@ export default function CreateEvent() {
   const [categoryId, setCategoryId] = useState("");
   const [description, setDescription] = useState("");
   const [photos, setPhotos] = useState([]);
+  const [video, setVideo] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const fileInputRef = useRef(null);
+  const imageInputRef = useRef(null);
+  const videoInputRef = useRef(null);
 
   /* ================================
      CATEGORY LIST
@@ -40,12 +42,10 @@ export default function CreateEvent() {
   }, []);
 
   /* ================================
-     EVENT NAME HANDLER (ONLY ALPHABETS)
+     EVENT NAME HANDLER
   ================================ */
   const handleEventNameChange = (e) => {
     const value = e.target.value;
-
-    // Allow only alphabets & spaces
     const regex = /^[A-Za-z\s]*$/;
 
     if (!regex.test(value)) {
@@ -65,8 +65,13 @@ export default function CreateEvent() {
     setPhotos(files.slice(0, 5));
   };
 
+  const handleVideoUpload = (e) => {
+    const file = e.target.files[0];
+    if (file) setVideo(file);
+  };
+
   /* ================================
-     RESET FORM
+     RESET
   ================================ */
   const resetForm = () => {
     setEventName("");
@@ -74,10 +79,10 @@ export default function CreateEvent() {
     setCategoryId("");
     setDescription("");
     setPhotos([]);
+    setVideo(null);
 
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
+    if (imageInputRef.current) imageInputRef.current.value = "";
+    if (videoInputRef.current) videoInputRef.current.value = "";
   };
 
   /* ================================
@@ -99,6 +104,7 @@ export default function CreateEvent() {
         category_id: categoryId,
         description,
         photos,
+        video,
       });
 
       alert("Event created successfully");
@@ -136,6 +142,12 @@ export default function CreateEvent() {
             onChange={(e) => setCategoryId(e.target.value)}
           >
             <option value="">Select</option>
+
+            {/* STATIC OPTIONS */}
+            <option value="announcement">Announcement</option>
+            <option value="event">Event</option>
+
+            {/* DYNAMIC OPTIONS */}
             {categories.map((cat) => (
               <option key={cat.id} value={cat.id}>
                 {cat.name}
@@ -164,15 +176,29 @@ export default function CreateEvent() {
             <input
               type="file"
               multiple
+              accept="image/*"
               hidden
-              ref={fileInputRef}
+              ref={imageInputRef}
               onChange={handlePhotoUpload}
             />
           </label>
+        </div>
 
-          {photos.length > 0 && (
-            <p className="photo-count">{photos.length} image(s) selected</p>
-          )}
+        {/* Video */}
+        <div className="form-group">
+          <label>Video (Optional)</label>
+          <label className="upload-box">
+            <Video size={28} />
+            <p>Upload Video</p>
+            <span>Max 1 video</span>
+            <input
+              type="file"
+              accept="video/*"
+              hidden
+              ref={videoInputRef}
+              onChange={handleVideoUpload}
+            />
+          </label>
         </div>
       </div>
 

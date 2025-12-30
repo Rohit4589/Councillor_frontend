@@ -7,7 +7,7 @@ export default function Citizens() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [selectedCitizen, setSelectedCitizen] = useState(null);
-
+  
   const PAGE_SIZE = 5;
 
   useEffect(() => {
@@ -143,10 +143,11 @@ export default function Citizens() {
                 {selectedCitizen.ward}
               </p>
 
-              {selectedCitizen.aadhar && (
+              {/* These will appear automatically from faker/backend */}
+              {selectedCitizen.VoterId && (
                 <p>
-                  <span>Aadhar</span>
-                  {selectedCitizen.aadhar}
+                  <span>Voter-Id</span>
+                  {selectedCitizen.VoterId}
                 </p>
               )}
               {selectedCitizen.city && (
