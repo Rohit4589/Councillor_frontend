@@ -43,11 +43,16 @@ export default function TopNavbar({
   }
 
   return (
-    <div
-      className={`topbar ${
-        currentRoute.path === "/categories" ? "topbar--categories" : ""
-      }`}
-    >
+   <div
+  className={`topbar ${
+    currentRoute.path === "/categories"
+      ? "topbar--categories"
+      : currentRoute.path === "/officers"
+      ? "topbar--officers"
+      : ""
+  }`}
+>
+
       {/* LEFT */}
       <div className="topbar-left">
         {isComplaintDetails && (

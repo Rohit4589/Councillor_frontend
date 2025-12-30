@@ -1,71 +1,29 @@
 import { Pencil, X, Save, Trash2 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "../style/councillor.css";
 import "../style/modal.css";
 import { useOutletContext } from "react-router-dom";
 
-// 🔴 BACKEND (ENABLE LATER)
-import {
-  getCouncillors,
-  updateCouncillor,
-  deleteCouncillor,
-} from "../api/superAdminCouncillorApi"
-
 export default function Councillor() {
-  /* ================================
-     STATE FROM LAYOUT
-  ================================ */
   const { councillors, setCouncillors } = useOutletContext();
 
   const [openEdit, setOpenEdit] = useState(false);
   const [selected, setSelected] = useState(null);
-
- 
-
-  /* ================================
-     HANDLERS
-  ================================ */
 
   const handleEdit = (row) => {
     setSelected(row);
     setOpenEdit(true);
   };
 
-  const handleSave = async () => {
-    // 🔴 BACKEND VERSION
-    /*
-    const updated = await updateCouncillor(selected.id, {
-      name: selected.name,
-      phone: selected.phone,
-      ward: selected.ward,
-    });
-
-    setCouncillors((prev) =>
-      prev.map((c) => (c.id === updated.id ? updated : c))
-    );
-    */
-
-    // ✅ TEMP UPDATE
+  const handleSave = () => {
     setCouncillors((prev) =>
       prev.map((c) => (c.id === selected.id ? selected : c))
     );
-
     setOpenEdit(false);
   };
 
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this councillor?"
-    );
-
-    if (!confirmDelete) return;
-
-    // 🔴 BACKEND VERSION
-    /*
-    await deleteCouncillor(id);
-    */
-
-    // ✅ TEMP DELETE
+  const handleDelete = (id) => {
+    if (!window.confirm("Delete this councillor?")) return;
     setCouncillors((prev) => prev.filter((c) => c.id !== id));
   };
 
@@ -76,8 +34,10 @@ export default function Councillor() {
           <thead>
             <tr>
               <th>Name</th>
-              <th>Phone Number</th>
-              <th>Ward Assigned</th>
+              <th>Phone</th>
+              <th>Ward</th>
+              <th>City</th>
+              <th>Municipal Corporation</th>
               <th>Status</th>
               <th style={{ textAlign: "center" }}>Actions</th>
             </tr>
@@ -85,20 +45,32 @@ export default function Councillor() {
 
           <tbody>
             {councillors.map((row) => (
-              <Row
-                key={row.id}
-                data={row}
-                onEdit={handleEdit}
-                onDelete={handleDelete}
-              />
+              <tr key={row.id}>
+                <td>{row.name}</td>
+                <td>{row.phone}</td>
+                <td>{row.ward}</td>
+                <td>{row.city}</td>
+                <td>{row.corporation}</td>
+                <td>
+                  <span className={`status ${row.status}`}>
+                    {row.status === "active" ? "Active" : "Inactive"}
+                  </span>
+                </td>
+                <td style={{ textAlign: "right" }}>
+                  <Pencil size={18} onClick={() => handleEdit(row)} />
+                  <Trash2
+                    size={18}
+                    style={{ marginLeft: 10 }}
+                    onClick={() => handleDelete(row.id)}
+                  />
+                </td>
+              </tr>
             ))}
           </tbody>
         </table>
       </div>
 
-      {/* ================================
-         EDIT MODAL
-      ================================ */}
+      {/* EDIT MODAL */}
       {openEdit && selected && (
         <div className="modal-overlay">
           <div className="modal-card">
@@ -116,16 +88,15 @@ export default function Councillor() {
                 }
               />
 
-              <label>Phone Number</label>
+              <label>Phone</label>
               <input
                 value={selected.phone}
-                onChange={(e) => {
-                  const numericValue = e.target.value.replace(/\D/g, "");
+                onChange={(e) =>
                   setSelected({
                     ...selected,
-                    phone: numericValue.slice(0, 10),
-                  });
-                }}
+                    phone: e.target.value.replace(/\D/g, "").slice(0, 10),
+                  })
+                }
               />
 
               <label>Ward</label>
@@ -133,6 +104,22 @@ export default function Councillor() {
                 value={selected.ward}
                 onChange={(e) =>
                   setSelected({ ...selected, ward: e.target.value })
+                }
+              />
+
+              <label>City</label>
+              <input
+                value={selected.city}
+                onChange={(e) =>
+                  setSelected({ ...selected, city: e.target.value })
+                }
+              />
+
+              <label>Municipal Corporation</label>
+              <input
+                value={selected.corporation}
+                onChange={(e) =>
+                  setSelected({ ...selected, corporation: e.target.value })
                 }
               />
             </div>
@@ -143,42 +130,12 @@ export default function Councillor() {
               </button>
 
               <button className="btn-primary" onClick={handleSave}>
-                <Save size={16} />
-                Save
+                <Save size={16} /> Save
               </button>
             </div>
           </div>
         </div>
       )}
     </div>
-  );
-}
-
-/* ================================
-   TABLE ROW (UNCHANGED UI)
-================================ */
-
-function Row({ data, onEdit, onDelete }) {
-  return (
-    <tr>
-      <td>{data.name}</td>
-      <td>{data.phone}</td>
-      <td>{data.ward}</td>
-      <td>
-        <span className={`status ${data.status}`}>
-          {data.status === "active" ? "Active" : "Inactive"}
-        </span>
-      </td>
-      <td style={{ textAlign: "right" }}>
-        <div className="table-actions">
-          <Pencil size={18} onClick={() => onEdit(data)} />
-          <Trash2
-            size={18}
-            style={{ marginLeft: "10px", cursor: "pointer" }}
-            onClick={() => onDelete(data.id)}
-          />
-        </div>
-      </td>
-    </tr>
   );
 }

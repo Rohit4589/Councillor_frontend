@@ -162,10 +162,10 @@ const handleViewDetails = async (citizen) => {
               </p>
 
               {/* These will appear automatically from faker/backend */}
-              {selectedCitizen.aadhar && (
+              {selectedCitizen.VoterId && (
                 <p>
-                  <span>Aadhar</span>
-                  {selectedCitizen.aadhar}
+                  <span>Voter-Id</span>
+                  {selectedCitizen.VoterId}
                 </p>
               )}
               {selectedCitizen.city && (

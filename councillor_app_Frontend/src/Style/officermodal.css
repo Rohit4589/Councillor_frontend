@@ -1,0 +1,121 @@
+/* ===============================
+   MODAL OVERLAY
+================================ */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+}
+
+/* ===============================
+   MODAL CARD
+================================ */
+.modal-card {
+  background: #ffffff;
+  width: 380px;               /* ⬇️ reduced width */
+  border-radius: 14px;
+  padding: 18px;              /* ⬇️ reduced padding */
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.18);
+}
+
+/* ===============================
+   MODAL HEADER
+================================ */
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;        /* ⬇️ less gap */
+}
+
+.modal-header h3 {
+  font-size: 16px;            /* ⬇️ smaller title */
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Smaller close icon */
+.modal-close {
+  border: none;
+  background: #0b3c5d;
+  color: #fff;
+  width: 30px;                /* ⬇️ smaller */
+  height: 30px;
+  border-radius: 8px;
+  font-size: 16px;            /* ⬇️ smaller icon */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===============================
+   MODAL BODY
+================================ */
+.modal-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;                   /* ⬇️ less vertical space */
+}
+
+.modal-body label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.modal-body input {
+  padding: 10px;              /* ⬇️ shorter inputs */
+  border-radius: 8px;
+  border: 1px solid #e5e7eb;
+  font-size: 14px;
+}
+
+/* ===============================
+   MODAL ACTIONS
+================================ */
+/* ===============================
+   MODAL ACTIONS
+================================ */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+/* CANCEL BUTTON */
+.modal-actions .ghost {
+  background: #ffffff;
+  color: #0b3c5d;
+  border: 1.5px solid #0b3c5d;
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.modal-actions .ghost:hover {
+  background: #f0f6fb;
+}
+
+/* SAVE BUTTON */
+.modal-actions .primary {
+  background: #0b3c5d;
+  color: #ffffff;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.modal-actions .primary:hover {
+  background: #08324d;
+}

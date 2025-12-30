@@ -1,10 +1,8 @@
-// src/api/eventsApi.js
-
 const BASE_URL = "http://localhost:5000/api/admin";
 
 /* ===============================
    GET EVENT CATEGORIES
-   =============================== */
+================================ */
 export const getEventCategories = async () => {
   const res = await fetch(`${BASE_URL}/category`, {
     headers: {
@@ -23,13 +21,14 @@ export const getEventCategories = async () => {
 };
 
 /* ===============================
-   CREATE EVENT (DOC COMPLIANT)
-   =============================== */
+   CREATE EVENT
+================================ */
 export const createEvent = async ({
   event_name,
   category_id,
   description,
   photos,
+  video,
 }) => {
   const formData = new FormData();
 
@@ -40,6 +39,10 @@ export const createEvent = async ({
   photos.forEach((file) => {
     formData.append("photos[]", file);
   });
+
+  if (video) {
+    formData.append("video", video);
+  }
 
   const res = await fetch(`${BASE_URL}/announcement`, {
     method: "POST",

@@ -16,30 +16,29 @@ export default function SuperTopNavbar({ onCreate }) {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [ward, setWard] = useState("");
+  const [city, setCity] = useState("");
+  const [corporation, setCorporation] = useState("");
 
   const currentRoute = Object.values(superAdminRoutesConfig).find((route) =>
     location.pathname.startsWith(route.path)
   );
 
-  /* ================================
-     HANDLERS
-  ================================ */
-
   const resetForm = () => {
     setName("");
     setPhone("");
     setWard("");
+    setCity("");
+    setCorporation("");
   };
 
   const handleCreate = () => {
-    const payload = {
+    onCreate({
       name,
       phone,
       ward,
-    };
-
-    // ✅ Pass data to layout (static OR backend handled there)
-    onCreate(payload);
+      city,
+      corporation,
+    });
 
     resetForm();
     setOpenModal(false);
@@ -47,9 +46,7 @@ export default function SuperTopNavbar({ onCreate }) {
 
   return (
     <>
-      {/* ================================
-         TOP BAR
-      ================================ */}
+      {/* TOP BAR */}
       <div className="topbar">
         <div className="topbar-content">
           <div>
@@ -69,9 +66,7 @@ export default function SuperTopNavbar({ onCreate }) {
         </div>
       </div>
 
-      {/* ================================
-         ADD COUNCILLOR MODAL
-      ================================ */}
+      {/* ADD COUNCILLOR MODAL */}
       {openModal && (
         <div className="modal-overlay">
           <div className="modal-card">
@@ -83,29 +78,34 @@ export default function SuperTopNavbar({ onCreate }) {
             <div className="modal-body">
               <label>Name</label>
               <input
-                type="text"
-                placeholder="Ram"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               />
 
               <label>Phone Number</label>
               <input
-                type="text"
-                placeholder="7548984763"
                 value={phone}
-                onChange={(e) => {
-                  const numericValue = e.target.value.replace(/\D/g, "");
-                  setPhone(numericValue.slice(0, 10));
-                }}
+                onChange={(e) =>
+                  setPhone(e.target.value.replace(/\D/g, "").slice(0, 10))
+                }
               />
 
               <label>Ward</label>
               <input
-                type="text"
-                placeholder="Ward 12"
                 value={ward}
                 onChange={(e) => setWard(e.target.value)}
+              />
+
+              <label>City</label>
+              <input
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+              />
+
+              <label>Municipal Corporation</label>
+              <input
+                value={corporation}
+                onChange={(e) => setCorporation(e.target.value)}
               />
             </div>
 

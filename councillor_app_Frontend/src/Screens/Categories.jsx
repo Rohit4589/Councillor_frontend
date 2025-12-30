@@ -12,44 +12,12 @@ import {
 } from "../api/categoriesApi";
 
 export default function Categories() {
-  const { newCategory, clearNewCategory } = useOutletContext();
+  const outletContext = useOutletContext();
 
   /* ================================
      STATE
   ================================ */
-  const [categories, setCategories] = useState([
-  {
-    id: 101,
-    name: "Street Lights",
-    count: 156,
-    phone: "9588343566",
-  },
-  {
-    id: 102,
-    name: "Roads & Potholes",
-    count: 234,
-    phone: "9588343566",
-  },
-  {
-    id: 103,
-    name: "Garbage Collection",
-    count: 189,
-    phone: "9588343566",
-  },
-  {
-    id: 104,
-    name: "Water Supply",
-    count: 98,
-    phone: "9588343566",
-  },
-  {
-    id: 105,
-    name: "Street Cleaning",
-    count: 112,
-    phone: "9588343566",
-  },
-]);
-
+  const [categories, setCategories] = useState([]);
   const [openModal, setOpenModal] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -69,32 +37,29 @@ export default function Categories() {
   }, []);
 
   /* ================================
-     ADD FROM TOP BAR
+     TOPBAR PRIMARY ACTION
   ================================ */
   useEffect(() => {
-    if (newCategory) {
-      const tempId = Date.now();
-
-      setCategories((prev) => [
-        ...prev,
-        { id: tempId, name: newCategory.name, phone: newCategory.phone, count: 0 },
-      ]);
-
-      addCategory(newCategory).catch(console.error);
-      clearNewCategory();
+    if (outletContext?.setPrimaryAction) {
+      outletContext.setPrimaryAction(() => () => {
+        setSelectedCategory(null);
+        setName("");
+        setPhone("");
+        setOpenModal(true);
+      });
     }
-  }, [newCategory, clearNewCategory]);
+
+    // ✅ CLEANUP ON UNMOUNT
+    return () => {
+      if (outletContext?.setPrimaryAction) {
+        outletContext.setPrimaryAction(null);
+      }
+    };
+  }, [outletContext]);
 
   /* ================================
      HANDLERS
   ================================ */
-  const openAdd = () => {
-    setSelectedCategory(null);
-    setName("");
-    setPhone("");
-    setOpenModal(true);
-  };
-
   const openEdit = (cat) => {
     setSelectedCategory(cat);
     setName(cat.name);
@@ -156,7 +121,7 @@ export default function Categories() {
   ================================ */
   return (
     <>
-      {/* ===== TABLE ===== */}
+      {/* TABLE */}
       <div className="categories-table">
         <table>
           <thead>
@@ -195,7 +160,7 @@ export default function Categories() {
         </table>
       </div>
 
-      {/* ===== ADD / EDIT MODAL ===== */}
+      {/* ADD / EDIT MODAL */}
       {openModal && (
         <div className="modal-overlay">
           <div className="modal-box">
@@ -216,10 +181,8 @@ export default function Categories() {
               <input
                 value={phone}
                 onChange={(e) => {
-                  const numericValue = e.target.value.replace(/\D/g, "");
-                  if (numericValue.length <= 10) {
-                    setPhone(numericValue);
-                  }
+                  const numeric = e.target.value.replace(/\D/g, "");
+                  if (numeric.length <= 10) setPhone(numeric);
                 }}
                 placeholder="9876543210"
               />
@@ -240,7 +203,7 @@ export default function Categories() {
         </div>
       )}
 
-      {/* ===== DELETE MODAL ===== */}
+      {/* DELETE MODAL */}
       <DeleteConfirmModal
         open={openDelete}
         onClose={() => setOpenDelete(false)}

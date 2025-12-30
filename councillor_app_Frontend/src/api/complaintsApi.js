@@ -35,6 +35,22 @@ const buildTimelineFromBackend = (status) => {
 };
 
 /* ===============================
+   ✅ ADDED: DATE + TIME FORMATTER
+   =============================== */
+const formatDateTime = (date) => {
+  const d = new Date(date);
+
+  return d.toLocaleString("en-IN", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+};
+
+/* ===============================
    GET ALL COMPLAINTS
    =============================== */
 export const getComplaints = async ({
@@ -48,6 +64,8 @@ export const getComplaints = async ({
       const backendStatuses = ["IN_PROGRESS", "SUBMITTED", "COMPLETED"];
       const backendStatus = faker.helpers.arrayElement(backendStatuses);
 
+      const rawDate = faker.date.recent(); // 👈 added for clarity
+
       return {
         id: faker.string.alphanumeric(8).toUpperCase(), // complaint_id
         category: faker.helpers.arrayElement([
@@ -59,7 +77,7 @@ export const getComplaints = async ({
         summary: faker.lorem.sentence(6),
         status: mapBackendStatus(backendStatus),
         ward: `Ward ${faker.number.int({ min: 1, max: 20 })}`,
-        date: faker.date.recent().toISOString().split("T")[0],
+        date: formatDateTime(rawDate), // ✅ DATE + TIME
       };
     });
   }
@@ -89,7 +107,7 @@ export const getComplaints = async ({
     summary: c.summary,
     status: mapBackendStatus(c.status),
     ward: c.ward,
-    date: c.date,
+    date: formatDateTime(c.date), // ✅ DATE + TIME
   }));
   */
 
@@ -104,6 +122,8 @@ export const getComplaintById = async (id) => {
     const backendStatuses = ["IN_PROGRESS", "SUBMITTED", "COMPLETED"];
     const backendStatus = faker.helpers.arrayElement(backendStatuses);
 
+    const rawDate = faker.date.recent();
+
     return {
       id,
       category: faker.helpers.arrayElement([
@@ -115,7 +135,7 @@ export const getComplaintById = async (id) => {
       summary: faker.lorem.sentence(6),
       description: faker.lorem.paragraph(),
       ward: `Ward ${faker.number.int({ min: 1, max: 20 })}`,
-      date: faker.date.recent().toISOString().split("T")[0],
+      date: formatDateTime(rawDate), // ✅ DATE + TIME
       location: faker.location.street(),
       status: mapBackendStatus(backendStatus),
       statusTimeline: buildTimelineFromBackend(backendStatus),
@@ -152,7 +172,7 @@ export const getComplaintById = async (id) => {
     summary: c.summary,
     description: c.description,
     ward: c.ward,
-    date: c.date,
+    date: formatDateTime(c.date), // ✅ DATE + TIME
     location: c.location,
     status: mapBackendStatus(c.status),
     statusTimeline: buildTimelineFromBackend(c.status),

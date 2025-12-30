@@ -44,11 +44,14 @@ export const routesConfig = {
     title: "Complaint Details",
     
   },
-  officers: {
-    path: "/officers",
-    title: "Officers Details",
-    subtitle: "Manage ward officers",
+ officers: {
+  path: "/officers",
+  title: "Officers Details",
+  subtitle: "Manage ward officers",
+  action: {
+    label: "+ Add Officer",
   },
+},
 
   createEvent: {
   path: "/create-event",
