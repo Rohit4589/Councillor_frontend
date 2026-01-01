@@ -88,3 +88,31 @@
 .categories-table tbody tr:hover {
   background: #f9fafb;
 }
+
+
+.officers-link {
+  color: #2563eb;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.officers-link:hover {
+  text-decoration: underline;
+}
+
+
+
+.btn-cancel {
+  background: #6f95e2;
+  color: #374151;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-cancel:hover {
+  background: #e5e7eb;
+}

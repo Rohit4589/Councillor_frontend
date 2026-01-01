@@ -9,6 +9,14 @@ const USE_FAKE_DATA = true; // 🔁 change to false when backend is ready
 const BASE_URL = "http://localhost:5000/admin/category";
 
 /* ======================================================
+   OFFICERS (ASSIGNED TO CATEGORY)
+====================================================== */
+
+// const CATEGORY_OFFICERS_URL =
+//   "http://localhost:5000/admin/category";
+
+
+/* ======================================================
    FAKE DATA (FOR TESTING)
 ====================================================== */
 const generateFakeCategories = (count = 8) => {
@@ -28,6 +36,14 @@ const generateFakeCategories = (count = 8) => {
     phone: faker.phone.number("9#########"),
   }));
 };
+
+const generateFakeOfficers = (count = 3) =>
+  Array.from({ length: count }).map(() => ({
+    id: faker.number.int({ min: 1, max: 1000 }),
+    name: faker.person.fullName(),
+    phone: faker.phone.number("9#########"),
+  }));
+
 
 /* ======================================================
    GET CATEGORIES
@@ -137,3 +153,46 @@ export const deleteCategory = async (id) => {
 
   return res.json();
 };
+
+/* ======================================================
+   GET OFFICERS ASSIGNED TO A CATEGORY
+====================================================== */
+
+export const getCategoryOfficers = async (categoryId) => {
+  // 🧪 Fake mode
+  if (USE_FAKE_DATA) {
+    return new Promise((resolve) => {
+      setTimeout(
+        () =>
+          resolve({
+            categoryId,
+            officers: generateFakeOfficers(3),
+          }),
+        400
+      );
+    });
+  }}
+//
+//   // 🌐 Real API
+//   const res = await fetch(
+//     `${CATEGORY_OFFICERS_URL}/${categoryId}/officers`,
+//     {
+//       headers: {
+//         Authorization: `Bearer ${localStorage.getItem("token")}`,
+//       },
+//     }
+//   );
+//
+//   if (!res.ok) throw new Error("Failed to fetch officers");
+//
+//   const json = await res.json();
+//
+//   return {
+//     categoryId,
+//     officers: json.data.map((item) => ({
+//       id: item.officer_id,
+//       name: item.officer_name,
+//       phone: item.phone_number,
+//     })),
+//   };
+// };

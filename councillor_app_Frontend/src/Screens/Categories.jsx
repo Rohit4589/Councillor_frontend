@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useOutletContext } from "react-router-dom";
 
 import DeleteConfirmModal from "./DeleteConfirmModal";
+import { getCategoryOfficers } from "../api/categoriesApi";
+
 import {
   getCategories,
   addCategory,
@@ -12,7 +14,7 @@ import {
 } from "../api/categoriesApi";
 
 export default function Categories() {
-const { newCategory, clearNewCategory } = useOutletContext();
+  const { newCategory, clearNewCategory } = useOutletContext();
 
   /* ================================
      STATE
@@ -28,9 +30,23 @@ const { newCategory, clearNewCategory } = useOutletContext();
   const [openModal, setOpenModal] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
+  const [openOfficersModal, setOpenOfficersModal] = useState(false);
+  const [selectedOfficers, setSelectedOfficers] = useState([]);
+  // const res = await getCategoryOfficers(cat.id);
+  // setSelectedOfficers(res.officers);
 
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+
+  const categoryOfficers = {
+    101: [
+      { name: "Ramesh Patil", phone: "9876543210" },
+      { name: "Suresh Kulkarni", phone: "9123456789" },
+    ],
+    102: [{ name: "Amit Joshi", phone: "9988776655" }],
+    103: [],
+    104: [{ name: "Vijay Deshmukh", phone: "9012345678" }],
+  };
 
   /* ================================
      FETCH CATEGORIES
@@ -60,7 +76,6 @@ const { newCategory, clearNewCategory } = useOutletContext();
     addCategory(newCategory).catch(console.error);
     clearNewCategory();
   }, [newCategory]);
-
 
   /* ================================
      TOPBAR PRIMARY ACTION
@@ -127,7 +142,8 @@ const { newCategory, clearNewCategory } = useOutletContext();
             <tr>
               <th>Category Name</th>
               <th>Total Complaints</th>
-              <th>Phone Number</th>
+              <th>Officers Assigned</th>
+
               <th className="actions-header">Actions</th>
             </tr>
           </thead>
@@ -137,7 +153,18 @@ const { newCategory, clearNewCategory } = useOutletContext();
               <tr key={cat.id}>
                 <td data-label="Category Name">{cat.name}</td>
                 <td data-label="Total Complaints">{cat.count}</td>
-                <td data-label="Phone Number">{cat.phone}</td>
+                <td
+                  data-label="Officers Assigned"
+                  className="officers-link"
+                  onClick={async () => {
+                    setOpenOfficersModal(true);
+
+                    const res = await getCategoryOfficers(cat.id);
+                    setSelectedOfficers(res.officers || []);
+                  }}
+                >
+                  View Officers
+                </td>
 
                 <td data-label="Actions" className="actions-cell">
                   <Pencil
@@ -204,6 +231,43 @@ const { newCategory, clearNewCategory } = useOutletContext();
         onClose={() => setOpenDelete(false)}
         onConfirm={confirmDelete}
       />
+      {openOfficersModal && (
+        <div className="modal-overlay">
+          <div className="modal-box">
+            <div className="modal-header">
+              <h3>Officers Assigned</h3>
+              <X
+                className="close-icon"
+                onClick={() => setOpenOfficersModal(false)}
+              />
+            </div>
+
+            {/* officers assigned MODAL */}
+
+            <div className="modal-body">
+              {selectedOfficers.length === 0 ? (
+                <p>No officers assigned to this category.</p>
+              ) : (
+                selectedOfficers.map((officer, index) => (
+                  <div key={index} style={{ marginBottom: "10px" }}>
+                    <strong>{officer.name}</strong>
+                    <div>{officer.phone}</div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            <div className="modal-footer">
+              <button
+                className="btn-cancel"
+                onClick={() => setOpenOfficersModal(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }
