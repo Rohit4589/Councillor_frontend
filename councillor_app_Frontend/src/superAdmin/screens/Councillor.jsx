@@ -48,17 +48,23 @@ export default function Councillor() {
           <tbody>
             {councillors.map((row) => (
               <tr key={row.id}>
-                <td>{row.name}</td>
-                <td>{row.phone}</td>
-                <td>{row.ward}</td>
-                <td>{row.city}</td>
-                <td>{row.corporation}</td>
-                <td>
+                <td data-label="Name">{row.name}</td>
+
+                <td data-label="Phone">{row.phone}</td>
+
+                <td data-label="Ward">{row.ward}</td>
+
+                <td data-label="City">{row.city}</td>
+
+                <td data-label="Municipal Corporation">{row.corporation}</td>
+
+                <td data-label="Status">
                   <span className={`status ${row.status}`}>
                     {row.status === "active" ? "Active" : "Inactive"}
                   </span>
                 </td>
-                <td style={{ textAlign: "right" }}>
+
+                <td data-label="Actions" style={{ textAlign: "right" }}>
                   <Pencil size={18} onClick={() => handleEdit(row)} />
                   <Trash2
                     size={18}
