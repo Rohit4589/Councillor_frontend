@@ -1,26 +1,17 @@
 // src/api/categoriesApi.js
 import { faker } from "@faker-js/faker";
+import axiosInstance from "./axiosInstance";
 
 /* ======================================================
    CONFIG
 ====================================================== */
 const USE_FAKE_DATA = true; // 🔁 change to false when backend is ready
 
-const BASE_URL = "http://localhost:5000/admin/category";
-
 /* ======================================================
-   OFFICERS (ASSIGNED TO CATEGORY)
+   FAKE DATA
 ====================================================== */
-
-// const CATEGORY_OFFICERS_URL =
-//   "http://localhost:5000/admin/category";
-
-
-/* ======================================================
-   FAKE DATA (FOR TESTING)
-====================================================== */
-const generateFakeCategories = (count = 8) => {
-  return Array.from({ length: count }).map((_, index) => ({
+const generateFakeCategories = (count = 8) =>
+  Array.from({ length: count }).map((_, index) => ({
     id: index + 1,
     name: faker.helpers.arrayElement([
       "Street Lights",
@@ -35,7 +26,6 @@ const generateFakeCategories = (count = 8) => {
     count: faker.number.int({ min: 10, max: 300 }),
     phone: faker.phone.number("9#########"),
   }));
-};
 
 const generateFakeOfficers = (count = 3) =>
   Array.from({ length: count }).map(() => ({
@@ -44,30 +34,19 @@ const generateFakeOfficers = (count = 3) =>
     phone: faker.phone.number("9#########"),
   }));
 
-
 /* ======================================================
    GET CATEGORIES
 ====================================================== */
 export const getCategories = async () => {
-  // 🧪 Fake mode
   if (USE_FAKE_DATA) {
-    return new Promise((resolve) => {
-      setTimeout(() => resolve(generateFakeCategories()), 500);
-    });
+    return new Promise((resolve) =>
+      setTimeout(() => resolve(generateFakeCategories()), 500)
+    );
   }
 
-  // 🌐 Real API
-  const res = await fetch(BASE_URL, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
+  const response = await axiosInstance.get("/admin/category");
 
-  if (!res.ok) throw new Error("Failed to fetch categories");
-
-  const json = await res.json();
-
-  return json.data.map((item) => ({
+  return response.data.data.map((item) => ({
     id: item.category_id,
     name: item.category_name,
     count: item.total_complaints,
@@ -80,27 +59,18 @@ export const getCategories = async () => {
 ====================================================== */
 export const addCategory = async (data) => {
   if (USE_FAKE_DATA) {
-    return Promise.resolve({
-      success: true,
-      message: "Category created (fake)",
-    });
+    return Promise.resolve({ success: true });
   }
 
-  const res = await fetch(BASE_URL, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-    body: JSON.stringify({
+  const response = await axiosInstance.post(
+    "/admin/category",
+    {
       category_name: data.name,
       phone_number: data.phone,
-    }),
-  });
+    }
+  );
 
-  if (!res.ok) throw new Error("Add category failed");
-
-  return res.json();
+  return response.data;
 };
 
 /* ======================================================
@@ -108,27 +78,18 @@ export const addCategory = async (data) => {
 ====================================================== */
 export const updateCategory = async (id, data) => {
   if (USE_FAKE_DATA) {
-    return Promise.resolve({
-      success: true,
-      message: "Category updated (fake)",
-    });
+    return Promise.resolve({ success: true });
   }
 
-  const res = await fetch(`${BASE_URL}/${id}`, {
-    method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-    body: JSON.stringify({
+  const response = await axiosInstance.put(
+    `/admin/category/${id}`,
+    {
       category_name: data.name,
       phone_number: data.phone,
-    }),
-  });
+    }
+  );
 
-  if (!res.ok) throw new Error("Update category failed");
-
-  return res.json();
+  return response.data;
 };
 
 /* ======================================================
@@ -136,32 +97,22 @@ export const updateCategory = async (id, data) => {
 ====================================================== */
 export const deleteCategory = async (id) => {
   if (USE_FAKE_DATA) {
-    return Promise.resolve({
-      success: true,
-      message: "Category deleted (fake)",
-    });
+    return Promise.resolve({ success: true });
   }
 
-  const res = await fetch(`${BASE_URL}/${id}`, {
-    method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
+  const response = await axiosInstance.delete(
+    `/admin/category/${id}`
+  );
 
-  if (!res.ok) throw new Error("Delete category failed");
-
-  return res.json();
+  return response.data;
 };
 
 /* ======================================================
-   GET OFFICERS ASSIGNED TO A CATEGORY
+   GET CATEGORY OFFICERS (FAKE ONLY FOR NOW)
 ====================================================== */
-
 export const getCategoryOfficers = async (categoryId) => {
-  // 🧪 Fake mode
   if (USE_FAKE_DATA) {
-    return new Promise((resolve) => {
+    return new Promise((resolve) =>
       setTimeout(
         () =>
           resolve({
@@ -169,30 +120,7 @@ export const getCategoryOfficers = async (categoryId) => {
             officers: generateFakeOfficers(3),
           }),
         400
-      );
-    });
-  }}
-//
-//   // 🌐 Real API
-//   const res = await fetch(
-//     `${CATEGORY_OFFICERS_URL}/${categoryId}/officers`,
-//     {
-//       headers: {
-//         Authorization: `Bearer ${localStorage.getItem("token")}`,
-//       },
-//     }
-//   );
-//
-//   if (!res.ok) throw new Error("Failed to fetch officers");
-//
-//   const json = await res.json();
-//
-//   return {
-//     categoryId,
-//     officers: json.data.map((item) => ({
-//       id: item.officer_id,
-//       name: item.officer_name,
-//       phone: item.phone_number,
-//     })),
-//   };
-// };
+      )
+    );
+  }
+};

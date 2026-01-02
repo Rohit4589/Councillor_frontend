@@ -1,7 +1,6 @@
 // src/api/officersApi.js
 import { faker } from "@faker-js/faker";
-
-const BASE_URL = "http://localhost:5000/officers";
+import axiosInstance from "./axiosInstance";
 
 /* ===============================
    FAKER FALLBACK
@@ -21,13 +20,9 @@ const generateFakeOfficers = (count = 10) => {
 ================================ */
 export const getOfficers = async () => {
   try {
-    const response = await fetch(BASE_URL);
+    const response = await axiosInstance.get("/officers");
 
-    if (!response.ok) throw new Error("API failed");
-
-    const result = await response.json();
-
-    return result.data.map((item) => ({
+    return response.data.data.map((item) => ({
       id: item.officer_id,
       name: item.name,
       designation: item.designation,
@@ -45,24 +40,19 @@ export const getOfficers = async () => {
 ================================ */
 export const addOfficer = async (officer) => {
   try {
-    const response = await fetch(BASE_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(officer),
-    });
+    const response = await axiosInstance.post(
+      "/officers",
+      officer
+    );
 
-    if (!response.ok) throw new Error("Add failed");
-
-    const result = await response.json();
+    const d = response.data.data;
 
     return {
-      id: result.data.officer_id,
-      name: result.data.name,
-      designation: result.data.designation,
-      department: result.data.department,
-      phone: result.data.phone_number,
+      id: d.officer_id,
+      name: d.name,
+      designation: d.designation,
+      department: d.department,
+      phone: d.phone_number,
     };
   } catch (err) {
     console.warn("⚠️ Add API failed → local insert only");

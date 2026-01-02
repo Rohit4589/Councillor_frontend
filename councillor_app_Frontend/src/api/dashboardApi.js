@@ -1,12 +1,13 @@
 // src/Api/dashboardApi.js
 import { faker } from "@faker-js/faker";
+import axiosInstance from "./axiosInstance";
 
 /* ================================
    TOGGLE THIS FLAG
    true  -> use faker data
    false -> use real backend API
 ================================ */
-const USE_FAKE_DATA = true;
+const USE_FAKE_DATA = false;
 
 export const getDashboardData = async () => {
   if (USE_FAKE_DATA) {
@@ -49,18 +50,9 @@ export const getDashboardData = async () => {
   }
 
   // ---------- REAL API ----------
-  const response = await fetch(
-    "http://localhost:5000/api/admin/dashboard-stats",
-    {
-      headers: {
-        Authorization: `Bearer YOUR_TOKEN_HERE`,
-      },
-    }
+  const response = await axiosInstance.get(
+    "/api/admin/dashboard-stats"
   );
 
-  if (!response.ok) {
-    throw new Error("Failed to fetch dashboard data");
-  }
-
-  return response.json();
+  return response.data;
 };

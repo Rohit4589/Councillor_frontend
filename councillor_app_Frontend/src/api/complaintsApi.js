@@ -1,11 +1,11 @@
 import { faker } from "@faker-js/faker";
-// import axios from "axios";
+import axiosInstance from "./axiosInstance";
 
 const USE_FAKE_DATA = true;
 
 /* ===============================
    BACKEND → FRONTEND MAPPERS
-   =============================== */
+================================ */
 
 // backend: IN_PROGRESS | SUBMITTED | COMPLETED
 // frontend: progress | submitted | completed | seen
@@ -35,8 +35,8 @@ const buildTimelineFromBackend = (status) => {
 };
 
 /* ===============================
-   ✅ ADDED: DATE + TIME FORMATTER
-   =============================== */
+   DATE + TIME FORMATTER
+================================ */
 const formatDateTime = (date) => {
   const d = new Date(date);
 
@@ -52,7 +52,7 @@ const formatDateTime = (date) => {
 
 /* ===============================
    GET ALL COMPLAINTS
-   =============================== */
+================================ */
 export const getComplaints = async ({
   councillorId,
   limit = 20,
@@ -63,11 +63,10 @@ export const getComplaints = async ({
     return Array.from({ length: 8 }, () => {
       const backendStatuses = ["IN_PROGRESS", "SUBMITTED", "COMPLETED"];
       const backendStatus = faker.helpers.arrayElement(backendStatuses);
-
-      const rawDate = faker.date.recent(); // 👈 added for clarity
+      const rawDate = faker.date.recent();
 
       return {
-        id: faker.string.alphanumeric(8).toUpperCase(), // complaint_id
+        id: faker.string.alphanumeric(8).toUpperCase(),
         category: faker.helpers.arrayElement([
           "Street Lights",
           "Garbage Collection",
@@ -77,27 +76,19 @@ export const getComplaints = async ({
         summary: faker.lorem.sentence(6),
         status: mapBackendStatus(backendStatus),
         ward: `Ward ${faker.number.int({ min: 1, max: 20 })}`,
-        // date: formatDateTime(rawDate), // ✅ DATE + TIME
-        date: rawDate.toISOString(), // ✅ or rawDate itself
+        date: rawDate.toISOString(),
       };
     });
   }
 
-  /* ===============================
-     BACKEND IMPLEMENTATION (READY)
-     =============================== */
-  /*
-  const response = await axios.get(
-    `/admin/complaints/my`,
+  const response = await axiosInstance.get(
+    "/admin/complaints/my",
     {
       params: {
         councillorid: councillorId,
         limit,
         offset,
         ...filters,
-      },
-      headers: {
-        Authorization: `Bearer ${token}`,
       },
     }
   );
@@ -108,21 +99,17 @@ export const getComplaints = async ({
     summary: c.summary,
     status: mapBackendStatus(c.status),
     ward: c.ward,
-    date: formatDateTime(c.date), // ✅ DATE + TIME
+    date: formatDateTime(c.date),
   }));
-  */
-
-  return [];
 };
 
 /* ===============================
    GET COMPLAINT BY ID
-   =============================== */
+================================ */
 export const getComplaintById = async (id) => {
   if (USE_FAKE_DATA) {
     const backendStatuses = ["IN_PROGRESS", "SUBMITTED", "COMPLETED"];
     const backendStatus = faker.helpers.arrayElement(backendStatuses);
-
     const rawDate = faker.date.recent();
 
     return {
@@ -136,7 +123,6 @@ export const getComplaintById = async (id) => {
       summary: faker.lorem.sentence(6),
       description: faker.lorem.paragraph(),
       ward: `Ward ${faker.number.int({ min: 1, max: 20 })}`,
-      // date: formatDateTime(rawDate), // ✅ DATE + TIME
       date: rawDate.toISOString(),
       location: faker.location.street(),
       status: mapBackendStatus(backendStatus),
@@ -153,17 +139,8 @@ export const getComplaintById = async (id) => {
     };
   }
 
-  /* ===============================
-     BACKEND IMPLEMENTATION (READY)
-     =============================== */
-  /*
-  const response = await axios.get(
-    `/admin/complaints/${id}`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    }
+  const response = await axiosInstance.get(
+    `/admin/complaints/${id}`
   );
 
   const c = response.data.data;
@@ -174,14 +151,11 @@ export const getComplaintById = async (id) => {
     summary: c.summary,
     description: c.description,
     ward: c.ward,
-    date: formatDateTime(c.date), // ✅ DATE + TIME
+    date: formatDateTime(c.date),
     location: c.location,
     status: mapBackendStatus(c.status),
     statusTimeline: buildTimelineFromBackend(c.status),
     citizen: c.citizen,
     images: c.images || [],
   };
-  */
-
-  return null;
 };

@@ -1,20 +1,15 @@
-const BASE_URL = "http://localhost:5000/api/admin";
+// src/api/eventsApi.js
+import axiosInstance from "./axiosInstance";
 
 /* ===============================
    GET EVENT CATEGORIES
 ================================ */
 export const getEventCategories = async () => {
-  const res = await fetch(`${BASE_URL}/category`, {
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-  });
+  const response = await axiosInstance.get(
+    "/api/admin/category"
+  );
 
-  if (!res.ok) throw new Error("Failed to fetch categories");
-
-  const json = await res.json();
-
-  return json.data.map((item) => ({
+  return response.data.data.map((item) => ({
     id: item.category_id,
     name: item.category_name,
   }));
@@ -44,15 +39,15 @@ export const createEvent = async ({
     formData.append("video", video);
   }
 
-  const res = await fetch(`${BASE_URL}/announcement`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${localStorage.getItem("token")}`,
-    },
-    body: formData,
-  });
+  const response = await axiosInstance.post(
+    "/api/admin/announcement",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
 
-  if (!res.ok) throw new Error("Create event failed");
-
-  return res.json();
+  return response.data;
 };

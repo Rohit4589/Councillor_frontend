@@ -1,7 +1,6 @@
 // src/api/citizensApi.js
 import { faker } from "@faker-js/faker";
-
-const BASE_URL = "http://localhost:5000/api/admin";
+import axiosInstance from "./axiosInstance";
 
 /* ===============================
    FAKE DATA FALLBACK
@@ -27,15 +26,16 @@ const generateFakeCitizens = (count = 15) => {
 ================================ */
 export const getCitizens = async () => {
   try {
-    const res = await fetch(`${BASE_URL}/users?role-citizen`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+    const response = await axiosInstance.get(
+      "/api/admin/users",
+      {
+        params: {
+          "role-citizen": true,
+        },
+      }
+    );
 
-    if (!res.ok) throw new Error("API failed");
-
-    const json = await res.json();
+    const json = response.data;
 
     return json.data.map((item) => ({
       id: item.citizen_id,
@@ -55,16 +55,14 @@ export const getCitizens = async () => {
 ================================ */
 export const getCitizenDetails = async (id) => {
   try {
-    const res = await fetch(`${BASE_URL}/userdetalls?id=${id}`, {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    });
+    const response = await axiosInstance.get(
+      "/api/admin/userdetalls",
+      {
+        params: { id },
+      }
+    );
 
-    if (!res.ok) throw new Error("Details API failed");
-
-    const json = await res.json();
-    const d = json.data;
+    const d = response.data.data;
 
     return {
       name: d.name,
