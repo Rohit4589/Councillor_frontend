@@ -5,6 +5,8 @@ import { useOutletContext } from "react-router-dom";
 
 import DeleteConfirmModal from "./DeleteConfirmModal";
 import { getCategoryOfficers } from "../api/categoriesApi";
+import CategoryModal from "./CategoryModal";
+
 
 import {
   getCategories,
@@ -14,17 +16,17 @@ import {
 } from "../api/categoriesApi";
 
 export default function Categories() {
-  const { newCategory, clearNewCategory } = useOutletContext();
+  // const { newCategory, clearNewCategory } = useOutletContext();
   const [loading, setLoading] = useState(true);
-
 
   /* ================================
      STATE
   ================================ */
-const [categories, setCategories] = useState([]);
+  const [categories, setCategories] = useState([]);
 
+  const [openAddModal, setOpenAddModal] = useState(false); // ADD
+  const [openEditModal, setOpenEditModal] = useState(false); // EDIT
 
-  const [openModal, setOpenModal] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [openOfficersModal, setOpenOfficersModal] = useState(false);
@@ -35,39 +37,40 @@ const [categories, setCategories] = useState([]);
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
 
-
-  /* ================================
-     FETCH CATEGORIES
-  ================================ */
- useEffect(() => {
-   getCategories()
-     .then(setCategories)
-     .catch((err) => {
-       console.error("Failed to load categories:", err);
-     })
-     .finally(() => {
-       setLoading(false);
-     });
- }, []);
+  const fetchCategories = async () => {
+    setLoading(true);
+    try {
+      const data = await getCategories();
+      setCategories(data);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    if (!newCategory) return;
+    fetchCategories();
+  }, []);
 
-    const tempId = Date.now();
+  // useEffect(() => {
+  //   if (!newCategory) return;
 
-    setCategories((prev) => [
-      ...prev,
-      {
-        id: tempId,
-        name: newCategory.name,
-        phone: newCategory.phone,
-        count: 0,
-      },
-    ]);
+  //   const tempId = Date.now();
 
-    addCategory(newCategory).catch(console.error);
-    clearNewCategory();
-  }, [newCategory]);
+  //   setCategories((prev) => [
+  //     ...prev,
+  //     {
+  //       id: tempId,
+  //       name: newCategory.name,
+  //       phone: newCategory.phone,
+  //       count: 0,
+  //     },
+  //   ]);
+
+  //   addCategory(newCategory).catch(console.error);
+  //   clearNewCategory();
+  // }, [newCategory]);
 
   /* ================================
      TOPBAR PRIMARY ACTION
@@ -88,38 +91,71 @@ const [categories, setCategories] = useState([]);
   /* ================================
      HANDLERS
   ================================ */
+
+  // const openAddCategory = () => {
+  //   setOpenAddModal(true);
+  // };
+
+  useEffect(() => {
+    const handler = () => setOpenAddModal(true);
+    window.addEventListener("open-add-category", handler);
+
+    return () => {
+      window.removeEventListener("open-add-category", handler);
+    };
+  }, []);
+
+
+  const handleAddCategory = async ({ name, phone }) => {
+    try {
+      await addCategory({ name, phone });
+      await fetchCategories();
+    } catch (err) {
+      console.error("Add category failed:", err);
+    } finally {
+      setOpenAddModal(false);
+    }
+  };
+
   const openEdit = (cat) => {
+     setOpenAddModal(false); 
     setSelectedCategory(cat);
     setName(cat.name);
     setPhone(cat.phone);
-    setOpenModal(true);
+    setOpenEditModal(true);
   };
 
-  const saveCategory = async () => {
-    if (!name || !phone) return;
+  const saveEditedCategory = async () => {
+    if (!name || !phone || !selectedCategory) return;
 
-    if (!selectedCategory) {
-      const tempId = Date.now();
-      setCategories((prev) => [...prev, { id: tempId, name, phone, count: 0 }]);
-      await addCategory({ name, phone });
-    } else {
-      setCategories((prev) =>
-        prev.map((c) =>
-          c.id === selectedCategory.id ? { ...c, name, phone } : c
-        )
-      );
+    try {
       await updateCategory(selectedCategory.id, { name, phone });
+      await fetchCategories();
+    } catch (err) {
+      console.error("Edit category failed:", err);
+    } finally {
+      setOpenEditModal(false);
+      setSelectedCategory(null);
+      setName("");
+      setPhone("");
     }
-
-    setOpenModal(false);
   };
+
 
   const confirmDelete = async () => {
-    const id = selectedCategory.id;
-    setCategories((prev) => prev.filter((c) => c.id !== id));
-    await deleteCategory(id);
-    setOpenDelete(false);
-    setSelectedCategory(null);
+    if (!selectedCategory) return;
+
+    try {
+      await deleteCategory(selectedCategory.id);
+
+      // 🔥 re-fetch after backend success
+      await fetchCategories();
+    } catch (err) {
+      console.error("Delete category failed:", err);
+    } finally {
+      setOpenDelete(false);
+      setSelectedCategory(null);
+    }
   };
 
   /* ================================
@@ -127,6 +163,15 @@ const [categories, setCategories] = useState([]);
   ================================ */
   return (
     <>
+      {openAddModal && (
+        <CategoryModal
+          open={openAddModal}
+          mode="add"
+          onClose={() => setOpenAddModal(false)}
+          onSave={handleAddCategory}
+        />
+      )}
+
       {/* TABLE */}
       <div className="categories-table">
         {loading && (
@@ -155,6 +200,7 @@ const [categories, setCategories] = useState([]);
                   data-label="Officers Assigned"
                   className="officers-link"
                   onClick={async () => {
+                    setSelectedCategory(cat);
                     setOpenOfficersModal(true);
 
                     const res = await getCategoryOfficers(cat.id);
@@ -185,13 +231,16 @@ const [categories, setCategories] = useState([]);
         </table>
       </div>
 
-      {/* ADD / EDIT MODAL */}
-      {openModal && (
+      {/*/ EDIT MODAL */}
+      {openEditModal && (
         <div className="modal-overlay">
           <div className="modal-box">
             <div className="modal-header">
               <h3>{selectedCategory ? "Edit Category" : "Add Category"}</h3>
-              <X className="close-icon" onClick={() => setOpenModal(false)} />
+              <X
+                className="close-icon"
+                onClick={() => setOpenEditModal(false)}
+              />
             </div>
 
             <div className="modal-body">
@@ -211,11 +260,11 @@ const [categories, setCategories] = useState([]);
             <div className="modal-footer">
               <button
                 className="btn-cancel"
-                onClick={() => setOpenModal(false)}
+                onClick={() => setOpenEditModal(false)}
               >
                 Cancel
               </button>
-              <button className="btn-save" onClick={saveCategory}>
+              <button className="btn-save" onClick={saveEditedCategory}>
                 <Save size={16} /> Save
               </button>
             </div>
@@ -240,19 +289,32 @@ const [categories, setCategories] = useState([]);
               />
             </div>
 
-            {/* officers assigned MODAL */}
-
             <div className="modal-body">
-              {selectedOfficers.length === 0 ? (
-                <p>No officers assigned to this category.</p>
-              ) : (
-                selectedOfficers.map((officer, index) => (
-                  <div key={index} style={{ marginBottom: "10px" }}>
-                    <strong>{officer.name}</strong>
-                    <div>{officer.phone}</div>
-                  </div>
-                ))
-              )}
+              {/* CATEGORY CONTACT */}
+              <div style={{ marginBottom: "12px" }}>
+                <strong>Contact Number</strong>
+                <div>{selectedCategory?.phone || "-"}</div>
+              </div>
+
+              {/* OFFICER NAME */}
+              <div style={{ marginBottom: "12px" }}>
+                <strong>Officer Name</strong>
+                <div>
+                  {selectedOfficers.length > 0
+                    ? selectedOfficers[0]?.name || "-"
+                    : "-"}
+                </div>
+              </div>
+
+              {/* OFFICER PHONE */}
+              <div style={{ marginBottom: "12px" }}>
+                <strong>Officer Phone</strong>
+                <div>
+                  {selectedOfficers.length > 0
+                    ? selectedOfficers[0]?.phone || "-"
+                    : "-"}
+                </div>
+              </div>
             </div>
 
             <div className="modal-footer">

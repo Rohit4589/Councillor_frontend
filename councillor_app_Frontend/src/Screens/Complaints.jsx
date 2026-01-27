@@ -3,44 +3,8 @@ import { Eye } from "lucide-react";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { getComplaints } from "../api/complaintsApi";
+import { getLoggedInUser } from "../api/authApi";
 
-/* ===============================
-   STATIC DATA (FALLBACK)
-================================ */
-const complaintsData = [
-  {
-    id: "CMP234567",
-    category: "Street Lights",
-    summary: "Broken street light on MG Road",
-    status: "progress",
-    ward: "Ward 15",
-    date: "2024-12-05T10:30:00",
-  },
-  {
-    id: "CMP234568",
-    category: "Garbage Collection",
-    summary: "Garbage not collected for 3 days",
-    status: "submitted",
-    ward: "Ward 12",
-    date: "2024-12-05T14:15:00",
-  },
-  {
-    id: "CMP234569",
-    category: "Water Supply",
-    summary: "No water supply since morning",
-    status: "completed",
-    ward: "Ward 8",
-    date: "2024-12-04T09:45:00",
-  },
-  {
-    id: "CMP234570",
-    category: "Roads & Potholes",
-    summary: "Large pothole causing accidents",
-    status: "seen",
-    ward: "Ward 15",
-    date: "2024-12-04T16:20:00",
-  },
-];
 
 /* ===============================
    ✅ ADDED: DATE + TIME FORMATTER
@@ -83,28 +47,28 @@ export default function Complaints() {
 
   const [backendComplaints, setBackendComplaints] = useState([]);
 
-  useEffect(() => {
-    getComplaints({
-      councillorId: "ID_FROM_AUTH",
-      limit: 20,
-      offset: 0,
-      filters,
-    })
-      .then((data) => {
-        if (Array.isArray(data) && data.length > 0) {
-          setBackendComplaints(data);
-        }
-      })
-      .catch(() => console.warn("Complaints API Error, using static data"));
-  }, []);
+useEffect(() => {
+  const user = getLoggedInUser();
+
+  if (!user?.id) return;
+
+  getComplaints({
+    councillorId: user.id, // ✅ dynamic from login
+    limit: 20,
+    offset: 0,
+    filters,
+  })
+    .then(setBackendComplaints)
+    .catch((err) => console.error("Complaints API Error", err));
+}, [filters]);
 
   /* ======================================================
      🔥 UNIFIED DATA PIPELINE (STATIC + BACKEND)
      ====================================================== */
 
   // 1️⃣ Choose data source
-  const sourceData =
-    backendComplaints.length > 0 ? backendComplaints : complaintsData;
+const sourceData = backendComplaints;
+
 
   const searchedData = sourceData.filter((c) =>
     `${c.id} ${c.category} ${c.summary} ${c.status} ${c.ward} ${c.date}`

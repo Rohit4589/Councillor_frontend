@@ -1,20 +1,18 @@
-import { faker } from "@faker-js/faker";
 import axiosInstance from "./axiosInstance";
 
-const USE_FAKE_DATA = true;
 
 /* ===============================
-   BACKEND → FRONTEND MAPPERS
+   STATUS MAPPER
 ================================ */
-
-// backend: IN_PROGRESS | SUBMITTED | COMPLETED
-// frontend: progress | submitted | completed | seen
 const mapBackendStatus = (status) => {
   switch (status) {
-    case "IN_PROGRESS":
-      return "progress";
+    case "submitted":
     case "SUBMITTED":
       return "submitted";
+    case "in_progress":
+    case "IN_PROGRESS":
+      return "progress";
+    case "completed":
     case "COMPLETED":
       return "completed";
     default:
@@ -22,28 +20,19 @@ const mapBackendStatus = (status) => {
   }
 };
 
-const buildTimelineFromBackend = (status) => {
-  switch (status) {
-    case "IN_PROGRESS":
-      return ["Submitted", "Seen", "In Progress"];
-    case "COMPLETED":
-      return ["Submitted", "Seen", "In Progress", "Completed"];
-    case "SUBMITTED":
-    default:
-      return ["Submitted"];
-  }
-};
-
 /* ===============================
-   DATE + TIME FORMATTER
+   DATE FORMAT
 ================================ */
 const formatDateTime = (date) => {
+  if (!date) return "-";
+
   const d = new Date(date);
+  if (isNaN(d)) return date;
 
   return d.toLocaleString("en-IN", {
-    year: "numeric",
-    month: "2-digit",
     day: "2-digit",
+    month: "short",
+    year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
     hour12: true,
@@ -59,47 +48,22 @@ export const getComplaints = async ({
   offset = 0,
   filters = {},
 } = {}) => {
-  if (USE_FAKE_DATA) {
-    return Array.from({ length: 8 }, () => {
-      const backendStatuses = ["IN_PROGRESS", "SUBMITTED", "COMPLETED"];
-      const backendStatus = faker.helpers.arrayElement(backendStatuses);
-      const rawDate = faker.date.recent();
-
-      return {
-        id: faker.string.alphanumeric(8).toUpperCase(),
-        category: faker.helpers.arrayElement([
-          "Street Lights",
-          "Garbage Collection",
-          "Water Supply",
-          "Roads & Potholes",
-        ]),
-        summary: faker.lorem.sentence(6),
-        status: mapBackendStatus(backendStatus),
-        ward: `Ward ${faker.number.int({ min: 1, max: 20 })}`,
-        date: rawDate.toISOString(),
-      };
-    });
-  }
-
-  const response = await axiosInstance.get(
-    "/admin/complaints/my",
-    {
-      params: {
-        councillorid: councillorId,
-        limit,
-        offset,
-        ...filters,
-      },
-    }
-  );
+  const response = await axiosInstance.get("/complaints", {
+    params: {
+      councillor_id: councillorId,
+      limit,
+      offset,
+      ...filters,
+    },
+  });
 
   return response.data.data.map((c) => ({
-    id: c.complaint_id,
-    category: c.category,
-    summary: c.summary,
+    id: c.id,
+    category: c.category_id === 1 ? "Water Supply" : `Category ${c.category_id}`,
+    summary: c.title,
     status: mapBackendStatus(c.status),
-    ward: c.ward,
-    date: formatDateTime(c.date),
+    ward: `Ward ${c.ward_id}`,
+    date: formatDateTime(c.created_at),
   }));
 };
 
@@ -107,55 +71,21 @@ export const getComplaints = async ({
    GET COMPLAINT BY ID
 ================================ */
 export const getComplaintById = async (id) => {
-  if (USE_FAKE_DATA) {
-    const backendStatuses = ["IN_PROGRESS", "SUBMITTED", "COMPLETED"];
-    const backendStatus = faker.helpers.arrayElement(backendStatuses);
-    const rawDate = faker.date.recent();
-
-    return {
-      id,
-      category: faker.helpers.arrayElement([
-        "Street Lights",
-        "Garbage Collection",
-        "Water Supply",
-        "Roads & Potholes",
-      ]),
-      summary: faker.lorem.sentence(6),
-      description: faker.lorem.paragraph(),
-      ward: `Ward ${faker.number.int({ min: 1, max: 20 })}`,
-      date: rawDate.toISOString(),
-      location: faker.location.street(),
-      status: mapBackendStatus(backendStatus),
-      statusTimeline: buildTimelineFromBackend(backendStatus),
-      citizen: {
-        name: faker.person.fullName(),
-        phone: faker.phone.number("+91 ##########"),
-      },
-      images: [
-        "https://picsum.photos/600/400?1",
-        "https://picsum.photos/600/400?2",
-        "https://picsum.photos/600/400?3",
-      ],
-    };
-  }
-
-  const response = await axiosInstance.get(
-    `/admin/complaints/${id}`
-  );
-
+  const response = await axiosInstance.get(`/complaints/${id}`);
   const c = response.data.data;
 
   return {
-    id: c.complaint_id,
-    category: c.category,
-    summary: c.summary,
+    id: c.id,
+    category: c.category_id === 1 ? "Water Supply" : `Category ${c.category_id}`,
+    summary: c.title,
     description: c.description,
-    ward: c.ward,
-    date: formatDateTime(c.date),
+    ward: `Ward ${c.ward_id}`,
+    date: formatDateTime(c.created_at),
     location: c.location,
     status: mapBackendStatus(c.status),
-    statusTimeline: buildTimelineFromBackend(c.status),
-    citizen: c.citizen,
-    images: c.images || [],
+    citizen: {
+      phone: c.description?.match(/\+91-\d+/)?.[0] || "-",
+    },
+    images: [],
   };
 };

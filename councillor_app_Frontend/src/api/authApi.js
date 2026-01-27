@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export const loginApi = (payload) => {
-  console.log("API BASE URL =", import.meta.env.VITE_API_BASE_URL);
+  
 
   return axios.post(
     `${import.meta.env.VITE_API_BASE_URL}/api/auth/login`,
@@ -15,4 +15,16 @@ export const loginApi = (payload) => {
     
   );
   
+  
 };
+
+export const saveAuth = (data) => {
+  localStorage.setItem("token", data.token);
+  localStorage.setItem("user", JSON.stringify(data.user));
+};
+
+export const getLoggedInUser = () => {
+  const user = localStorage.getItem("user");
+  return user ? JSON.parse(user) : null;
+};
+

@@ -8,7 +8,7 @@ import OfficerModal from "../Screens/OfficerModal";
 
 export default function MainLayout() {
   const [search, setSearch] = useState("");
-  const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
+  // const [showAddCategoryModal, setShowAddCategoryModal] = useState(false);
   const [newCategory, setNewCategory] = useState(null);
   const [showSortModal, setShowSortModal] = useState(false);
   const [showFilterModal, setShowFilterModal] = useState(false);
@@ -38,7 +38,7 @@ export default function MainLayout() {
           onFilterClick={() => setShowFilterModal(true)}
           onPrimaryAction={() => {
             if (location.pathname === "/categories") {
-              setShowAddCategoryModal(true);
+              window.dispatchEvent(new Event("open-add-category"));
             }
 
             if (location.pathname === "/officers") {
@@ -48,7 +48,7 @@ export default function MainLayout() {
         />
 
         {/* CATEGORY MODAL */}
-        <CategoryModal
+        {/* <CategoryModal
           open={showAddCategoryModal}
           onClose={() => setShowAddCategoryModal(false)}
           onSave={(data) => {
@@ -56,7 +56,7 @@ export default function MainLayout() {
             setShowAddCategoryModal(false);
           }}
           mode="add"
-        />
+        /> */}
 
         {/* OFFICER MODAL */}
         {/* <OfficerModal
@@ -73,8 +73,8 @@ export default function MainLayout() {
               setShowSortModal,
               showFilterModal,
               setShowFilterModal,
-              newCategory,
-              clearNewCategory: () => setNewCategory(null),
+              // newCategory,
+              // clearNewCategory: () => setNewCategory(null),
               showAddOfficerModal,
               setShowAddOfficerModal,
             }}

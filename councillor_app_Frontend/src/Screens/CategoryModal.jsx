@@ -9,7 +9,6 @@ export default function CategoryModal({
   mode = "add",
   data = null,
 }) {
-
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
 
@@ -28,17 +27,15 @@ export default function CategoryModal({
     }
   }, [mode, data, open]);
 
-
   if (!open) return null;
 
   /* ================================
      SAVE
      ================================ */
- const handleSave = () => {
-   if (!name || phone.length !== 10) return;
-   onSave({ name, phone });
- };
-
+  const handleSave = () => {
+    if (!name || phone.length !== 10) return;
+    onSave({ name, phone });
+  };
 
   return (
     <div className="modal-overlay">
