@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "https://councillor-app123.vercel.app",
+  baseURL: import.meta.env.VITE_API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },
@@ -9,7 +9,6 @@ const axiosInstance = axios.create({
 
 /* ===============================
    REQUEST INTERCEPTOR
-   Attach JWT token automatically
 ================================ */
 axiosInstance.interceptors.request.use(
   (config) => {

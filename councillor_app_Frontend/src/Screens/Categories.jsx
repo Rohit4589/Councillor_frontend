@@ -15,17 +15,14 @@ import {
 
 export default function Categories() {
   const { newCategory, clearNewCategory } = useOutletContext();
+  const [loading, setLoading] = useState(true);
+
 
   /* ================================
      STATE
   ================================ */
-  const [categories, setCategories] = useState([
-    { id: 101, name: "Street Lights", count: 156, phone: "9588343566" },
-    { id: 102, name: "Roads & Potholes", count: 234, phone: "9588343566" },
-    { id: 103, name: "Garbage Collection", count: 189, phone: "9588343566" },
-    { id: 104, name: "Water Supply", count: 98, phone: "9588343566" },
-    { id: 105, name: "Street Cleaning", count: 112, phone: "9588343566" },
-  ]);
+const [categories, setCategories] = useState([]);
+
 
   const [openModal, setOpenModal] = useState(false);
   const [openDelete, setOpenDelete] = useState(false);
@@ -38,26 +35,21 @@ export default function Categories() {
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
 
-  const categoryOfficers = {
-    101: [
-      { name: "Ramesh Patil", phone: "9876543210" },
-      { name: "Suresh Kulkarni", phone: "9123456789" },
-    ],
-    102: [{ name: "Amit Joshi", phone: "9988776655" }],
-    103: [],
-    104: [{ name: "Vijay Deshmukh", phone: "9012345678" }],
-  };
 
   /* ================================
      FETCH CATEGORIES
   ================================ */
-  useEffect(() => {
-    getCategories()
-      .then(setCategories)
-      .catch(() =>
-        console.warn("Backend not ready, using existing categories")
-      );
-  }, []);
+ useEffect(() => {
+   getCategories()
+     .then(setCategories)
+     .catch((err) => {
+       console.error("Failed to load categories:", err);
+     })
+     .finally(() => {
+       setLoading(false);
+     });
+ }, []);
+
   useEffect(() => {
     if (!newCategory) return;
 
@@ -137,6 +129,12 @@ export default function Categories() {
     <>
       {/* TABLE */}
       <div className="categories-table">
+        {loading && (
+          <div style={{ padding: "20px", textAlign: "center" }}>
+            Loading categories...
+          </div>
+        )}
+
         <table className="categories-data-table">
           <thead>
             <tr>

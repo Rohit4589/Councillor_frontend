@@ -1,7 +1,7 @@
 import "../Style/dashboard.css";
 import { FileText, Folder, Clock } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getDashboardData } from "../Api/dashboardApi";
+import { getDashboardData } from "../api/dashboardApi";
 
 export default function Dashboard() {
   const [stats, setStats] = useState({
@@ -19,18 +19,18 @@ export default function Dashboard() {
         const data = res.data;
 
         setStats({
-          totalComplaints: data.total_complaints,
-          totalCategories: data.total_categories,
-          pendingReview: data.pending_review,
+          totalComplaints: data.totalComplaints,
+          totalCategories: data.totalCategories,
+          pendingReview: data.pendingReview,
         });
 
         setRecentComplaints(
-          data.recent_complaints.map((item) => ({
-            id: item.complaint_id,
-            category: item.category,
+          data.recentComplaints.map((item) => ({
+            id: item.id,
+            category: item.category || "—",
             status: mapStatus(item.status),
-            time: item.time,
-          }))
+            time: new Date(item.created_at).toLocaleString(),
+          })),
         );
 
         setLoading(false);
@@ -106,10 +106,11 @@ export default function Dashboard() {
 
 /* ================= HELPERS ================= */
 function mapStatus(status) {
-  if (status === "IN_PROGRESS") return "progress";
-  if (status === "COMPLETED") return "completed";
+  if (status === "in_progress") return "progress";
+  if (status === "completed") return "completed";
   return "submitted";
 }
+
 
 /* ================= STAT CARD ================= */
 function StatCard({ icon, iconBg, value, label }) {
