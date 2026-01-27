@@ -7,27 +7,42 @@ export default function Citizens() {
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
   const [selectedCitizen, setSelectedCitizen] = useState(null);
-  
+
   const PAGE_SIZE = 5;
 
+  /* ===============================
+     FETCH CITIZENS
+  ================================ */
   useEffect(() => {
     getCitizens().then((data) => {
-      setCitizens(data);
+      setCitizens(data || []);
     });
   }, []);
 
+  /* ===============================
+     SAFE SEARCH FILTER
+  ================================ */
   const filtered = useMemo(() => {
-    return citizens.filter(
-      (c) =>
-        c.name.toLowerCase().includes(search.toLowerCase()) ||
-        c.phone.includes(search)
-    );
+    const q = search.toLowerCase();
+
+    return citizens.filter((c) => {
+      const name = c.name?.toLowerCase() || "";
+      const phone = c.phone || "";
+
+      return name.includes(q) || phone.includes(search);
+    });
   }, [citizens, search]);
 
   const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
 
-  const paginated = filtered.slice((page - 1) * PAGE_SIZE, page * PAGE_SIZE);
+  const paginated = filtered.slice(
+    (page - 1) * PAGE_SIZE,
+    page * PAGE_SIZE
+  );
 
+  /* ===============================
+     VIEW DETAILS
+  ================================ */
   const handleViewDetails = async (citizen) => {
     setSelectedCitizen(citizen);
 
@@ -37,12 +52,15 @@ export default function Citizens() {
         ...prev,
         ...fullDetails,
       }));
-    } catch {}
+    } catch (err) {
+      console.error("Failed to load citizen details", err);
+    }
   };
 
   return (
     <div className="page-wrapper">
       <div className="citizens-card">
+
         {/* SEARCH */}
         <div className="citizens-toolbar">
           <input
@@ -71,15 +89,11 @@ export default function Citizens() {
           <tbody>
             {paginated.map((citizen) => (
               <tr key={citizen.id}>
-                <td data-label="Name">{citizen.name}</td>
-
-                <td data-label="Phone">{citizen.phone}</td>
-
-                <td data-label="Ward">{citizen.ward}</td>
-
-                <td data-label="Email">{citizen.email}</td>
-
-                <td data-label="Action">
+                <td>{citizen.name || "-"}</td>
+                <td>{citizen.phone || "-"}</td>
+                <td>{citizen.ward || "-"}</td>
+                <td>{citizen.email || "-"}</td>
+                <td>
                   <button
                     className="view-btn"
                     onClick={() => handleViewDetails(citizen)}
@@ -89,12 +103,23 @@ export default function Citizens() {
                 </td>
               </tr>
             ))}
+
+            {paginated.length === 0 && (
+              <tr>
+                <td colSpan="5" style={{ textAlign: "center" }}>
+                  No citizens found
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
 
         {/* PAGINATION */}
         <div className="pagination">
-          <button disabled={page === 1} onClick={() => setPage((p) => p - 1)}>
+          <button
+            disabled={page === 1}
+            onClick={() => setPage((p) => p - 1)}
+          >
             Prev
           </button>
 
@@ -103,7 +128,7 @@ export default function Citizens() {
           </span>
 
           <button
-            disabled={page === totalPages}
+            disabled={page === totalPages || totalPages === 0}
             onClick={() => setPage((p) => p + 1)}
           >
             Next
@@ -111,7 +136,7 @@ export default function Citizens() {
         </div>
       </div>
 
-      {/* MODAL (UNCHANGED) */}
+      {/* DETAILS MODAL */}
       {selectedCitizen && (
         <div className="modal-overlay">
           <div className="modal-card">
@@ -126,59 +151,28 @@ export default function Citizens() {
             </div>
 
             <div className="modal-body">
-              <p>
-                <span>Name</span>
-                {selectedCitizen.name}
-              </p>
-              <p>
-                <span>Phone</span>
-                {selectedCitizen.phone}
-              </p>
-              <p>
-                <span>Email</span>
-                {selectedCitizen.email}
-              </p>
-              <p>
-                <span>Ward</span>
-                {selectedCitizen.ward}
-              </p>
+              <p><span>Name</span>{selectedCitizen.name || "-"}</p>
+              <p><span>Phone</span>{selectedCitizen.phone || "-"}</p>
+              <p><span>Email</span>{selectedCitizen.email || "-"}</p>
+              <p><span>Ward</span>{selectedCitizen.ward || "-"}</p>
 
-              {/* These will appear automatically from faker/backend */}
               {selectedCitizen.VoterId && (
-                <p>
-                  <span>Voter-Id</span>
-                  {selectedCitizen.VoterId}
-                </p>
+                <p><span>Voter ID</span>{selectedCitizen.VoterId}</p>
               )}
               {selectedCitizen.city && (
-                <p>
-                  <span>City</span>
-                  {selectedCitizen.city}
-                </p>
+                <p><span>City</span>{selectedCitizen.city}</p>
               )}
               {selectedCitizen.state && (
-                <p>
-                  <span>State</span>
-                  {selectedCitizen.state}
-                </p>
+                <p><span>State</span>{selectedCitizen.state}</p>
               )}
               {selectedCitizen.bloodGroup && (
-                <p>
-                  <span>Blood Group</span>
-                  {selectedCitizen.bloodGroup}
-                </p>
+                <p><span>Blood Group</span>{selectedCitizen.bloodGroup}</p>
               )}
               {selectedCitizen.disability && (
-                <p>
-                  <span>Disability</span>
-                  {selectedCitizen.disability}
-                </p>
+                <p><span>Disability</span>{selectedCitizen.disability}</p>
               )}
               {selectedCitizen.language && (
-                <p>
-                  <span>Language</span>
-                  {selectedCitizen.language}
-                </p>
+                <p><span>Language</span>{selectedCitizen.language}</p>
               )}
             </div>
           </div>
