@@ -1,7 +1,7 @@
 import "../Style/createEvent.css";
 import { Camera, Video } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { getEventCategories, createEvent } from "../Api/eventsApi";
+import { getEventCategories, createEvent } from "../api/eventsApi";
 import { faker } from "@faker-js/faker";
 
 export default function CreateEvent() {
