@@ -1,11 +1,10 @@
-// src/api/officersApi.js
-import adminAxios from "./adminAxios";
+import axiosInstance from "./axiosInstance";
 
 /* ===============================
    GET ALL OFFICERS (ADMIN)
 ================================ */
 export const getOfficers = async () => {
-  const response = await adminAxios.get("/admin/officers");
+  const response = await axiosInstance.get("/admin/officers");
 
   return response.data.data.map((item) => ({
     id: item.officer_id,
@@ -20,7 +19,7 @@ export const getOfficers = async () => {
    ADD OFFICER (ADMIN)
 ================================ */
 export const addOfficer = async (officer) => {
-  const response = await adminAxios.post(
+  const response = await axiosInstance.post(
     "/admin/create-admin-employee",
     {
       name: officer.name,

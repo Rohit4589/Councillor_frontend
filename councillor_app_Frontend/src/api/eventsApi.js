@@ -1,12 +1,11 @@
-// src/api/eventsApi.js
-import adminAxios from "./adminAxios";
+import axiosInstance from "./axiosInstance";
 
 /* ===============================
    GET EVENT CATEGORIES (ADMIN)
-   API: GET /api/admin/category
+   API: GET /admin/category
 ================================ */
 export const getEventCategories = async () => {
-  const response = await adminAxios.get("/admin/category");
+  const response = await axiosInstance.get("/admin/category");
 
   return response.data.data.map((item) => ({
     id: item.category_id,
@@ -16,7 +15,7 @@ export const getEventCategories = async () => {
 
 /* ===============================
    CREATE ANNOUNCEMENT / EVENT
-   API: POST /api/admin/announcement
+   API: POST /admin/announcement
    Content-Type: multipart/form-data
 ================================ */
 export const createEvent = async ({
@@ -43,7 +42,7 @@ export const createEvent = async ({
     formData.append("video", video);
   }
 
-  const response = await adminAxios.post(
+  const response = await axiosInstance.post(
     "/admin/announcement",
     formData,
     {
