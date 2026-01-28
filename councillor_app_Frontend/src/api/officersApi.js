@@ -4,7 +4,7 @@ import axiosInstance from "./axiosInstance";
    GET ALL OFFICERS (ADMIN)
 ================================ */
 export const getOfficers = async () => {
-  const response = await axiosInstance.get("/admin/officers");
+  const response = await axiosInstance.get("/api/admin/officers");
 
   return response.data.data.map((item) => ({
     id: item.officer_id,

@@ -5,7 +5,7 @@ import axiosInstance from "./axiosInstance";
    API: GET /admin/category
 ================================ */
 export const getEventCategories = async () => {
-  const response = await axiosInstance.get("/admin/category");
+  const response = await axiosInstance.get("/api/admin/category");
 
   return response.data.data.map((item) => ({
     id: item.category_id,
