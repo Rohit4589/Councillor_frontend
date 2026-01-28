@@ -7,7 +7,6 @@ import DeleteConfirmModal from "./DeleteConfirmModal";
 import { getCategoryOfficers } from "../api/categoriesApi";
 import CategoryModal from "./CategoryModal";
 
-
 import {
   getCategories,
   addCategory,
@@ -105,7 +104,6 @@ export default function Categories() {
     };
   }, []);
 
-
   const handleAddCategory = async ({ name, phone }) => {
     try {
       await addCategory({ name, phone });
@@ -118,7 +116,7 @@ export default function Categories() {
   };
 
   const openEdit = (cat) => {
-     setOpenAddModal(false); 
+    setOpenAddModal(false);
     setSelectedCategory(cat);
     setName(cat.name);
     setPhone(cat.phone);
@@ -140,7 +138,6 @@ export default function Categories() {
       setPhone("");
     }
   };
-
 
   const confirmDelete = async () => {
     if (!selectedCategory) return;
@@ -184,9 +181,9 @@ export default function Categories() {
           <thead>
             <tr>
               <th>Category Name</th>
+              <th>Category Phone</th> 
               <th>Total Complaints</th>
               <th>Officers Assigned</th>
-
               <th className="actions-header">Actions</th>
             </tr>
           </thead>
@@ -195,6 +192,7 @@ export default function Categories() {
             {categories.map((cat) => (
               <tr key={cat.id}>
                 <td data-label="Category Name">{cat.name}</td>
+                <td data-label="Category Phone">{cat.phone || "-"}</td>
                 <td data-label="Total Complaints">{cat.count}</td>
                 <td
                   data-label="Officers Assigned"
@@ -209,7 +207,6 @@ export default function Categories() {
                 >
                   View Officers
                 </td>
-
                 <td data-label="Actions" className="actions-cell">
                   <Pencil
                     size={18}
@@ -292,12 +289,6 @@ export default function Categories() {
             <div className="modal-body">
               {/* CATEGORY CONTACT */}
               <div style={{ marginBottom: "12px" }}>
-                <strong>Contact Number</strong>
-                <div>{selectedCategory?.phone || "-"}</div>
-              </div>
-
-              {/* OFFICER NAME */}
-              <div style={{ marginBottom: "12px" }}>
                 <strong>Officer Name</strong>
                 <div>
                   {selectedOfficers.length > 0
@@ -306,7 +297,6 @@ export default function Categories() {
                 </div>
               </div>
 
-              {/* OFFICER PHONE */}
               <div style={{ marginBottom: "12px" }}>
                 <strong>Officer Phone</strong>
                 <div>

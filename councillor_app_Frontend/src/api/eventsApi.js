@@ -27,9 +27,22 @@ export const createEvent = async ({
 }) => {
   const formData = new FormData();
 
+  // 🔍 DEBUG: log FormData
+for (let [key, value] of formData.entries()) {
+  if (value instanceof File) {
+    console.log(key, {
+      name: value.name,
+      type: value.type,
+      size: value.size,
+    });
+  } else {
+    console.log(key, value);
+  }
+}
+
   // REQUIRED FIELDS
   formData.append("event_name", event_name);
-  formData.append("category_id", category_id);
+  formData.append("category_id", Number(category_id));
   formData.append("description", description);
 
   // PHOTOS (0–5)
@@ -43,14 +56,17 @@ export const createEvent = async ({
   }
 
   const response = await axiosInstance.post(
-    "/admin/announcement",
+    "/api/admin/announcement",
     formData,
     {
       headers: {
         "Content-Type": "multipart/form-data",
       },
     }
+    
   );
 
   return response.data;
 };
+
+

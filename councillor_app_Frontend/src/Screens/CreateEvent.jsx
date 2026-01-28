@@ -2,7 +2,6 @@ import "../Style/createEvent.css";
 import { Camera, Video } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { getEventCategories, createEvent } from "../api/eventsApi";
-import { faker } from "@faker-js/faker";
 
 export default function CreateEvent() {
   /* ================================
@@ -35,8 +34,7 @@ export default function CreateEvent() {
         setCategories(
           Array.from({ length: 5 }).map((_, i) => ({
             id: i + 1,
-            name: faker.commerce.department(),
-          }))
+          })),
         );
       });
   }, []);
@@ -46,7 +44,7 @@ export default function CreateEvent() {
   ================================ */
   const handleEventNameChange = (e) => {
     const value = e.target.value;
-    const regex = /^[A-Za-z\s]*$/;
+    const regex = /^[A-Za-z0-9\s\-]*$/;
 
     if (!regex.test(value)) {
       setEventNameError("Only alphabets are allowed");
@@ -93,6 +91,14 @@ export default function CreateEvent() {
       alert("All required fields must be filled");
       return;
     }
+    console.log({
+      event_name: eventName,
+      category_id: categoryId,
+      description,
+      photosCount: photos.length,
+      videoPresent: !!video,
+    });
+
 
     if (eventNameError) return;
 
@@ -101,7 +107,7 @@ export default function CreateEvent() {
     try {
       await createEvent({
         event_name: eventName,
-        category_id: categoryId,
+        category_id: Number(categoryId),
         description,
         photos,
         video,
@@ -129,9 +135,7 @@ export default function CreateEvent() {
             value={eventName}
             onChange={handleEventNameChange}
           />
-          {eventNameError && (
-            <p className="error-text">{eventNameError}</p>
-          )}
+          {eventNameError && <p className="error-text">{eventNameError}</p>}
         </div>
 
         {/* Category */}
@@ -139,15 +143,10 @@ export default function CreateEvent() {
           <label>Category</label>
           <select
             value={categoryId}
-            onChange={(e) => setCategoryId(e.target.value)}
+            onChange={(e) => setCategoryId(Number(e.target.value))}
           >
-            <option value="">Select</option>
+            <option value="">Select Category</option>
 
-            {/* STATIC OPTIONS */}
-            <option value="announcement">Announcement</option>
-            <option value="event">Event</option>
-
-            {/* DYNAMIC OPTIONS */}
             {categories.map((cat) => (
               <option key={cat.id} value={cat.id}>
                 {cat.name}
@@ -169,6 +168,7 @@ export default function CreateEvent() {
         {/* Photos */}
         <div className="form-group">
           <label>Photos (Optional)</label>
+
           <label className="upload-box">
             <Camera size={28} />
             <p>Upload Photos</p>
@@ -182,6 +182,13 @@ export default function CreateEvent() {
               onChange={handlePhotoUpload}
             />
           </label>
+
+          {/* ✅ SELECTED IMAGES COUNT */}
+          {photos.length > 0 && (
+            <p style={{ marginTop: "8px", fontSize: "13px", color: "#555" }}>
+              {photos.length} image{photos.length > 1 ? "s" : ""} selected
+            </p>
+          )}
         </div>
 
         {/* Video */}
